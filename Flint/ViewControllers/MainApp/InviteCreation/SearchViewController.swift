@@ -11,6 +11,8 @@ import Foundation
 import MapKit
 import CoreLocation
 import MapKitGoogleStyler
+import Alamofire
+import CodableAlamofire
 
 
 class SearchViewController: UIViewController ,MKMapViewDelegate{
@@ -153,28 +155,26 @@ class SearchViewController: UIViewController ,MKMapViewDelegate{
                 
                 if pm.count > 0 {
                     let pm = placemarks![0]
-//                    print(pm.country)
-//                    print(pm.locality)
-//                    print(pm.subLocality)
-//                    print(pm.thoroughfare)
-//                    print(pm.postalCode)
-//                    print(pm.subThoroughfare)
+
                     var addressString : String = ""
-                    if pm.subLocality != nil {
-                        addressString = addressString + pm.subLocality! + ", "
+//                    if pm.postalCode != nil {
+//                        addressString = addressString + pm.postalCode! + " "
+//                    }
+//                    
+//                    if pm.country != nil {
+//                        addressString = addressString + pm.country! + ", "
+//                    }
+                    
+                    if pm.locality != nil {
+                        addressString = addressString + pm.locality! + ", "
                     }
                     if pm.thoroughfare != nil {
                         addressString = addressString + pm.thoroughfare! + ", "
                     }
-                    if pm.locality != nil {
-                        addressString = addressString + pm.locality! + ", "
+                    if pm.subLocality != nil {
+                        addressString = addressString + pm.subLocality! 
                     }
-                    if pm.country != nil {
-                        addressString = addressString + pm.country! + ", "
-                    }
-                    if pm.postalCode != nil {
-                        addressString = addressString + pm.postalCode! + " "
-                    }
+
                     
                     
                     self.resultAdderess = addressString
@@ -255,8 +255,46 @@ extension SearchViewController: UITableViewDelegate {
             print(String(describing: coordinate))
             self.searchResultsTableView.alpha = 0
             self.view.endEditing(true)
-            self.map.setCenter(coordinate!, animated: true)
+            //call search In Location
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            request(URLs.searchInlocation, method: .post , parameters: SearchInLocationRequestModel.init(lat: (coordinate?.latitude.description)!, long: (coordinate?.longitude.description)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[SearchInLocationRes]>>) in
+                
+                let res = response.result.value
+                
+                if(res?.status == "success" && res?.data != nil && (res?.data?.count)! > 0){
+                    for p in (res?.data)!{
+                        let marker = MyAnnotation()
+                        marker.coordinate = .init(latitude: Double(p.st_x!)!, longitude: Double(p.st_y!)!)
+                        marker.identifier = p.title
+                        self.map.addAnnotation(marker)
+                    }
+                }
+                
+                self.map.setCenter(coordinate!, animated: true)
+                
+            }
+            
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

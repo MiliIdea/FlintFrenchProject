@@ -10,7 +10,7 @@ import Foundation
 
 class URLs {
     
-    static let server = "http://46.165.237.171/web/index.php?r=flint/"
+    static let server = "http://46.165.237.171/flint/web/index.php?r=flint/"
     
     static let imgServer = "http://46.165.237.171/web/img/"
     
@@ -56,13 +56,17 @@ class URLs {
     
     static let superlikeForInvite = server + "superlike-person-for-invite"
     
-    static let getConfirmListForInvite = server + "get-confirm-list"
+    static let cancelInvite = server + "cancel-invite"
+    
+    static let confirmInvitation = server + "confirm-invite"
+    
+    static let getConfirmListForInvite = server + "get-invite-confirm-list"
     
     static let confirmUser = server + "confirm-user"
     
     static let reportUser = server + "report-user"
     
-    static let afterDatePoll = server + "date-poll"
+    static let afterDatePoll = server + "invite-poll"
     
     static let getPartyPeopleAfterParty = server + "get-party-people"
     
@@ -71,5 +75,24 @@ class URLs {
     static let getInviteInfo = server + "get-invite-info"
     
     static let getMyInvites = server + "get-my-invites"
+    
+    static let searchInlocation = server + "search-in-location"
+    
+    static let getActiveInvite = server + "get-user-active-invitation"
+    
+    static let getMyChats = server + "get-my-chats"
+    
+    static let sendInviteMessage = server + "send-invite-message"
+    
+    static let sendMessage = server + "send-message"
+    
+    static let createChannel = server + "create-channel"
+    
+    static let updateChannel = server + "update-user-channel"
+    
+    static let isOccupied = server + "is-channel-occupied"
+    
+    static let getChatMessage = server + "get-chat-messages"
+    
     
 }

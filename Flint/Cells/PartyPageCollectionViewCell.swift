@@ -10,6 +10,12 @@ import UIKit
 
 class PartyPageCollectionViewCell: UICollectionViewCell {
 
+    @IBOutlet weak var reportButton: UIButton!
+    
+    @IBOutlet weak var distanceLabel: UILabel!
+    
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

@@ -11,6 +11,7 @@ import UIColor_Hex_Swift
 import ISEmojiView
 import Alamofire
 import CodableAlamofire
+import AFDateHelper
 
 
 class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
@@ -48,15 +49,10 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
         
         invitePosition.text = GlobalFields.inviteAddress
         
-        let w = GlobalFields.inviteWhen
-        if(w == 0){
-            self.inviteTime.text = "Right now"
-        }else{
-            let date : Date = Date().addingTimeInterval(Double(w!) * 60.0 * 30.0)
-            let dateFormatterGet : DateFormatter = DateFormatter()
-            dateFormatterGet.dateFormat = "HH:mm"
-            self.inviteTime.text = dateFormatterGet.string(from: date)
-        }
+        let w = GlobalFields.inviteExactTime
+        
+        self.inviteTime.text = w?.toStringWithRelativeTime(strings: [.nowPast : "right now"])
+        
         
         switch GlobalFields.inviteMood! {
         case "LetsSeeWhatHappens":
@@ -69,6 +65,9 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
             self.pinImage.image = UIImage.init(named: "pin_blue")
         }
         
+        if(GlobalFields.inviteEmoji != nil && GlobalFields.inviteEmoji != ""){
+            self.emojiTextView.text = GlobalFields.inviteEmoji!
+        }
         
     }
     
@@ -89,41 +88,65 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         
-        var type : Int = 0
+        var type : Int = 1
         
         switch GlobalFields.inviteMood! {
         case "LetsSeeWhatHappens":
-            type = 0
+            type = 3
+            break
         case "Friendly":
-            type = 1
+            type = 4
+            break
         case "Business":
             type = 2
+            break
         default:
-            type = 3
+            type = 1
         }
         
-        let date : Date = Date().addingTimeInterval(Double(GlobalFields.inviteWhen!) * 60.0 * 30.0)
+        let date : Date = GlobalFields.inviteExactTime!
         
-        request(URLs.createInvitation, method: .post , parameters: CreateInvitationRequestModel.init(type: type, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!, peopleCount: GlobalFields.inviteNumber!, exactTime: Int(date.timeIntervalSince1970), when: GlobalFields.inviteWhen!, emoji: GlobalFields.inviteEmoji!, title: GlobalFields.inviteTitle!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<CreateInviteRes>>) in
+        var diff : Int = 7
+        
+        if(Date().timeIntervalSince(date) < 30 * 60 * 6){
+           diff = Int(Date().timeIntervalSince(date) / (60 * 30))
+        }
+        
+        request(URLs.createInvitation, method: .post , parameters: CreateInvitationRequestModel.init(type: type, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!, peopleCount: GlobalFields.inviteNumber!, exactTime: Int(date.timeIntervalSince1970), when: diff, emoji: GlobalFields.inviteEmoji!, title: GlobalFields.inviteTitle!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<CreateInviteRes>>) in
             
             let res = response.result.value
             
             if(res?.status == "success"){
                 
-                request(URLs.getUsersListForInvite, method: .post , parameters: GetUsersListForInviteRequestModel.init(invite: (res?.data?.invite)!, page: 1, perPage: 10, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetUserListForInviteRes]>>) in
+                GlobalFields.invite = (res?.data?.invite)!
+                
+                request(URLs.getUsersListForInvite, method: .post , parameters: GetUsersListForInviteRequestModel.init(invite: (res?.data?.invite)!, page: 1, perPage: 100, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetUserListForInviteRes]>>) in
                     
                     let res = response.result.value
                     
                     let vC : MainInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainInvitationViewController"))! as! MainInvitationViewController
-                    if(res?.data != nil){
+                    if(res?.data != nil && (res?.data?.count)! > 0){
                         vC.usersList = (res?.data)!
+                        vC.viewType = .AddPersonToInvite
                         self.navigationController?.pushViewController(vC, animated: true)
                     }else{
-                        //TODO : bayad alert bedim k kasi nis doret
+                        for controller in self.navigationController!.viewControllers as Array {
+                            if controller.isKind(of: FirstMapViewController.self) {
+                                self.navigationController!.popToViewController(controller, animated: true)
+                                break
+                            }
+                        }
                         return
                     }
                 }
                 
+            }else{
+                for controller in self.navigationController!.viewControllers as Array {
+                    if controller.isKind(of: FirstMapViewController.self) {
+                        self.navigationController!.popToViewController(controller, animated: true)
+                        break
+                    }
+                }
             }
             
         }

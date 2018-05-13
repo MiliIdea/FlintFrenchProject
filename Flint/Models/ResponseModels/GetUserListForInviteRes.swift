@@ -13,18 +13,18 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 import Foundation
 struct GetUserListForInviteRes : Codable {
-	let st_x : Double?
-	let st_y : Double?
-	let name : String?
-	let gender : String?
-	let avatar1 : String?
-	let avatar2 : String?
-	let birthdate : Int?
-	let job : String?
-	let studies : String?
-	let bio : String?
-	let id : Int?
-	let updated_at : Int?
+	var st_x : String?
+	var st_y : String?
+	var name : String?
+	var gender : String?
+	var avatar1 : String?
+	var avatar2 : String?
+	var birthdate : Int?
+	var job : String?
+	var studies : String?
+	var bio : String?
+	var id : Int?
+	var updated_at : Int?
 
 	enum CodingKeys: String, CodingKey {
 
@@ -41,5 +41,9 @@ struct GetUserListForInviteRes : Codable {
 		case id = "id"
 		case updated_at = "updated_at"
 	}
+    
+    init() {
+        
+    }
 
 }

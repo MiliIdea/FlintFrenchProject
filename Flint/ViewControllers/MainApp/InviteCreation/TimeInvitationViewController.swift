@@ -25,6 +25,21 @@ class TimeInvitationViewController: UIViewController {
     @IBOutlet weak var b5: DCBorderedButton!
     @IBOutlet weak var b6: DCBorderedButton!
     
+    var isParty : Bool = false
+    
+    @IBOutlet weak var partyModeView: UIView!
+    
+    @IBOutlet weak var rightNowButtonParty: DCBorderedButton!
+    
+    @IBOutlet weak var dateButton: DCBorderedButton!
+    
+    @IBOutlet weak var hourButton: DCBorderedButton!
+    
+    @IBOutlet weak var datePicker: UIDatePicker!
+    
+    @IBOutlet weak var tikButton: UIButton!
+    
+    var partyIsRightNow : Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +50,16 @@ class TimeInvitationViewController: UIViewController {
         self.titleWithMoodColorLabel.layer.borderWidth = 1
         self.titleWithMoodColorLabel.layer.borderColor = UIColor("#707070").cgColor
         self.titleWithMoodColorLabel.layer.cornerRadius = self.titleWithMoodColorLabel.frame.height / 2
+        
+        
+        if(isParty){
+            self.partyModeView.alpha = 1
+            self.datePicker.alpha = 0
+            self.tikButton.alpha = 1
+            self.rightNowPartyAct("")
+        }else{
+            self.partyModeView.alpha = 0
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -52,7 +77,7 @@ class TimeInvitationViewController: UIViewController {
         b.normalBorderColor = UIColor("#68A0FF")
         b.normalTextColor = UIColor("#FFFFFF")
         
-        GlobalFields.inviteWhen = b.tag - 1
+        GlobalFields.inviteExactTime = Date().addingTimeInterval(Double(b.tag - 1) * 60.0 * 30.0)
         
         self.navigationController?.popViewController(animated: true)
         
@@ -80,7 +105,50 @@ class TimeInvitationViewController: UIViewController {
         }
         
     }
-
+    
+    @IBAction func rightNowPartyAct(_ sender: Any) {
+        self.rightNowButtonParty.normalTextColor = UIColor("#67A0FF")
+        self.dateButton.normalTextColor = UIColor("#949494")
+        self.hourButton.normalTextColor = UIColor("#949494")
+        self.partyIsRightNow = true
+    }
+    
+    @IBAction func showDatePicker(_ sender: Any) {
+        self.rightNowButtonParty.normalTextColor = UIColor("#949494")
+        self.dateButton.normalTextColor = UIColor("#67A0FF")
+        self.hourButton.normalTextColor = UIColor("#67A0FF")
+        self.datePicker.alpha = 1
+        self.tikButton.alpha = 0
+        self.partyIsRightNow = false
+    }
+    
+    @IBAction func setDateAndTimeParty(_ sender: Any) {
+        if(self.partyIsRightNow){
+            GlobalFields.inviteExactTime = Date()
+        }else{
+            GlobalFields.inviteExactTime = self.datePicker.date
+        }
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    @IBAction func dismiss(_ sender: Any) {
+        
+        self.datePicker.alpha = 0
+        self.tikButton.alpha = 1
+        
+    }
+    
+    @IBAction func setDatePickerParty(_ sender: Any) {
+        let dateFormatter : DateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MMM yyyy"
+        let strDate = dateFormatter.string(from: datePicker.date)
+        self.dateButton.setTitle(strDate, for: .normal)
+        let dateFormatter2 : DateFormatter = DateFormatter()
+        dateFormatter2.dateFormat = "HH : mm"
+        let strDate2 = dateFormatter.string(from: datePicker.date)
+        self.hourButton.setTitle(strDate2, for: .normal)
+    }
+    
 }
 
 

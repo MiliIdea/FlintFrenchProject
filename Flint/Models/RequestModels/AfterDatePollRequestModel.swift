@@ -11,8 +11,15 @@ import Foundation
 
 class AfterDatePollRequestModel {
     
-    init() {
+    init(invite : Int , answer : Int) {
         
+        self.USERNAME = GlobalFields.USERNAME
+        
+        self.TOKEN = GlobalFields.TOKEN
+        
+        self.INVITE = invite
+        
+        self.ANSWER = answer
         
     }
     
@@ -20,16 +27,14 @@ class AfterDatePollRequestModel {
     
     var TOKEN: String!
     
-    var INVITE : String!
+    var INVITE : Int!
     
-    var TEXT : String!
-    
-    var ANSWER : String!
+    var ANSWER : Int!
     
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "token": TOKEN ,"invite" : INVITE, "text": TEXT , "answer" : ANSWER]
+        return ["username": USERNAME , "token": TOKEN ,"invite" : INVITE, "answer" : ANSWER]
         
     }
     

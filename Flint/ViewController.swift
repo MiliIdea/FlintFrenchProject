@@ -42,7 +42,40 @@ class ViewController: UIViewController {
    */
     
     
+    ////1 => party , 2 => Business , 3 => LetsSee , 4 => Friendly
     
+    
+    /*
+     Invitation Status :
+     0 failed
+     1 submit ( ready for like by owner )
+     2 after like ( ready for accept by users )
+     3 after accept ( ready for confirm by owner )
+     4 after confirm ( ready for reconfirm by owner and users )
+     5 after reconfirm ( Done )
+     6 after date ( ready for poll )
+     7 after poll
+     */
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

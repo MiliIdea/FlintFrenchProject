@@ -10,18 +10,24 @@ import Foundation
 
 class SuperLikePersonForInviteRequestModel {
     
-    init() {
+    init(invite : Int , targetUser : Int) {
         
+        self.USERNAME = GlobalFields.USERNAME
         
+        self.TOKEN = GlobalFields.TOKEN
+        
+        self.INVITE = invite
+        
+        self.TARGET_USER = targetUser
     }
     
     var USERNAME: String!
     
     var TOKEN: String!
     
-    var INVITE : String!
+    var INVITE : Int!
     
-    var TARGET_USER : String!
+    var TARGET_USER : Int!
     
     
     

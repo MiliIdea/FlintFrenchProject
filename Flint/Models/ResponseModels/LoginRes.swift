@@ -12,7 +12,59 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 */
 
 import Foundation
-struct LoginRes : Codable {
+class LoginRes : NSObject, Codable , NSCoding{
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(self.id,  forKey: "id");
+        aCoder.encode(self.username,    forKey: "username");
+        aCoder.encode(self.token,    forKey: "token");
+        aCoder.encode(self.email,    forKey: "email");
+        aCoder.encode(self.name,forKey: "name");
+        aCoder.encode(self.gender,   forKey: "gender");
+        aCoder.encode(self.status,   forKey: "status");
+        aCoder.encode(self.avatar,   forKey: "avatar");
+        aCoder.encode(self.second_avatar,   forKey: "second_avatar");
+        aCoder.encode(self.looking_for,   forKey: "looking_for");
+        aCoder.encode(self.selfie,   forKey: "selfie");
+        aCoder.encode(self.new_pin_notif,   forKey: "new_pin_notif");
+        aCoder.encode(self.lighter,   forKey: "lighter");
+        aCoder.encode(self.invite_accepted_notification,   forKey: "invite_accepted_notification");
+        aCoder.encode(self.message_notification,   forKey: "message_notification");
+        aCoder.encode(self.vibration,   forKey: "vibration");
+        aCoder.encode(self.min_age,   forKey: "min_age");
+        aCoder.encode(self.max_age,   forKey: "max_age");
+        aCoder.encode(self.birthdate,   forKey: "birthdate");
+        aCoder.encode(self.bio,   forKey: "bio");
+        aCoder.encode(self.job,   forKey: "job");
+        aCoder.encode(self.studies,   forKey: "studies");
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        self.id  = aDecoder.decodeObject(forKey: "id") as! Int?
+        self.username  = aDecoder.decodeObject(forKey: "username") as! String?
+        self.token  = aDecoder.decodeObject(forKey: "token") as! String?
+        self.email  = aDecoder.decodeObject(forKey: "email") as! String?
+        self.name  = aDecoder.decodeObject(forKey: "name") as! String?
+        self.gender  = aDecoder.decodeObject(forKey: "gender") as! String?
+        self.status  = aDecoder.decodeObject(forKey: "status") as! Int?
+        self.avatar  = aDecoder.decodeObject(forKey: "avatar") as! String?
+        self.second_avatar  = aDecoder.decodeObject(forKey: "second_avatar") as! String?
+        self.looking_for  = aDecoder.decodeObject(forKey: "looking_for") as! Int?
+        self.selfie  = aDecoder.decodeObject(forKey: "selfie") as! String?
+        self.new_pin_notif  = aDecoder.decodeObject(forKey: "new_pin_notif") as! Bool?
+        self.lighter  = aDecoder.decodeObject(forKey: "lighter") as! Bool?
+        self.invite_accepted_notification  = aDecoder.decodeObject(forKey: "invite_accepted_notification") as! Bool?
+        self.message_notification  = aDecoder.decodeObject(forKey: "message_notification") as! Bool?
+        self.vibration  = aDecoder.decodeObject(forKey: "vibration") as! Bool?
+        self.min_age  = aDecoder.decodeObject(forKey: "min_age") as! Int?
+        self.max_age  = aDecoder.decodeObject(forKey: "max_age") as! Int?
+        self.birthdate  = aDecoder.decodeObject(forKey: "birthdate") as! Int?
+        self.bio  = aDecoder.decodeObject(forKey: "bio") as! String?
+        self.job  = aDecoder.decodeObject(forKey: "job") as! String?
+        self.studies  = aDecoder.decodeObject(forKey: "studies") as! String?
+        self.sounds  = aDecoder.decodeObject(forKey: "sounds") as! Bool?
+    }
+    
+
 	let id : Int?
 	let username : String?
 	let token : String?

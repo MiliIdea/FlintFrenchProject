@@ -37,6 +37,9 @@ class PersonNumberInvitationViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    @IBAction func set(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
     @IBAction func setNumber(_ sender: Any) {
         
         setDefualtButtons()
@@ -48,8 +51,6 @@ class PersonNumberInvitationViewController: UIViewController {
         b.normalTextColor = UIColor("#FFFFFF")
         
         GlobalFields.inviteNumber = b.tag
-        
-        self.navigationController?.popViewController(animated: true)
         
     }
     
@@ -65,13 +66,17 @@ class PersonNumberInvitationViewController: UIViewController {
     
     func setDefualtButtons(){
         
-        for i in 1...3 {
-            let b : DCBorderedButton = self.view.viewWithTag(i) as! DCBorderedButton
-            b.backgroundColor = UIColor("#FFFFFF")
-            b.normalBackgroundColor = UIColor("#FFFFFF")
-            b.borderWidth = 1
-            b.normalBorderColor = UIColor("#707070")
-            b.normalTextColor = UIColor("#707070")
+        for i in 1...12 {
+            if(self.view.viewWithTag(i) == nil){
+                //hichi
+            }else{
+                let b : DCBorderedButton = self.view.viewWithTag(i) as! DCBorderedButton
+                b.backgroundColor = UIColor("#FFFFFF")
+                b.normalBackgroundColor = UIColor("#FFFFFF")
+                b.borderWidth = 1
+                b.normalBorderColor = UIColor("#707070")
+                b.normalTextColor = UIColor("#707070")
+            }
         }
         
     }

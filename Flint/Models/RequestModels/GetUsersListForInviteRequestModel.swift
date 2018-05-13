@@ -12,11 +12,19 @@ class GetUsersListForInviteRequestModel {
     
     init(invite : Int , page : Int , perPage : Int ,lat : String , long : String) {
         
-        USERNAME = GlobalFields.USERNAME
+        self.USERNAME = GlobalFields.USERNAME
         
-        TOKEN = GlobalFields.TOKEN
+        self.TOKEN = GlobalFields.TOKEN
         
+        self.INVITE = invite
         
+        self.PAGE = page
+        
+        self.PER_PAGE = perPage
+        
+        self.LATITUDE = "35.673609"
+        
+        self.LONGITUDE = "51.215622"
         
     }
     

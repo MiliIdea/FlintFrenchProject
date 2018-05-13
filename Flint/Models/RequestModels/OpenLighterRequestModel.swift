@@ -11,8 +11,8 @@ import Foundation
 class OpenLighterRequestModel {
     
     init() {
-        
-        
+        self.USERNAME = GlobalFields.USERNAME
+        self.TOKEN = GlobalFields.TOKEN
     }
     
     var USERNAME: String!

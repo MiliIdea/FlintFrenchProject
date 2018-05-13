@@ -11,21 +11,85 @@ import CoreData
 import AlamofireNetworkActivityLogger
 import IQKeyboardManagerSwift
 import Toast_Swift
+import OneSignal
+import CoreLocation
+import Alamofire
+import CodableAlamofire
+import FacebookLogin
+import FacebookCore
 
 
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OSSubscriptionObserver , CLLocationManagerDelegate ,UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
+    let locationManager = CLLocationManager()
+    
+    var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         NetworkActivityLogger.shared.startLogging()
+        NetworkActivityLogger.shared.level = .debug
         IQKeyboardManager.sharedManager().enable = true
         ToastManager.shared.isTapToDismissEnabled = true
         ToastManager.shared.isQueueEnabled = true
+        
+        
+        locationManager.requestAlwaysAuthorization()
+        locationManager.distanceFilter = 1000
+        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.activityType = .other
+        locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+        registerBackgroundTask()
+        
+        
+        UNUserNotificationCenter.current().delegate = self
+        
+        
+        // OneSignal
+        let notificationOpenedBlock: OSHandleNotificationActionBlock = { result in
+            // This block gets called when the user reacts to a notification received
+            let payload: OSNotificationPayload = result!.notification.payload
+            if payload.additionalData != nil  && GlobalFields.TOKEN != nil {
+                self.handleNotification(payload.additionalData)
+            }
+        }
+        
+        let notificationRecievedAction : OSHandleNotificationReceivedBlock = { result in
+            print(result)
+            print()
+        }
+        
+        let onesignalInitSettings = [kOSSettingsKeyAutoPrompt: false,
+                                     kOSSettingsKeyInAppLaunchURL: true]
+        
+        OneSignal.initWithLaunchOptions(launchOptions,
+                                        appId: "7b25266d-c98f-482f-8954-f15e21029492",
+                                        handleNotificationReceived: { (notification) in
+                                            print("handleNotificationReceived")
+                                            print(notification?.payload.description)
+                                            let payload: OSNotificationPayload = notification!.payload
+                                            if payload.additionalData != nil  && GlobalFields.TOKEN != nil {
+                                                self.handleNotification(payload.additionalData)
+                                            }
+                                        },
+                                        handleNotificationAction: notificationOpenedBlock,
+                                        settings: onesignalInitSettings)
+        
+        OneSignal.inFocusDisplayType = OSNotificationDisplayType.notification
+        
+        OneSignal.add(self as OSPermissionObserver)
+        
+        OneSignal.add(self as OSSubscriptionObserver)
+        
+        // Recommend moving the below line to prompt for push after informing the user about
+        //   how your app will use them.
+        OneSignal.promptForPushNotifications(userResponse: { accepted in
+            print("User accepted notifications: \(accepted)")
+        })
         
         return true
     }
@@ -98,6 +162,221 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
+    
+    
+    
+    
+    func onOSPermissionChanged(_ stateChanges: OSPermissionStateChanges!) {
+        
+        // Example of detecting answering the permission prompt
+        if stateChanges.from.status == OSNotificationPermission.notDetermined {
+            if stateChanges.to.status == OSNotificationPermission.authorized {
+                print("Thanks for accepting notifications!")
+            } else if stateChanges.to.status == OSNotificationPermission.denied {
+                print("Notifications not accepted. You can turn them on later under your iOS settings.")
+            }
+        }
+        // prints out all properties
+        print("PermissionStateChanges: \n\(stateChanges)")
+    }
+    
+    func onOSSubscriptionChanged(_ stateChanges: OSSubscriptionStateChanges!) {
+        if !stateChanges.from.subscribed && stateChanges.to.subscribed {
+            print("Subscribed for OneSignal push notifications!")
+        }
+        print("SubscriptionStateChange: \n\(stateChanges)")
+    }
+    
+    func handleNotification(_ data:Dictionary<AnyHashable, Any>) {
+        
+        print(data)
+        print()
+//        let type = "\(data["type"] ?? "")"
+//        if (type == OneSignalModel.TYPE_BROADCAST) {
+//            let id = "\(data["id"] ?? "")"
+//            let single = MessagesShowView()
+//            single.isOpenFromNotification = true
+//            single.boardId = Int(id)
+//            self.window?.rootViewController = single
+//            self.window?.makeKeyAndVisible()
+//        } else if (type == OneSignalModel.TYPE_OFFER) {
+//            let id = "\(data["id"] ?? "")"
+//            let question = SingleOfferView()
+//            question.offerId = Int(id)
+//            self.window?.rootViewController = question
+//            self.window?.makeKeyAndVisible()
+//        } else if (type == OneSignalModel.TYPE_CUSTOMER) {
+//            //            let date = "\(data["date"] ?? "")"
+//            let near = SingleNearCustomerViewController()
+//            self.window?.rootViewController = near
+//            self.window?.makeKeyAndVisible()
+//
+//        } else if (type == OneSignalModel.TYPE_UPDATE) {
+//            let version = "\(data["version"] ?? "")"
+//            let description = "\(data["description"] ?? "")"
+//
+//        } else if (type == OneSignalModel.TYPE_STORE_MESSAGE) {
+//            let id = "\(data["id"] ?? "")"
+//            let question = QuestionsAnswerView()
+//            question.isOpenFromNotification = true
+//            question.messageId = Int(id)
+//            self.window?.rootViewController = question
+//            self.window?.makeKeyAndVisible()
+//        } else if (type == OneSignalModel.TYPE_MESSAGE) {
+//            let channel = "\(data["channel"] ?? "")"
+//            let chatId = "\(data["chatId"] ?? "")"
+//            let chatView = SingleChatView()
+//            chatView.isOpenFromNotification = true
+//            chatView.chatId = Int(chatId)!
+//            chatView.channelName = channel
+//            self.window?.rootViewController = chatView
+//            self.window?.makeKeyAndVisible()
+//
+//        }
+        
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        // Update the app interface directly.
+        print(notification.request.content.userInfo)
+        let a : [AnyHashable : Any] = ["mili" : "haminjuri "]
+        do {
+            if(notification.request.content.userInfo as! [String : String] == ["mili" : "haminjuri "]){
+                print("its ok")
+            }else{
+                completionHandler([.alert, .badge, .sound])
+            }
+        }catch {
+            print(error)
+        }
+        // Play a sound.
+//        completionHandler([.alert, .badge, .sound])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        if response.notification.request.content.categoryIdentifier == "TIMER_EXPIRED" {
+            // Handle the actions for the expired timer.
+            if response.actionIdentifier == "SNOOZE_ACTION" {
+                // Invalidate the old timer and create a new one. . .
+            }
+            else if response.actionIdentifier == "STOP_ACTION" {
+                // Invalidate the timer. . .
+            }
+        }
+        completionHandler()
+        // Else handle actions for other notification types. . .
+    }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        var lat: String
+        
+        var long: String
+        
+        let locManager = CLLocationManager()
+        
+        locManager.requestAlwaysAuthorization()
+        
+        var currentLocation = CLLocation()
+        
+        if( CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedAlways ||
+            CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedAlways){
+            
+            currentLocation = locManager.location!
+            
+        }
+        
+        long = String(currentLocation.coordinate.longitude)
+        
+        lat = String(currentLocation.coordinate.latitude)
+        
+        getAddressFromLatLon(pdblLatitude: lat, withLongitude: long)
+        
+    }
+    
+    func getAddressFromLatLon(pdblLatitude: String, withLongitude pdblLongitude: String){
+        var center : CLLocationCoordinate2D = CLLocationCoordinate2D()
+        let lat: Double = Double("\(pdblLatitude)")!
+        //21.228124
+        let lon: Double = Double("\(pdblLongitude)")!
+        //72.833770
+        let ceo: CLGeocoder = CLGeocoder()
+        center.latitude = lat
+        center.longitude = lon
+        
+        let loc: CLLocation = CLLocation(latitude:center.latitude, longitude: center.longitude)
+        
+        
+        ceo.reverseGeocodeLocation(loc, completionHandler:
+            {(placemarks, error) in
+                if (error != nil)
+                {
+//                    self.setAddressAndLocation()
+                    print("reverse geodcode fail: \(error!.localizedDescription)")
+                }
+                let pm = placemarks! as [CLPlacemark]
+                
+                if pm.count > 0 {
+                    let pm = placemarks![0]
+                    
+                    var addressString : String = ""
+                    
+                    if pm.locality != nil {
+                        addressString = addressString + pm.locality! + ", "
+                    }
+                    if pm.thoroughfare != nil {
+                        addressString = addressString + pm.thoroughfare! + ", "
+                    }
+                    if pm.subLocality != nil {
+                        addressString = addressString + pm.subLocality!
+                    }
+                    
+                    
+                    let decoder = JSONDecoder()
+                    decoder.dateDecodingStrategy = .secondsSince1970
+                    request(URLs.updateUserLocation, method: .post , parameters: UpdateUserLocationRequestModel.init(lat: pdblLatitude, long: pdblLongitude , city : pm.locality ?? "" , hood : pm.thoroughfare ?? "").getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+                        
+                        let res = response.result.value
+                        
+                        
+                    }
+                    
+                }
+        })
+        
+    }
+    
+    func registerBackgroundTask() {
+        
+        backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
+            
+            self?.reinstateBackgroundTask()
+            
+        }
+        
+        assert(backgroundTask != UIBackgroundTaskInvalid)
+        
+    }
+    
+    func reinstateBackgroundTask() {
+        if (backgroundTask == UIBackgroundTaskInvalid) {
+            // register background task
+            registerBackgroundTask()
+        }
+    }
 }
 

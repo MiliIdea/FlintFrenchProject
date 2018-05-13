@@ -31,8 +31,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="378"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     </imageView>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Rectangle 4" translatesAutoresizingMaskIntoConstraints="NO" id="6n9-vv-NbK">
+                        <rect key="frame" x="0.0" y="315" width="375" height="63"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
+                    </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SXI-CK-gQ2">
-                        <rect key="frame" x="23" y="315" width="154" height="41"/>
+                        <rect key="frame" x="23" y="315" width="276" height="41"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="30"/>
                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -54,8 +58,18 @@
                     </label>
                 </subviews>
             </view>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <connections>
+                <outlet property="ageLabel" destination="pLS-2z-yGS" id="qcF-n3-kYC"/>
+                <outlet property="distanceLabel" destination="RQV-0W-jB5" id="VU4-id-snX"/>
+                <outlet property="nameLabel" destination="SXI-CK-gQ2" id="keu-K3-YzK"/>
+                <outlet property="profileImage" destination="V1j-YR-vPk" id="6KT-ka-nLd"/>
+            </connections>
             <point key="canvasLocation" x="24.5" y="52"/>
         </collectionViewCell>
     </objects>
+    <resources>
+        <image name="Rectangle 4" width="375" height="106"/>
+    </resources>
 </document>

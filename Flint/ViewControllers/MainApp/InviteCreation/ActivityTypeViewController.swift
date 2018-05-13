@@ -31,6 +31,7 @@ class ActivityTypeViewController: UIViewController {
         
         self.activityNameTextView.text = (self.view.viewWithTag(button.tag + 1) as! UILabel).text
         self.emoji = button.title(for: .normal)!
+        GlobalFields.inviteEmoji = self.emoji
         
     }
     
@@ -42,6 +43,11 @@ class ActivityTypeViewController: UIViewController {
         let vC : DetermineInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "DetermineInvitationViewController"))! as! DetermineInvitationViewController
         GlobalFields.inviteEmoji = emoji
         GlobalFields.inviteTitle = self.activityNameTextView.text!
+        if(emoji == "🎉"){
+            vC.isParty = true
+        }else{
+            vC.isParty = false
+        }
         self.navigationController?.pushViewController(vC, animated: true)
     }
     

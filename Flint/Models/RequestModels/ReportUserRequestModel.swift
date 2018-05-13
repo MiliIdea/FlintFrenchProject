@@ -8,10 +8,19 @@
 
 import Foundation
 
-class TeportUserRequestModel {
+class ReportUserRequestModel {
     
-    init() {
+    init(targetUser : Int , reason : Int , txt : String) {
         
+        self.USERNAME = GlobalFields.USERNAME
+        
+        self.TOKEN = GlobalFields.TOKEN
+        
+        self.REASON = reason
+        
+        self.TEXT = txt
+        
+        self.TARGET_USER = targetUser
         
     }
     
@@ -21,9 +30,9 @@ class TeportUserRequestModel {
     
     var TEXT : String!
     
-    var TARGET_USER : String!
+    var TARGET_USER : Int!
     
-    var REASON : String!
+    var REASON : Int!
     
     
     

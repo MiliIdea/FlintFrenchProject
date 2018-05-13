@@ -10,6 +10,18 @@ import UIKit
 
 class DescriptionPageCollectionViewCell: UICollectionViewCell {
 
+    @IBOutlet weak var name: UILabel!
+    
+    @IBOutlet weak var age: UILabel!
+    
+    @IBOutlet weak var city: UILabel!
+    
+    @IBOutlet weak var bioText: UITextView!
+    
+    @IBOutlet weak var distance: UILabel!
+    
+    @IBOutlet weak var reportButton: UIButton!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
