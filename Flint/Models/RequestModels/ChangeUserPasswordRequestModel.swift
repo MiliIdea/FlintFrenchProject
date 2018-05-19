@@ -29,7 +29,7 @@ class ChangeUserPasswordRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "password": PASSWORD ,"token" : TOKEN]
+        return ["username": USERNAME! , "password": PASSWORD! ,"token" : TOKEN!]
         
     }
     

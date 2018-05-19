@@ -32,7 +32,7 @@ class CreateChannelRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME ,"token" : TOKEN , "channel" : CHANNEL , "target" : TARGET]
+        return ["username": USERNAME! ,"token" : TOKEN! , "channel" : CHANNEL! , "target" : TARGET!]
         
     }
     

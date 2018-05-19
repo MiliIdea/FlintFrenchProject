@@ -50,6 +50,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
     @IBOutlet weak var refuseButton: UIButton!
     
     
+    var inviteID : Int? = nil
     
     var viewType : InvitationPageTypes = .NormalInviteAcception
     
@@ -83,20 +84,43 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        generateCellsArray()
-        self.configureView()
-        collectionView.dataSource = self
-        collectionView.delegate = self
+        
+        if(self.viewType == .AddPersonToInvite){
+            generateCellsArray()
+            self.configureView()
+            collectionView.dataSource = self
+            collectionView.delegate = self
+        }else if(self.inviteID != nil){
+            //inja bayad check beshe getinviteinfo chi hastesh
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            request(URLs.getInviteInfo, method: .post , parameters: GetInviteInfoRequestModel.init(invite: inviteID!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<InviteInfoRes>>) in
+                
+                let res = response.result.value
+                
+                if(res?.data != nil){
+                    // aval az hame bayad check beshe bebinim party hast ya na
+                    // ag nabashe :
+                    // inja bayad bebinim aya owner khodamam ya na
+                    // ag owner khodam budam bayad akse tarafamo bezaram va etelaate uno
+                    // ag owner un bud k etelaate owner b namayesh gozashte mishe
+                }
+                
+            }
+        }
+        
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.inviteTitle.layer.cornerRadius = self.inviteTitle.frame.height / 2
-        self.inviteTitle.layer.backgroundColor = GlobalFields.inviteMoodColor?.cgColor
         self.likeButton.frame.size.height = self.likeButton.frame.width
         self.likeButton.layer.cornerRadius = self.inviteTitle.frame.height / 2
         self.dislikeButton.frame.size.height = self.dislikeButton.frame.width
         self.dislikeButton.layer.cornerRadius = self.dislikeButton.frame.height / 2
+        if(self.viewType == .AddPersonToInvite){
+            self.inviteTitle.layer.backgroundColor = GlobalFields.inviteMoodColor?.cgColor
+        }
     }
 
     func configureView(){

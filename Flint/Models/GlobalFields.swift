@@ -11,13 +11,19 @@ import UIKit
 import CoreLocation
 import UIColor_Hex_Swift
 
+
 public class GlobalFields {
     
     static let defaults: UserDefaults = UserDefaults.standard
     
     static var loginResData : LoginRes? {
         get{
-            return NSKeyedUnarchiver.unarchiveObject(with: self.defaults.object(forKey: "loginResData") as! Data) as! LoginRes?
+            if(self.defaults.object(forKey: "loginResData") == nil){
+                return nil
+            }else{
+                return NSKeyedUnarchiver.unarchiveObject(with: self.defaults.object(forKey: "loginResData") as! Data) as! LoginRes?
+            }
+            
         }
         set(newValue){
             
@@ -61,6 +67,8 @@ public class GlobalFields {
         }
     }
     
+    static var oneSignalId : String?
+    
     static var userInfo : EditUserInformationRequestModel = EditUserInformationRequestModel()
     
     // MARK: -CreateInviation
@@ -75,6 +83,8 @@ public class GlobalFields {
     
     static var inviteExactTime : Date?
     
+    static var inviteWhen : Int?
+    
     static var inviteNumber : Int? // PersonNumberInvitationViewController
     
     static var inviteMood : String? // DetermineInvitationViewController
@@ -86,6 +96,9 @@ public class GlobalFields {
     // MARK: -InviteAcception
     
     static var myInvite : MyInvites?
+    
+    
+    
     
     static func getTypeColor(type : Int) -> UIColor{
         //1 => party , 2 => Business , 3 => LetsSee , 4 => Friendly
@@ -110,6 +123,48 @@ public class GlobalFields {
         loadingView.didMove(toParentViewController: vc)
         return loadingView
     }
+    
+    static func compressImage(image:UIImage) -> Data? {
+        // Reducing file size to a 10th
+        
+        var actualHeight : CGFloat = image.size.height
+        var actualWidth : CGFloat = image.size.width
+        var maxHeight : CGFloat = 1136.0
+        var maxWidth : CGFloat = 640.0
+        var imgRatio : CGFloat = actualWidth/actualHeight
+        var maxRatio : CGFloat = maxWidth/maxHeight
+        var compressionQuality : CGFloat = 0.5
+        
+        if (actualHeight > maxHeight || actualWidth > maxWidth){
+            if(imgRatio < maxRatio){
+                //adjust width according to maxHeight
+                imgRatio = maxHeight / actualHeight;
+                actualWidth = imgRatio * actualWidth;
+                actualHeight = maxHeight;
+            }
+            else if(imgRatio > maxRatio){
+                //adjust height according to maxWidth
+                imgRatio = maxWidth / actualWidth;
+                actualHeight = imgRatio * actualHeight;
+                actualWidth = maxWidth;
+            }
+            else{
+                actualHeight = maxHeight;
+                actualWidth = maxWidth;
+                compressionQuality = 1;
+            }
+        }
+        
+        var rect = CGRect.init(x : 0.0,y: 0.0,width: actualWidth,height: actualHeight);
+        UIGraphicsBeginImageContext(rect.size);
+        image.draw(in: rect)
+        var img = UIGraphicsGetImageFromCurrentImageContext();
+        let imageData = UIImageJPEGRepresentation(img!, compressionQuality);
+        UIGraphicsEndImageContext();
+        
+        return imageData
+    }
+
     
     
 }

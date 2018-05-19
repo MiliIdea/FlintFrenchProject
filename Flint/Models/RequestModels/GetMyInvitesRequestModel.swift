@@ -25,7 +25,7 @@ class GetMyInvitesRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME ,"token" : TOKEN]
+        return ["username": USERNAME! ,"token" : TOKEN!]
         
     }
     

@@ -49,7 +49,7 @@ class ChangeUserSettingsRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "token": TOKEN  , "looking_for": LOOKING_FOR , "new_pin_notif" : NEW_PIN_NOTIF , "lighter" : LIGHTER , "invite_accepted_notif" : INVITE_ACCEPTED_NOTIF , "message_notif" : MESSAGE_NOTIF , "vibration" : VIBRATION , "sounds" : SOUNDS , "min_age" : MIN_AGE , "max_age" : MAX_AGE]
+        return ["username": USERNAME! , "token": TOKEN!  , "looking_for": LOOKING_FOR! , "new_pin_notif" : NEW_PIN_NOTIF! , "lighter" : LIGHTER! , "invite_accepted_notif" : INVITE_ACCEPTED_NOTIF! , "message_notif" : MESSAGE_NOTIF! , "vibration" : VIBRATION! , "sounds" : SOUNDS! , "min_age" : MIN_AGE! , "max_age" : MAX_AGE!]
         
     }
     

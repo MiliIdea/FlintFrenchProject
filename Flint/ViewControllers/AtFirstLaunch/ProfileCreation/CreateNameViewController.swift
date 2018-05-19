@@ -8,14 +8,14 @@
 
 import UIKit
 
-class CreateNameViewController: UIViewController {
+class CreateNameViewController: UIViewController{
 
     
     @IBOutlet weak var name: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        name.addTarget(self, action: "textFieldDidChange:", for: UIControlEvents.editingChanged)
         // Do any additional setup after loading the view.
     }
 
@@ -35,6 +35,11 @@ class CreateNameViewController: UIViewController {
         self.view.endEditing(true)
     }
     
+    @objc func textFieldDidChange(_ textField: UITextField) {
+        if(name.text?.contains(" "))!{
+            name.text?.removeLast()
+        }
+    }
     
 
 }

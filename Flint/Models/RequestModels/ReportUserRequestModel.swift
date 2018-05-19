@@ -38,7 +38,7 @@ class ReportUserRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "token": TOKEN ,"text" : TEXT, "target_user": TARGET_USER , "reason" : REASON]
+        return ["username": USERNAME! , "token": TOKEN! ,"text" : TEXT!, "target_user": TARGET_USER! , "reason" : REASON!]
         
     }
     

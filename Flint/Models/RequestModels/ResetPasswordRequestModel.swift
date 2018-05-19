@@ -29,7 +29,7 @@ class ResetPasswordRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "password": PASSWORD ,"cpde" : CODE]
+        return ["username": USERNAME! , "password": PASSWORD! ,"cpde" : CODE!]
         
     }
     

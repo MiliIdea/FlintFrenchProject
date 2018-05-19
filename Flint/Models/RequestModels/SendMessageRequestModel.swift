@@ -32,7 +32,7 @@ class SendMessageRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME ,"token" : TOKEN , "text" : TEXT , "target" : TARGET]
+        return ["username": USERNAME! ,"token" : TOKEN! , "text" : TEXT! , "target" : TARGET!]
         
     }
     

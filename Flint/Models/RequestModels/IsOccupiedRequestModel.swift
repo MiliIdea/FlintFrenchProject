@@ -29,7 +29,7 @@ class IsOccupiedRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME ,"token" : TOKEN , "channel" : CHANNEL]
+        return ["username": USERNAME! ,"token" : TOKEN! , "channel" : CHANNEL!]
         
     }
     

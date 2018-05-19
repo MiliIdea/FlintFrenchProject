@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OneSignal
 
 class RegisterRequestModel {
     
@@ -15,9 +16,9 @@ class RegisterRequestModel {
         self.USERNAME = userName
         
         self.PASSWORD = password
-        
-        self.ID = "some_id"
-        
+     
+        self.ID = GlobalFields.oneSignalId
+
         self.TAG = "male"
         
         self.COUNTRY = "IR"
@@ -45,7 +46,7 @@ class RegisterRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "password": PASSWORD , "id" : ID , "tag" : TAG , "country" : COUNTRY , "device" : DEVICE , "os_version" : OS_VERSION]
+        return ["username": USERNAME! , "password": PASSWORD! , "id" : ID! , "tag" : TAG! , "country" : COUNTRY! , "device" : DEVICE! , "os_version" : OS_VERSION!]
         
     }
     

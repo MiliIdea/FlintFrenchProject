@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1078A3FE20AAD70A00F1F2AA /* LoginWithFacebookRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1078A3FD20AAD70A00F1F2AA /* LoginWithFacebookRequestModel.swift */; };
+		1078A40020AADDE600F1F2AA /* RegisterWithFacebookRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1078A3FF20AADDE600F1F2AA /* RegisterWithFacebookRequestModel.swift */; };
+		1078A40220AB13B100F1F2AA /* RegisterWithFacebookRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1078A40120AB13B100F1F2AA /* RegisterWithFacebookRes.swift */; };
+		1085099020AD857E00DB52DB /* ActiveInviteRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1085098F20AD857E00DB52DB /* ActiveInviteRes.swift */; };
+		109BD10920B0186500807FEC /* InviteInfoRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109BD10820B0186500807FEC /* InviteInfoRes.swift */; };
+		109BD10B20B018B600807FEC /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109BD10A20B018B600807FEC /* Users.swift */; };
 		11111A192080B6C0001606AC /* MyAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11111A182080B6C0001606AC /* MyAnnotation.swift */; };
 		11111A1B2080BC6D001606AC /* FlintAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11111A1A2080BC6D001606AC /* FlintAnnotation.swift */; };
 		1112787C20A17BEC00CCBC82 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1112787B20A17BEC00CCBC82 /* LoadingViewController.swift */; };
@@ -176,6 +182,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1078A3FD20AAD70A00F1F2AA /* LoginWithFacebookRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWithFacebookRequestModel.swift; sourceTree = "<group>"; };
+		1078A3FF20AADDE600F1F2AA /* RegisterWithFacebookRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterWithFacebookRequestModel.swift; sourceTree = "<group>"; };
+		1078A40120AB13B100F1F2AA /* RegisterWithFacebookRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterWithFacebookRes.swift; sourceTree = "<group>"; };
+		1085098F20AD857E00DB52DB /* ActiveInviteRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveInviteRes.swift; sourceTree = "<group>"; };
+		109BD10820B0186500807FEC /* InviteInfoRes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteInfoRes.swift; sourceTree = "<group>"; };
+		109BD10A20B018B600807FEC /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
 		11111A182080B6C0001606AC /* MyAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAnnotation.swift; sourceTree = "<group>"; };
 		11111A1A2080BC6D001606AC /* FlintAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlintAnnotation.swift; sourceTree = "<group>"; };
 		1112787B20A17BEC00CCBC82 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
@@ -479,23 +491,27 @@
 		1199C64420848B41002754AC /* ResponseModels */ = {
 			isa = PBXGroup;
 			children = (
-				1176DA722095C081006D1366 /* Chats.swift */,
-				1176DA732095C082006D1366 /* GetMyChatsRes.swift */,
-				1176DA702095C07F006D1366 /* Message_list.swift */,
-				1176DA712095C080006D1366 /* Pending_list.swift */,
-				1199C64A20849611002754AC /* LoginRes.swift */,
-				1199C6512085F9B4002754AC /* RegisterRes.swift */,
-				1199C64D208497AC002754AC /* GetSettingsRes.swift */,
-				1199C64920849610002754AC /* ResponseModel.swift */,
 				1199C6572086043C002754AC /* ActivationRes.swift */,
 				1199C659208608AD002754AC /* ChangePassRes.swift */,
-				1199C65D20861B1B002754AC /* UploadImageRes.swift */,
-				1199C6672088C6EC002754AC /* CreateInviteRes.swift */,
-				1199C6692088C750002754AC /* GetUserListForInviteRes.swift */,
-				1199C671208B27A3002754AC /* MyInvites.swift */,
-				1199C675208C79ED002754AC /* SearchInLocationRes.swift */,
 				1199C69C20905AAD002754AC /* ChatListRes.swift */,
+				1176DA722095C081006D1366 /* Chats.swift */,
+				1199C6672088C6EC002754AC /* CreateInviteRes.swift */,
 				1176DA7C2095E20A006D1366 /* GetChatMessageRes.swift */,
+				1176DA732095C082006D1366 /* GetMyChatsRes.swift */,
+				1199C64D208497AC002754AC /* GetSettingsRes.swift */,
+				1199C6692088C750002754AC /* GetUserListForInviteRes.swift */,
+				109BD10820B0186500807FEC /* InviteInfoRes.swift */,
+				109BD10A20B018B600807FEC /* Users.swift */,
+				1199C64A20849611002754AC /* LoginRes.swift */,
+				1176DA702095C07F006D1366 /* Message_list.swift */,
+				1199C671208B27A3002754AC /* MyInvites.swift */,
+				1176DA712095C080006D1366 /* Pending_list.swift */,
+				1199C6512085F9B4002754AC /* RegisterRes.swift */,
+				1078A40120AB13B100F1F2AA /* RegisterWithFacebookRes.swift */,
+				1199C64920849610002754AC /* ResponseModel.swift */,
+				1199C675208C79ED002754AC /* SearchInLocationRes.swift */,
+				1199C65D20861B1B002754AC /* UploadImageRes.swift */,
+				1085098F20AD857E00DB52DB /* ActiveInviteRes.swift */,
 			);
 			path = ResponseModels;
 			sourceTree = "<group>";
@@ -700,6 +716,7 @@
 				1176DA6C2094A008006D1366 /* IsOccupiedRequestModel.swift */,
 				11F6E939207C92E200DCCF6E /* LikePersonForInviteRequestModel.swift */,
 				11F6E91B207C80EC00DCCF6E /* LoginRequestModel.swift */,
+				1078A3FD20AAD70A00F1F2AA /* LoginWithFacebookRequestModel.swift */,
 				11F6E947207C94B300DCCF6E /* MatchPartyPeopleRequestModel.swift */,
 				11F6E931207C8DB900DCCF6E /* OpenLighterRequestModel.swift */,
 				11F6E91D207C84EE00DCCF6E /* RegisterRequestModel.swift */,
@@ -713,6 +730,7 @@
 				1176DA6E2094A054006D1366 /* UpdateChannelRequestModel.swift */,
 				11F6E923207C859D00DCCF6E /* UpdateUserLocationRequestModel.swift */,
 				1199C65B2086143D002754AC /* UploadImageRequestModel.swift */,
+				1078A3FF20AADDE600F1F2AA /* RegisterWithFacebookRequestModel.swift */,
 			);
 			path = RequestModels;
 			sourceTree = "<group>";
@@ -746,7 +764,6 @@
 				11F0139720738395001FCBE3 /* Frameworks */,
 				11F0139820738395001FCBE3 /* Resources */,
 				C520F2488892FCE239C9F46C /* [CP] Embed Pods Frameworks */,
-				681388E567A6BDE44AFD03D9 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -839,21 +856,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		681388E567A6BDE44AFD03D9 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Flint/Pods-Flint-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		C520F2488892FCE239C9F46C /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -875,10 +877,6 @@
 				"${BUILT_PRODUCTS_DIR}/DCKit/DCKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
-				"${BUILT_PRODUCTS_DIR}/FBSDKShareKit/FBSDKShareKit.framework",
-				"${BUILT_PRODUCTS_DIR}/FacebookCore/FacebookCore.framework",
-				"${BUILT_PRODUCTS_DIR}/FacebookLogin/FacebookLogin.framework",
-				"${BUILT_PRODUCTS_DIR}/FacebookShare/FacebookShare.framework",
 				"${BUILT_PRODUCTS_DIR}/Gallery/Gallery.framework",
 				"${BUILT_PRODUCTS_DIR}/IGRPhotoTweaks/IGRPhotoTweaks.framework",
 				"${BUILT_PRODUCTS_DIR}/IQKeyboardManagerSwift/IQKeyboardManagerSwift.framework",
@@ -914,10 +912,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DCKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKShareKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookCore.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookLogin.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookShare.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Gallery.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IGRPhotoTweaks.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardManagerSwift.framework",
@@ -951,6 +945,7 @@
 			files = (
 				1199C63120814DD9002754AC /* DemoPhotoMessageModel.swift in Sources */,
 				1176DA6D2094A008006D1366 /* IsOccupiedRequestModel.swift in Sources */,
+				109BD10B20B018B600807FEC /* Users.swift in Sources */,
 				1199C64B20849611002754AC /* ResponseModel.swift in Sources */,
 				1199C696208F0E35002754AC /* ProfileChatCollectionViewCell.swift in Sources */,
 				1199C63920814DD9002754AC /* BaseMessageHandler.swift in Sources */,
@@ -983,6 +978,7 @@
 				11F013C9207384D7001FCBE3 /* CreateNameViewController.swift in Sources */,
 				11F6E94A207C950B00DCCF6E /* GetInviteInfoRequestModel.swift in Sources */,
 				1199C66220868A01002754AC /* ResetPasswordRequestModel.swift in Sources */,
+				1078A40020AADDE600F1F2AA /* RegisterWithFacebookRequestModel.swift in Sources */,
 				1199C63A20814DD9002754AC /* BaseMessageCollectionViewCellAvatarStyle.swift in Sources */,
 				1199C6A220907A98002754AC /* TheDayAfterViewController.swift in Sources */,
 				11F6E91E207C84EE00DCCF6E /* RegisterRequestModel.swift in Sources */,
@@ -1045,6 +1041,7 @@
 				1199C69D20905AAD002754AC /* ChatListRes.swift in Sources */,
 				11F6E946207C947F00DCCF6E /* GetPartyPeopleAfterPartyRequestModel.swift in Sources */,
 				1199C6A820907BAE002754AC /* TooLateViewController.swift in Sources */,
+				1078A40220AB13B100F1F2AA /* RegisterWithFacebookRes.swift in Sources */,
 				11F013C6207384D7001FCBE3 /* SignUpViewController.swift in Sources */,
 				11F6E928207C87B700DCCF6E /* GetUserSettingsRequestModel.swift in Sources */,
 				1176DA7D2095E20A006D1366 /* GetChatMessageRes.swift in Sources */,
@@ -1092,10 +1089,13 @@
 				1176DA6F2094A054006D1366 /* UpdateChannelRequestModel.swift in Sources */,
 				1199C65C2086143D002754AC /* UploadImageRequestModel.swift in Sources */,
 				11F013CD207384D7001FCBE3 /* SelfiTrustViewController.swift in Sources */,
+				1078A3FE20AAD70A00F1F2AA /* LoginWithFacebookRequestModel.swift in Sources */,
+				1085099020AD857E00DB52DB /* ActiveInviteRes.swift in Sources */,
 				1199C65A208608AD002754AC /* ChangePassRes.swift in Sources */,
 				1176DA8F209DB69D006D1366 /* onesignal_default_sound.wav in Sources */,
 				1199C63620814DD9002754AC /* DemoTextMessageModel.swift in Sources */,
 				1199C65E20861B1B002754AC /* UploadImageRes.swift in Sources */,
+				109BD10920B0186500807FEC /* InviteInfoRes.swift in Sources */,
 				11F6E932207C8DB900DCCF6E /* OpenLighterRequestModel.swift in Sources */,
 				1199C6AA20907BBD002754AC /* OneAtATimeViewController.swift in Sources */,
 				1199C66620889B92002754AC /* SetEmojiViewController.swift in Sources */,

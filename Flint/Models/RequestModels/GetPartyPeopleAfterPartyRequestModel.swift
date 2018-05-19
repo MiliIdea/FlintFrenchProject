@@ -10,8 +10,13 @@ import Foundation
 
 class GetPartyPeopleAfterPartyRequestModel {
     
-    init() {
+    init(invite : Int) {
         
+        self.USERNAME = GlobalFields.USERNAME
+        
+        self.TOKEN = GlobalFields.TOKEN
+        
+        self.INVITE = invite
         
     }
     
@@ -19,7 +24,7 @@ class GetPartyPeopleAfterPartyRequestModel {
     
     var TOKEN: String!
     
-    var INVITE : String!
+    var INVITE : Int!
     
     
     

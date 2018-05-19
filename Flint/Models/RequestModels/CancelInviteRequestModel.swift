@@ -30,7 +30,7 @@ class CancelInviteRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "token": TOKEN ,"invite" : INVITE]
+        return ["username": USERNAME! , "token": TOKEN! ,"invite" : INVITE!]
         
     }
     

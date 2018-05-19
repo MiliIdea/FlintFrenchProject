@@ -25,10 +25,6 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.profilePic.frame.size.height = self.profilePic.frame.width
-        
-        self.profilePic.layer.cornerRadius = self.profilePic.frame.height / 2
         
         self.locationManager.requestAlwaysAuthorization()
         
@@ -41,11 +37,48 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate{
             locationManager.startUpdatingLocation()
         }
         
+        nameLabel.text = GlobalFields.userInfo.NAME
+        
+        if(GlobalFields.userInfo.JOB != nil && GlobalFields.userInfo.JOB != ""){
+            jobLabel.text = GlobalFields.userInfo.JOB
+        }else if(GlobalFields.userInfo.STUDIES != nil && GlobalFields.userInfo.STUDIES != ""){
+            jobLabel.text = GlobalFields.userInfo.STUDIES
+        }else{
+            jobLabel.alpha = 0
+        }
+        
+        self.profilePic.kf.setImage(with: URL(string: URLs.imgServer + (GlobalFields.userInfo.AVATAR)!))
+        
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        nameLabel.text = GlobalFields.userInfo.NAME
+        if(GlobalFields.userInfo.BIRTHDATE != nil){
+            let now = Date()
+            let birthday: Date = Date(timeIntervalSince1970: TimeInterval(GlobalFields.userInfo.BIRTHDATE!))
+            let calendar = Calendar.current
+            let ageComponents = calendar.dateComponents([.year], from: birthday, to: now)
+            let age = ageComponents.year!
+            nameLabel.text = GlobalFields.userInfo.NAME! + " | " + age.description
+        }
+        
+        if(GlobalFields.userInfo.JOB != nil && GlobalFields.userInfo.JOB != ""){
+            jobLabel.alpha = 1
+            jobLabel.text = GlobalFields.userInfo.JOB
+        }else if(GlobalFields.userInfo.STUDIES != nil && GlobalFields.userInfo.STUDIES != ""){
+            jobLabel.text = GlobalFields.userInfo.STUDIES
+            jobLabel.alpha = 1
+        }else{
+            jobLabel.alpha = 0
+        }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         self.profilePic.frame.size.height = self.profilePic.frame.width
         self.profilePic.layer.cornerRadius = self.profilePic.frame.width / 2
-        self.profilePic.kf.setImage(with: URL(string: URLs.imgServer + (GlobalFields.loginResData?.avatar)!))
-        
-        
+        self.profilePic.layer.masksToBounds = true
     }
 
     override func didReceiveMemoryWarning() {

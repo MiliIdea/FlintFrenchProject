@@ -5,6 +5,14 @@ platform :ios, '10.0'
 
 target 'Flint' do
   # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  
+  #pod 'FacebookCore'
+  
+  #pod 'FacebookLogin'
+  
+  #pod 'FacebookShare'
+  
+  
   use_frameworks!
 
   # Pods for iTik
@@ -23,11 +31,7 @@ target 'Flint' do
 
   pod 'MapKitGoogleStyler'
   
-  pod 'FacebookCore', :git => "https://github.com/facebook/facebook-sdk-swift"
-  
-  pod 'FacebookLogin', :git => "https://github.com/facebook/facebook-sdk-swift"
-
-  pod 'FacebookShare', :git => "https://github.com/facebook/facebook-sdk-swift"
+  pod 'FBSDKLoginKit'
 
   pod 'Chatto','~> 3.3.0'
 

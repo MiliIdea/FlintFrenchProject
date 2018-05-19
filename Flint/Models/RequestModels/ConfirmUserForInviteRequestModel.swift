@@ -10,9 +10,15 @@ import Foundation
 
 class ConfirmUserForInviteRequestModel {
     
-    init() {
+    init(invite : String! , targetUser : String!) {
         
+        self.USERNAME = GlobalFields.USERNAME
         
+        self.TOKEN = GlobalFields.TOKEN
+        
+        self.INVITE = invite
+        
+        self.TARGET_USER = targetUser
     }
     
     var USERNAME: String!
@@ -27,7 +33,7 @@ class ConfirmUserForInviteRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "token": TOKEN ,"invite" : INVITE, "target_user": TARGET_USER]
+        return ["username": USERNAME! , "token": TOKEN! ,"invite" : INVITE!, "target_user": TARGET_USER!]
         
     }
     

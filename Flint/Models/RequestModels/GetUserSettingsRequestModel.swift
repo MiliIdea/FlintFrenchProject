@@ -33,7 +33,7 @@ class GetUserSettingsRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "token": TOKEN  , "latitude": LATITUDE , "longitude" : LONGITUDE]
+        return ["username": USERNAME! , "token": TOKEN!  , "latitude": LATITUDE! , "longitude" : LONGITUDE!]
         
     }
     

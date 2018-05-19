@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OneSignal
 
 class LoginRequestModel {
     
@@ -16,13 +17,12 @@ class LoginRequestModel {
         
         self.PASSWORD = password
         
-//        self.USERNAME = "09335556196"
-//
-//        self.PASSWORD = "745319"
-        
         self.COUNTRY = "FR"
         
-        self.ID = "7b25266d-c98f-482f-8954-f15e21029492" // oneSignal ID
+        OneSignal.registerForPushNotifications()
+        OneSignal.idsAvailable({(_ userId, _ pushToken) in
+            self.ID = userId
+        })
         
         self.TAG = "some-tag"
         
@@ -48,7 +48,7 @@ class LoginRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "password": PASSWORD  , "id": ID , "country" : COUNTRY , "device" : DEVICE , "os_version" : OS_VERSION]
+        return ["username": USERNAME! , "password": PASSWORD!  , "id": ID! , "country" : COUNTRY! , "device" : DEVICE! , "os_version" : OS_VERSION!]
         
     }
     

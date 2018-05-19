@@ -34,7 +34,7 @@ class AfterDatePollRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "token": TOKEN ,"invite" : INVITE, "answer" : ANSWER]
+        return ["username": USERNAME! , "token": TOKEN! ,"invite" : INVITE!, "answer" : ANSWER!]
         
     }
     

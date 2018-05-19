@@ -15,13 +15,13 @@ import OneSignal
 import CoreLocation
 import Alamofire
 import CodableAlamofire
-import FacebookLogin
-import FacebookCore
+import FBSDKLoginKit
+import FBSDKCoreKit
 
 
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OSSubscriptionObserver , CLLocationManagerDelegate ,UNUserNotificationCenterDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OSSubscriptionObserver , CLLocationManagerDelegate ,UNUserNotificationCenterDelegate{
 
     var window: UIWindow?
 
@@ -44,6 +44,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
         locationManager.activityType = .other
         locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
         registerBackgroundTask()
+        
+        FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
         
         UNUserNotificationCenter.current().delegate = self
@@ -91,9 +93,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
             print("User accepted notifications: \(accepted)")
         })
         
+        OneSignal.registerForPushNotifications()
+        OneSignal.idsAvailable({(_ userId, _ pushToken) in
+            GlobalFields.oneSignalId = userId
+        })
+        
         return true
     }
 
+    func application(_ application: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        let handled: Bool = FBSDKApplicationDelegate.sharedInstance().application(application, open: url, sourceApplication: options[.sourceApplication] as? String, annotation: options[.annotation])
+        // Add any custom logic here.
+        return handled
+    }
+    
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
@@ -185,12 +198,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
             print("Subscribed for OneSignal push notifications!")
         }
         print("SubscriptionStateChange: \n\(stateChanges)")
+        
+        if let playerId = stateChanges.to.userId {
+            print("Current playerId \(playerId)")
+            GlobalFields.oneSignalId = stateChanges.to.userId
+        }
+        
     }
     
     func handleNotification(_ data:Dictionary<AnyHashable, Any>) {
         
         print(data)
         print()
+        
 //        let type = "\(data["type"] ?? "")"
 //        if (type == OneSignalModel.TYPE_BROADCAST) {
 //            let id = "\(data["id"] ?? "")"
@@ -243,8 +263,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
         print(notification.request.content.userInfo)
         let a : [AnyHashable : Any] = ["mili" : "haminjuri "]
         do {
-            if(notification.request.content.userInfo as! [String : String] == ["mili" : "haminjuri "]){
+            if(notification.request.content.userInfo as? [String : String] == ["mili" : "haminjuri "]){
                 print("its ok")
+                
             }else{
                 completionHandler([.alert, .badge, .sound])
             }

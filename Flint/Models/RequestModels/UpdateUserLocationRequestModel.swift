@@ -41,7 +41,7 @@ class UpdateUserLocationRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "token": TOKEN  , "latitude": LATITUDE , "longitude" : LONGITUDE , "city" : CITY , "hood" : Hood]
+        return ["username": USERNAME! , "token": TOKEN!  , "latitude": LATITUDE! , "longitude" : LONGITUDE! , "city" : CITY! , "hood" : Hood!]
         
     }
     

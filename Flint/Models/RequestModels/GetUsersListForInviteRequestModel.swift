@@ -22,6 +22,7 @@ class GetUsersListForInviteRequestModel {
         
         self.PER_PAGE = perPage
         
+        //TODO
         self.LATITUDE = "35.673609"
         
         self.LONGITUDE = "51.215622"
@@ -45,7 +46,7 @@ class GetUsersListForInviteRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "token": TOKEN ,"invite" : INVITE, "page": PAGE, "per_page": PER_PAGE , "latitude" : LATITUDE , "longitude" : LONGITUDE]
+        return ["username": USERNAME! , "token": TOKEN! ,"invite" : INVITE!, "page": PAGE!, "per_page": PER_PAGE! , "latitude" : LATITUDE! , "longitude" : LONGITUDE!]
         
     }
     

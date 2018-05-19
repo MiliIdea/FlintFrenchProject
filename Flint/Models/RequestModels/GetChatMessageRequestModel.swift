@@ -36,7 +36,7 @@ class GetChatMessageRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME ,"token" : TOKEN , "id" : ID , "page" : PAGE , "per_page" : PER_PAGE]
+        return ["username": USERNAME! ,"token" : TOKEN! , "id" : ID! , "page" : PAGE! , "per_page" : PER_PAGE!]
         
     }
     

@@ -32,20 +32,22 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
     var whichImg : Int = 0
     var cropVC = IGRPhotoTweakViewController()
     
+    var l : LoadingViewController?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.scroller.delegate = self
-        scroller.contentSize = CGSize(width: self.view.frame.width, height: 890 * self.view.frame.height / 667)
+        scroller.contentSize = CGSize(width: self.view.frame.width, height: 1000 * self.view.frame.height / 667)
         
         //avatara set shan
-        self.bioText.text = GlobalFields.loginResData?.bio
-        self.myJob.text = GlobalFields.loginResData?.job
-        self.myStudies.text = GlobalFields.loginResData?.studies
-        self.sex.text = GlobalFields.loginResData?.gender
+        self.bioText.text = GlobalFields.userInfo.BIO
+        self.myJob.text = GlobalFields.userInfo.JOB
+        self.myStudies.text = GlobalFields.userInfo.STUDIES
+        self.sex.text = GlobalFields.userInfo.GENDER
         
-        self.img1Button.kf.setBackgroundImage(with: URL(string: URLs.imgServer + (GlobalFields.loginResData?.avatar)!), for: .normal)
-        self.img2Button.kf.setBackgroundImage(with: URL(string: URLs.imgServer + (GlobalFields.loginResData?.second_avatar)!), for: .normal)
+        self.img1Button.kf.setBackgroundImage(with: URL(string: URLs.imgServer + (GlobalFields.userInfo.AVATAR)!), for: .normal)
+        self.img2Button.kf.setBackgroundImage(with: URL(string: URLs.imgServer + (GlobalFields.userInfo.SECOND_AVATAR)!), for: .normal)
         // Do any additional setup after loading the view.
     }
 
@@ -61,12 +63,15 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
     
     @IBAction func setChanged(_ sender: Any) {
         
+        l = GlobalFields.showLoading(vc: self)
+        
         if(isCHangedImg1){
             self.uploadImage(img: self.img1Button.backgroundImage(for: .normal)!, whichAvatar: 1)
         }
         if(isCHangedImg2){
             self.uploadImage(img: self.img2Button.backgroundImage(for: .normal)!, whichAvatar: 2)
         }
+        callEditIngo()
         
     }
     
@@ -90,11 +95,22 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
     }
     
     
+    
     func uploadImage(img : UIImage , whichAvatar : Int){
         
+        
+        var parameters = Dictionary<String , String>()
+        parameters = ["token" : GlobalFields.TOKEN , "username" : GlobalFields.USERNAME ]
         Alamofire.upload(multipartFormData: { (multipartFormData) in
-            multipartFormData.append(UIImagePNGRepresentation(img)!, withName: Date().description, fileName: Date().description + ".png", mimeType: "image/png")
-        }, to: URLs.uploadImage)
+            
+            if  let imageData = GlobalFields.compressImage(image: img) {
+                multipartFormData.append(imageData, withName: "submit", fileName: Date().timeIntervalSince1970.description + ".png", mimeType: "image/png")
+            }
+            for (key, value) in parameters {
+                multipartFormData.append(value.data(using: String.Encoding.utf8)!, withName: key)
+            }
+            
+        }, to: URLs.uploadImage , method : .post , headers : parameters)
         { (result) in
             switch result {
             case .success(let upload, _, _):
@@ -120,7 +136,6 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
                         }
                     }
                     
-                    
                 }
                 
             case .failure(let encodingError):
@@ -134,10 +149,10 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
     
     func callEditIngo(){
         
-        if(isCHangedImg1 && isUPloadedImg1 != false){
+        if(isCHangedImg1 && isUPloadedImg1 == false){
             return
         }
-        if(isCHangedImg2 && isUploadedImg2 != false){
+        if(isCHangedImg2 && isUploadedImg2 == false){
             return
         }
         
@@ -151,9 +166,15 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
         }
         
         request(URLs.editUserInfo, method: .post , parameters: EditUserInformationRequestModel.init(name: nil, birthdate: nil, gender: gen, bio: self.bioText.text, avatar: GlobalFields.userInfo.AVATAR, secAvatar: GlobalFields.userInfo.SECOND_AVATAR, lookingFor: nil, selfie: nil, job: self.myJob.text, studies: self.myStudies.text).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
-            
+            self.l?.disView()
             let res = response.result.value
             if(res?.status == "success"){
+                
+                GlobalFields.userInfo.BIO = self.bioText.text
+                GlobalFields.userInfo.JOB = self.myJob.text
+                GlobalFields.userInfo.STUDIES =  self.myStudies.text
+                GlobalFields.userInfo.GENDER = self.sex.text
+                
                 self.navigationController?.popViewController(animated: true)
             }
             

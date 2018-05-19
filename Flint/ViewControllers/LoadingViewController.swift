@@ -24,12 +24,18 @@ class LoadingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        loadingBackView.frame.origin.y = self.view.frame.height
+        background.alpha = 0
         runLoading()
         // Do any additional setup after loading the view.
     }
     
     func runLoading(){
+        
+        UIView.animate(withDuration: 0.2, delay: 0.2 , options: .curveEaseInOut, animations: {
+            self.loadingBackView.frame.origin.y = (self.view.frame.height / 2) - (3 * (self.loadingBackView.frame.height / 5))
+            self.background.alpha = 1
+        },completion : nil)
         
         self.animationView = LOTAnimationView(name: "loading")
         
@@ -54,8 +60,14 @@ class LoadingViewController: UIViewController {
     }
     
     @objc func disView(){
-        self.view.removeFromSuperview()
-        self.removeFromParentViewController()
+        UIView.animate(withDuration: 0.2, delay: 0 , options: .curveEaseInOut, animations: {
+            self.loadingBackView.frame.origin.y = self.view.frame.height
+            self.background.alpha = 0
+        }){ completion in 
+            self.view.removeFromSuperview()
+            self.removeFromParentViewController()
+        }
+        
     }
     
     func dis(s : Int){

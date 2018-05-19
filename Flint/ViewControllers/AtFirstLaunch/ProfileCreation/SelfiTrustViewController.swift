@@ -36,8 +36,8 @@ class SelfiTrustViewController: UIViewController , GalleryControllerDelegate{
     
     
     @IBAction func goTakeSelfie(_ sender: Any) {
-        
-        if(self.uploadImage.title(for: .normal) == "Next"){
+        print(self.uploadImage.title(for: .normal))
+        if(self.uploadImage.title(for: .normal)! == "NEXT"){
             let vC : ProfileBioViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ProfileBioViewController"))! as! ProfileBioViewController
             self.navigationController?.pushViewController(vC, animated: true)
         }else if(uploadImage.title(for: .normal)! == "UPLOAD"){
@@ -45,7 +45,6 @@ class SelfiTrustViewController: UIViewController , GalleryControllerDelegate{
         }else{
             let gallery = GalleryController()
             gallery.delegate = self
-            
             Config.Camera.recordLocation = false
             Config.tabsToShow = [.cameraTab]
             present(gallery, animated: true, completion: nil)
@@ -53,11 +52,22 @@ class SelfiTrustViewController: UIViewController , GalleryControllerDelegate{
         
     }
     
+    
     func uploadSelfieImage(){
         
+        let l = GlobalFields.showLoading(vc: self)
+        var parameters = Dictionary<String , String>()
+        parameters = ["token" : GlobalFields.TOKEN , "username" : GlobalFields.USERNAME ]
         Alamofire.upload(multipartFormData: { (multipartFormData) in
-            multipartFormData.append(UIImagePNGRepresentation(self.image.image!)!, withName: Date().description, fileName: Date().description + ".png", mimeType: "image/png")
-        }, to: URLs.uploadImage)
+            
+            if  let imageData = GlobalFields.compressImage(image: self.image.image!) {
+                multipartFormData.append(imageData, withName: "submit", fileName: Date().timeIntervalSince1970.description + ".png", mimeType: "image/png")
+            }
+            for (key, value) in parameters {
+                multipartFormData.append(value.data(using: String.Encoding.utf8)!, withName: key)
+            }
+            
+        }, to: URLs.uploadImage , method : .post , headers : parameters)
         { (result) in
             switch result {
             case .success(let upload, _, _):
@@ -69,13 +79,13 @@ class SelfiTrustViewController: UIViewController , GalleryControllerDelegate{
                 decoder.dateDecodingStrategy = .secondsSince1970
                 upload.responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<UploadImageRes>>) in
                     
+                    l.disView()
                     let res = response.result.value
                     
                     if(res?.status == "success"){
                         GlobalFields.userInfo.SELFIE_IMAGE = res?.data?.name
                         self.uploadImage.setTitle("NEXT", for: .normal)
                     }
-                    
                 }
                 
             case .failure(let encodingError):

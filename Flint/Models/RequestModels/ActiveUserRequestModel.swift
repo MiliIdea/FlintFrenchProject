@@ -26,7 +26,7 @@ class ActiveUserRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "code": CODE ]
+        return ["username": USERNAME! , "code": CODE! ]
         
     }
     

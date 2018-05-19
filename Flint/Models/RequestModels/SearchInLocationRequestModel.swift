@@ -32,7 +32,7 @@ class SearchInLocationRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME ,"token" : TOKEN , "latitude" : LAT , "longitude" : LONG]
+        return ["username": USERNAME! ,"token" : TOKEN! , "latitude" : LAT! , "longitude" : LONG!]
         
     }
     

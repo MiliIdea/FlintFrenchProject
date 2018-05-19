@@ -18,4 +18,6 @@ enum MapPageTypes {
     
     case AboutLastNight
     
+    case TwoInvite
+    
 }

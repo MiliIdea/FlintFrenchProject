@@ -10,13 +10,17 @@ import Foundation
 
 class URLs {
     
-    static let server = "http://46.165.237.171/flint/web/index.php?r=flint/"
+    static let server = "http://api-flint.com/web/index.php?r=flint/"
     
-    static let imgServer = "http://46.165.237.171/web/img/"
+    static let imgServer = "http://api-flint.com/web/"
     
     static let login = server + "login"
     
     static let register = server + "register"
+    
+    static let loginWithFacebook = server + "facebook-login"
+    
+    static let registerWithFacebook = server + "register-with-facebook"
     
     static let forgotPassword = server + "forget-password"
     

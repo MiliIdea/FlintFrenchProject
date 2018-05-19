@@ -10,7 +10,7 @@ import Foundation
 
 enum InvitationPageTypes {
     
-    case PartyInviteAcception
+    case PartyInviteAcception 
     
     case NormalInviteAcception
     

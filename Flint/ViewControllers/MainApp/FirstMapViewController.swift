@@ -63,6 +63,12 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate{
     var l : LoadingViewController?
     
     
+    var isThereOtherInvite : Bool = false
+    var ownInvite : MyInvites? = nil
+    var otherInvite : MyInvites? = nil
+    @IBOutlet var otherInviteButton: UIButton!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -74,6 +80,15 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate{
         self.mapView.clusterManager.marginFactor = 1
         self.mapView.clusterManager.maxZoomLevel = 16
 
+        GlobalFields.userInfo.AVATAR = GlobalFields.loginResData?.avatar
+        GlobalFields.userInfo.BIO = GlobalFields.loginResData?.bio
+        GlobalFields.userInfo.BIRTHDATE = GlobalFields.loginResData?.birthdate
+        GlobalFields.userInfo.GENDER = GlobalFields.loginResData?.gender
+        GlobalFields.userInfo.JOB = GlobalFields.loginResData?.job
+        GlobalFields.userInfo.USERNAME = GlobalFields.loginResData?.username
+        GlobalFields.userInfo.NAME = GlobalFields.loginResData?.name
+        GlobalFields.userInfo.TOKEN = GlobalFields.loginResData?.token
+        GlobalFields.userInfo.STUDIES = GlobalFields.loginResData?.studies
         
         // Fallback on earlier versions
         locationManager.requestAlwaysAuthorization()
@@ -92,7 +107,13 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate{
             let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
             
             self.mapView.setRegion(region, animated: true)
-            
+            for an in self.mapView.annotations{
+                if(an is MyAnnotation){
+                    if((an as! MyAnnotation).identifier == "myPosition"){
+                        self.mapView.removeAnnotation(an)
+                    }
+                }
+            }
             let marker = MyAnnotation()
             marker.coordinate = (self.locationManager.location?.coordinate)!
             marker.identifier = "myPosition"
@@ -138,7 +159,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate{
             
             self.invitationAwating.alpha = 0
             self.invitationButton.alpha = 1
-            self.lighterButton.alpha = 1
+            self.lighterButton.alpha = 0
             self.messageButton.alpha = 0
             self.ownerImageButton.alpha = 0
             self.aboutLastNightView.alpha = 0
@@ -156,6 +177,15 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate{
             self.mapView.frame.origin.y = 96 * self.view.frame.height / 667
             self.mapView.frame.size.height = self.view.frame.height - self.mapView.frame.origin.y
             
+        }
+        
+        
+        if(isThereOtherInvite){
+            self.otherInviteButton.frame.origin.y = self.mapView.frame.origin.y
+            self.otherInviteButton.alpha = 1
+        }else{
+            self.otherInviteButton.frame.origin.y = self.mapView.frame.origin.y
+            self.otherInviteButton.alpha = 0
         }
         
     }
@@ -195,98 +225,122 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate{
         l = GlobalFields.showLoading(vc: self)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
-        request(URLs.getActiveInvite, method: .post , parameters: OpenLighterRequestModel.init().getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<MyInvites>>) in
+        request(URLs.getActiveInvite, method: .post , parameters: OpenLighterRequestModel.init().getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<ActiveInviteRes>>) in
             
             let res = response.result.value
-            /*
-             Invitation Status :
-             0 failed
-             1 submit ( ready for like by owner ) // inja invite sakhte shode bayad like kone
-             2 after like ( ready for accept by users ) // inja like karde montazere accept kardane usere
-             3 after accept ( ready for confirm by owner ) // inja owner bayad confirm kone
-             4 after confirm ( ready for reconfirm by owner and users )
-             5 after reconfirm ( Done )
-             6 after date ( ready for poll )
-             7 after poll
-             */
+
             self.l?.disView()
-            if(res?.status == "success"){
+            print(res?.status)
+            if(res?.status! == "success"){
                 if(res?.data != nil){
-                    if(res?.data?.status == 1 || res?.data?.status == 2){ // submit - afterLike
-                        self.myInvites.removeAll()
-                        self.myInvites.append((res?.data!)!)
-                        self.type = .Awaiting
-                        self.configureView()
-//                        self.setMarkers()
-                    }else if(res?.data?.status == 3){
-                        //show confirmation popup by owner
-                        let vC : MainInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainInvitationViewController"))! as! MainInvitationViewController
-                        vC.viewType = .ConfirmInvite
-                        self.configureView()
-                        self.navigationController?.pushViewController(vC, animated: true)
-                        
-                    }else if(res?.data?.status == 4){
-                        //set notify for reconfirm
-                        //nabayd ejazeye invite sakhtan bedam
-                        //invite ham nemitune bebine
-                        let interval = Double((res?.data?.exact_time)!) - Date().timeIntervalSince1970 - (30 * 60)
-                        if(interval < 0){
-                            //alan bayad neshun bedim reConfirmo
-                            let vC : WarningReconfirmViewController = (self.storyboard?.instantiateViewController(withIdentifier: "WarningReconfirmViewController"))! as! WarningReconfirmViewController
-                            //TODO inja bayad datahayi k niazaro ferestad
-//                            vC.user ??
-                            
-                            self.navigationController?.pushViewController(vC, animated: true)
-                            
-                        }else{
-                            
-                            LocalNotifications().pushLocalNotification(info: ["Type" : "reConfirm" ,"invite" : res?.data], title: "ReConfirm", subtitle: (res?.data?.title)!, body: "", timeInterval: interval, identifier: "reConfirm")
-                            
-                        }
-                        self.type = .GoDate
-                        self.myInvites.removeAll()
-                        self.myInvites.append((res?.data)!)
-                        self.configureView()
-                        self.setMarkers()
-                        
-                    }else if(res?.data?.status == 5){
-                        self.type = .GoDate
-                        self.myInvites.removeAll()
-                        self.myInvites.append((res?.data)!)
-                        self.configureView()
-                        self.setMarkers()
-                        //set notify for 30 min after exact time invite
-                        let interval = Double((res?.data?.exact_time)!) - Date().timeIntervalSince1970 + (30 * 60)
-                        LocalNotifications().pushLocalNotification(info: ["Type" : "poll" ,"invite" : res?.data], title: "Poll", subtitle: (res?.data?.title)!, body: "", timeInterval: interval, identifier: "poll")
-                        
-                    }else if(res?.data?.status == 6){
-                        //show poll popup
-                        let vC : PollViewController = (self.storyboard?.instantiateViewController(withIdentifier: "PollViewController"))! as! PollViewController
-                        self.navigationController?.pushViewController(vC, animated: true)
-                        
-                    }else if(res?.data?.status == 7){
-                        // faqat baraye party karbord dareq
-                        if(res?.data?.type == 1){
-                            self.myInvites.removeAll()
-                            self.myInvites.append((res?.data)!)
-                            self.type = .AboutLastNight
-                            self.configureView()
-                        }
+                    if(res?.data?.owned_invitation != nil && res?.data?.other_invitations != nil){
+                        self.ownInvite = res?.data?.owned_invitation!
+                        self.otherInvite = res?.data?.other_invitations!
+                        self.isThereOtherInvite = true
+                        self.manageInvitesView(invite: res?.data?.owned_invitation!, res: res?.data!, isOther: false)
+                    }else if(res?.data?.owned_invitation != nil && res?.data?.other_invitations == nil){
+                        self.ownInvite = res?.data?.owned_invitation!
+                        self.otherInvite = nil
+                        self.isThereOtherInvite = false
+                        self.manageInvitesView(invite: res?.data?.owned_invitation!, res: res?.data!, isOther: false)
+                    }else if(res?.data?.owned_invitation == nil && res?.data?.other_invitations != nil){
+                        self.ownInvite = nil
+                        self.otherInvite = res?.data?.other_invitations!
+                        self.isThereOtherInvite = false
+                        self.manageInvitesView(invite: res?.data?.other_invitations!, res: res?.data!, isOther: true)
                     }else{
+                        self.ownInvite = nil
+                        self.otherInvite = nil
                         self.type = .NormalMap
                         self.configureView()
                         self.callGetMyInvitesRest()
                     }
+                    
                 }else{
                     self.type = .NormalMap
                     self.configureView()
                     self.callGetMyInvitesRest()
                 }
+            }else{
+                self.type = .NormalMap
+                self.configureView()
+                self.callGetMyInvitesRest()
             }
             
         }
         
     }
+    
+    func manageInvitesView(invite : MyInvites! , res : ActiveInviteRes! , isOther : Bool!){
+        
+        
+        if(invite.status == 1 || invite.status == 2){ // submit - afterLike
+            self.type = .Awaiting
+            self.configureView()
+            self.setMarkers()
+            
+        }else if(invite.status == 3){
+            //show confirmation popup by owner
+            let vC : MainInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainInvitationViewController"))! as! MainInvitationViewController
+            vC.viewType = .ConfirmInvite
+            self.configureView()
+            self.navigationController?.pushViewController(vC, animated: true)
+            
+        }else if(invite.status == 4){
+            //set notify for reconfirm
+            //nabayd ejazeye invite sakhtan bedam
+            //invite ham nemitune bebine
+            let interval = Double((invite.exact_time)!) - Date().timeIntervalSince1970 - (30 * 60)
+            if(interval < 0){
+                //alan bayad neshun bedim reConfirmo
+                let vC : WarningReconfirmViewController = (self.storyboard?.instantiateViewController(withIdentifier: "WarningReconfirmViewController"))! as! WarningReconfirmViewController
+                //TODO inja bayad datahayi k niazaro ferestad
+                //                            vC.user ??
+                
+                self.navigationController?.pushViewController(vC, animated: true)
+                
+            }else{
+                
+                LocalNotifications().pushLocalNotification(info: ["Type" : "reConfirm" ,"invite" : res], title: "ReConfirm", subtitle: (invite.title)!, body: "", timeInterval: interval, identifier: "reConfirm")
+                
+            }
+            self.type = .GoDate
+            self.configureView()
+            self.setMarkers()
+            
+        }else if(invite.status == 5){
+            self.type = .GoDate
+            self.configureView()
+            self.setMarkers()
+            //set notify for 30 min after exact time invite
+            let interval = Double((invite.exact_time)!) - Date().timeIntervalSince1970 + (30 * 60)
+            LocalNotifications().pushLocalNotification(info: ["Type" : "poll" ,"invite" : res], title: "Poll", subtitle: (invite.title)!, body: "", timeInterval: interval, identifier: "poll")
+            
+        }else if(invite.status == 6){
+            //show poll popup
+            let vC : PollViewController = (self.storyboard?.instantiateViewController(withIdentifier: "PollViewController"))! as! PollViewController
+            self.navigationController?.pushViewController(vC, animated: true)
+            
+        }else if(invite.status == 7){
+            // faqat baraye party karbord dareq
+            if(invite.type == 1){
+                self.type = .AboutLastNight
+                self.configureView()
+            }
+        }else{
+            self.type = .NormalMap
+            self.configureView()
+            self.callGetMyInvitesRest()
+        }
+    }
+    
+    @IBAction func clickOnOtherInvite(_ sender: Any) {
+        let vC : MainInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainInvitationViewController"))! as! MainInvitationViewController
+        vC.viewType = .ShowProfile
+        self.configureView()
+        self.navigationController?.pushViewController(vC, animated: true)
+    }
+    
     
     
     @IBAction func clickInvitationAwating(_ sender: Any) {
@@ -362,10 +416,26 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate{
     
         self.mapView.clusterManager.annotations.removeAll()
         
-        for pin in self.myInvites {
+        if(self.type != .GoDate){
             
-            let coordinate : CLLocationCoordinate2D = CLLocationCoordinate2D.init(latitude: Double(pin.latitude!)!, longitude: Double(pin.longitude!)!)
-            self.mapView.clusterManager.annotations.append(ClustrableAnnotation.init(coordinate: coordinate, identifier: (pin.invite_id?.description) ?? (pin.id?.description)!))
+            for pin in self.myInvites {
+                
+                let coordinate : CLLocationCoordinate2D = CLLocationCoordinate2D.init(latitude: Double(pin.latitude!)!, longitude: Double(pin.longitude!)!)
+                self.mapView.clusterManager.annotations.append(ClustrableAnnotation.init(coordinate: coordinate, identifier: (pin.invite_id?.description) ?? (pin.id?.description)!))
+            }
+            
+        }
+        
+        if(self.ownInvite != nil){
+            let pin = ownInvite
+            let coordinate : CLLocationCoordinate2D = CLLocationCoordinate2D.init(latitude: Double(pin!.latitude!)!, longitude: Double(pin!.longitude!)!)
+            self.mapView.clusterManager.annotations.append(ClustrableAnnotation.init(coordinate: coordinate, identifier: (pin!.invite_id?.description) ?? (pin?.id?.description)!))
+        }
+        
+        if(self.otherInvite != nil && self.ownInvite == nil){
+            let pin = otherInvite
+            let coordinate : CLLocationCoordinate2D = CLLocationCoordinate2D.init(latitude: Double(pin!.latitude!)!, longitude: Double(pin!.longitude!)!)
+            self.mapView.clusterManager.annotations.append(ClustrableAnnotation.init(coordinate: coordinate, identifier: (pin!.invite_id?.description) ?? (pin?.id?.description)!))
         }
         
     }

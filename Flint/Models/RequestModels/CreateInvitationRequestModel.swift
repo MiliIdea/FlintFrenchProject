@@ -48,7 +48,7 @@ class CreateInvitationRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME , "token": TOKEN  , "type": TYPE , "longitude" : LONG ,"latitude" : LAT, "people_count" :PEOPLE_COUNT ,"exact_time" : EXACT_TIME, "when" : WHEN,"emoji" : EMOJI , "title"  : TITLE]
+        return ["username": USERNAME! , "token": TOKEN!  , "type": TYPE! , "longitude" : LONG! ,"latitude" : LAT!, "people_count" :PEOPLE_COUNT! ,"exact_time" : EXACT_TIME!, "when" : WHEN!,"emoji" : EMOJI! , "title"  : TITLE!]
         
     }
     

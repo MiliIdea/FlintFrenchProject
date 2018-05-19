@@ -11,8 +11,7 @@ import Foundation
 class ResendActivationCodeRequestModel {
     
     init() {
-        
-        
+        self.USERNAME = GlobalFields.USERNAME
     }
     
     var USERNAME: String!
@@ -21,7 +20,7 @@ class ResendActivationCodeRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME]
+        return ["username": USERNAME!]
         
     }
     

@@ -3,12 +3,12 @@ PODS:
   - Alamofire (4.7.1)
   - AlamofireNetworkActivityLogger (2.3.0):
     - Alamofire (~> 4.6)
-  - Bolts (1.8.4):
-    - Bolts/AppLinks (= 1.8.4)
-    - Bolts/Tasks (= 1.8.4)
-  - Bolts/AppLinks (1.8.4):
+  - Bolts (1.9.0):
+    - Bolts/AppLinks (= 1.9.0)
+    - Bolts/Tasks (= 1.9.0)
+  - Bolts/AppLinks (1.9.0):
     - Bolts/Tasks
-  - Bolts/Tasks (1.8.4)
+  - Bolts/Tasks (1.9.0)
   - BvMapCluster (0.1.6):
     - ClusterKit (= 0.2.0)
   - Chatto (3.3.0)
@@ -22,24 +22,9 @@ PODS:
     - Alamofire (~> 4.0)
   - CryptoSwift (0.7.2)
   - DCKit (1.0.10)
-  - FacebookCore (0.3.0):
-    - Bolts (~> 1.8)
-    - FBSDKCoreKit (~> 4.27)
-  - FacebookLogin (0.3.0):
-    - Bolts (~> 1.8)
-    - FacebookCore (~> 0.3)
-    - FBSDKCoreKit (~> 4.27)
-    - FBSDKLoginKit (~> 4.27)
-  - FacebookShare (0.3.0):
-    - Bolts (~> 1.8)
-    - FacebookCore (~> 0.3)
-    - FBSDKCoreKit (~> 4.27)
-    - FBSDKShareKit (~> 4.27)
-  - FBSDKCoreKit (4.29.0):
+  - FBSDKCoreKit (4.33.0):
     - Bolts (~> 1.7)
-  - FBSDKLoginKit (4.29.0):
-    - FBSDKCoreKit
-  - FBSDKShareKit (4.29.0):
+  - FBSDKLoginKit (4.33.0):
     - FBSDKCoreKit
   - Gallery (2.0.6)
   - IGRPhotoTweaks (1.0.7)
@@ -73,9 +58,7 @@ DEPENDENCIES:
   - CodableAlamofire
   - CryptoSwift (~> 0.7.0)
   - DCKit
-  - FacebookCore (from `https://github.com/facebook/facebook-sdk-swift`)
-  - FacebookLogin (from `https://github.com/facebook/facebook-sdk-swift`)
-  - FacebookShare (from `https://github.com/facebook/facebook-sdk-swift`)
+  - FBSDKLoginKit
   - Gallery
   - IGRPhotoTweaks (~> 1.0.0)
   - IQKeyboardManagerSwift
@@ -94,30 +77,47 @@ DEPENDENCIES:
   - UICircularProgressRing
   - UIColor_Hex_Swift (~> 4.0.1)
 
-EXTERNAL SOURCES:
-  FacebookCore:
-    :git: https://github.com/facebook/facebook-sdk-swift
-  FacebookLogin:
-    :git: https://github.com/facebook/facebook-sdk-swift
-  FacebookShare:
-    :git: https://github.com/facebook/facebook-sdk-swift
-
-CHECKOUT OPTIONS:
-  FacebookCore:
-    :commit: 2d04d2a89d2c8e420e9a8847038c81093f2eb124
-    :git: https://github.com/facebook/facebook-sdk-swift
-  FacebookLogin:
-    :commit: 2d04d2a89d2c8e420e9a8847038c81093f2eb124
-    :git: https://github.com/facebook/facebook-sdk-swift
-  FacebookShare:
-    :commit: 2d04d2a89d2c8e420e9a8847038c81093f2eb124
-    :git: https://github.com/facebook/facebook-sdk-swift
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - AFDateHelper
+    - Alamofire
+    - AlamofireNetworkActivityLogger
+    - Bolts
+    - BvMapCluster
+    - Chatto
+    - ChattoAdditions
+    - CHIPageControl
+    - ClusterKit
+    - CodableAlamofire
+    - CryptoSwift
+    - DCKit
+    - FBSDKCoreKit
+    - FBSDKLoginKit
+    - Gallery
+    - IGRPhotoTweaks
+    - IQKeyboardManagerSwift
+    - ISEmojiView
+    - Kingfisher
+    - lottie-ios
+    - MapKitGoogleStyler
+    - MiniLayout
+    - MultiSlider
+    - ObjectMapper
+    - OneSignal
+    - PusherChatkit
+    - PusherPlatform
+    - PusherSwift
+    - RangeSeekSlider
+    - SWXMLHash
+    - Toast-Swift
+    - UICircularProgressRing
+    - UIColor_Hex_Swift
 
 SPEC CHECKSUMS:
   AFDateHelper: 4ad66fb19503041fbba8a3018cb7ef9c71b2ff88
   Alamofire: 68d7d521118d49c615a8d2214d87cdf525599d30
   AlamofireNetworkActivityLogger: 6f3076652ab7fa6c819b59be08ea038d339e36d8
-  Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
+  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   BvMapCluster: 6a51aef141aebca33a8be23f54d9cfc2c45f4aa0
   Chatto: d9f67acd6230f08323a51a11c4b639d40c1f8d99
   ChattoAdditions: 9ee09ac09a89d8c0aa3dc87019e3a22efb2cbac6
@@ -126,12 +126,8 @@ SPEC CHECKSUMS:
   CodableAlamofire: e2d2edcec7cf413f7862c30c8fa98eded27a83f9
   CryptoSwift: cd2158be2bf639aabc63ec804707c7137c90157c
   DCKit: 5c331146967c08886cc47baf5903699fdb4dca81
-  FacebookCore: 27451036709df2c7e9b81478c746a501e7e72d7c
-  FacebookLogin: be838b1397ca9499ec5e8a31de1ff344fc3e4f16
-  FacebookShare: 491da67dc68408c36e3ae75d1f97e9ca3fa17b03
-  FBSDKCoreKit: 6f139173dc63a1deaff4430a55f2fe5bb222d2af
-  FBSDKLoginKit: 56a057ca6822535ea0faa25f57a7c41edb697fd4
-  FBSDKShareKit: 18a2cd118aef11dd657fe7e8b64bae5c719088b2
+  FBSDKCoreKit: 572b047a7e029bc44542bcf8a59414e7ff2b543e
+  FBSDKLoginKit: 88cb456349cfb3b554427ce4f8b43729d85dfb40
   Gallery: 5489ae11d8010a3cc163030f6e92d618afbdf4df
   IGRPhotoTweaks: 8fe6b62c6599238d860b19b46a85a454e202f502
   IQKeyboardManagerSwift: 2e7dc7f98c111458c1ea2b373f893e8cf95e2b97
@@ -152,6 +148,6 @@ SPEC CHECKSUMS:
   UICircularProgressRing: 653b31f7252b2959e8234f5b9ea5f925da755954
   UIColor_Hex_Swift: c5ff88470499383b8fd85302d59344bb24ba9436
 
-PODFILE CHECKSUM: 11f36fbff04dd726ac491ffc07abf5a301b4950c
+PODFILE CHECKSUM: 5b5d4f65c45d114da46a39b8ff81a8825e92116d
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.5.2

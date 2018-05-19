@@ -19,11 +19,5 @@ struct RegisterRes : Codable {
         case username = "username"
 
     }
-    
-//    init(from decoder: Decoder) throws {
-//        let values = try decoder.container(keyedBy: CodingKeys.self)
-//        id = try values.decodeIfPresent(Int.self, forKey: .id)
-//        username = try values.decodeIfPresent(String.self, forKey: .username)
-//    }
-    
+
 }

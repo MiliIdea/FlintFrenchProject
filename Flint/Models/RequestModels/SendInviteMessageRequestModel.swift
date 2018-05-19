@@ -32,7 +32,7 @@ class SendInviteMessageRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME ,"token" : TOKEN , "text" : TEXT , "invite" : INVITE]
+        return ["username": USERNAME! ,"token" : TOKEN! , "text" : TEXT! , "invite" : INVITE!]
         
     }
     

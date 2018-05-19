@@ -31,6 +31,8 @@ class SignInViewController: UIViewController {
     
 
     @IBAction func goForgottenPage(_ sender: Any) {
+        let vC : ForgottenIDViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ForgottenIDViewController"))! as! ForgottenIDViewController
+        self.navigationController?.pushViewController(vC, animated: true)
     }
     
     @IBAction func back(_ sender: Any) {
@@ -46,22 +48,52 @@ class SignInViewController: UIViewController {
             let res = response.result.value
             l.disView()
             
-            if(res?.data != nil){
+            if(res?.status == "success" || res?.status == "5"){
                 
-                GlobalFields.loginResData = res?.data!
+                l.disView()
+                //inja bayad check kard k ta koja takmil karde
                 
-                GlobalFields.TOKEN = res?.data?.token
+                if(res?.data != nil){
+                    
+                    GlobalFields.loginResData = res?.data!
+                    
+                    GlobalFields.TOKEN = res?.data?.token
+                    
+                    GlobalFields.USERNAME = res?.data?.username
+                    
+                    let data = res?.data
+                    if(data?.name == nil || data?.name == ""){
+                        let vC : CreateNameViewController = (self.storyboard?.instantiateViewController(withIdentifier: "CreateNameViewController"))! as! CreateNameViewController
+                        self.navigationController?.pushViewController(vC, animated: true)
+                    }else if(data?.birthdate == nil){
+                        let vC : BirthDateViewController = (self.storyboard?.instantiateViewController(withIdentifier: "BirthDateViewController"))! as! BirthDateViewController
+                        self.navigationController?.pushViewController(vC, animated: true)
+                    }else if(data?.gender == nil){
+                        let vC : ManOrWomanViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ManOrWomanViewController"))! as! ManOrWomanViewController
+                        self.navigationController?.pushViewController(vC, animated: true)
+                    }else if(data?.avatar == nil || (data?.avatar?.contains("avatar.jpeg"))!){
+                        let vC : ProfilePicViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ProfilePicViewController"))! as! ProfilePicViewController
+                        self.navigationController?.pushViewController(vC, animated: true)
+                    }else if(data?.selfie == nil || (data?.selfie?.contains("avatar.jpeg"))!){
+                        let vC : SelfiTrustViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SelfiTrustViewController"))! as! SelfiTrustViewController
+                        self.navigationController?.pushViewController(vC, animated: true)
+                    }else if(data?.bio == nil){
+                        let vC : ProfileBioViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ProfileBioViewController"))! as! ProfileBioViewController
+                        self.navigationController?.pushViewController(vC, animated: true)
+                    }else if(data?.looking_for == nil){
+                        let vC : XViewController = (self.storyboard?.instantiateViewController(withIdentifier: "XViewController"))! as! XViewController
+                        self.navigationController?.pushViewController(vC, animated: true)
+                    }else {
+                        let vC : FirstMapViewController = (self.storyboard?.instantiateViewController(withIdentifier: "FirstMapViewController"))! as! FirstMapViewController
+                        
+                        self.navigationController?.pushViewController(vC, animated: true)
+                    }
+                }
                 
-                GlobalFields.USERNAME = res?.data?.username
-                
-                let vC : FirstMapViewController = (self.storyboard?.instantiateViewController(withIdentifier: "FirstMapViewController"))! as! FirstMapViewController
                 
                 
-                self.navigationController?.pushViewController(vC, animated: true)
-                
-            }else{
-                //error
             }
+            
             
         }
         

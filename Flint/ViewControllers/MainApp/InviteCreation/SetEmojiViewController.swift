@@ -106,13 +106,13 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
         
         let date : Date = GlobalFields.inviteExactTime!
         
-        var diff : Int = 7
+//        var diff : Int = 7
+//
+//        if(Date().timeIntervalSince(date) < 30 * 60 * 6){
+//           diff = Int(Date().timeIntervalSince(date) / (60 * 30))
+//        }
         
-        if(Date().timeIntervalSince(date) < 30 * 60 * 6){
-           diff = Int(Date().timeIntervalSince(date) / (60 * 30))
-        }
-        
-        request(URLs.createInvitation, method: .post , parameters: CreateInvitationRequestModel.init(type: type, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!, peopleCount: GlobalFields.inviteNumber!, exactTime: Int(date.timeIntervalSince1970), when: diff, emoji: GlobalFields.inviteEmoji!, title: GlobalFields.inviteTitle!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<CreateInviteRes>>) in
+        request(URLs.createInvitation, method: .post , parameters: CreateInvitationRequestModel.init(type: type, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!, peopleCount: GlobalFields.inviteNumber!, exactTime: Int(date.timeIntervalSince1970), when: GlobalFields.inviteWhen!, emoji: GlobalFields.inviteEmoji!, title: GlobalFields.inviteTitle!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<CreateInviteRes>>) in
             
             let res = response.result.value
             

@@ -21,7 +21,7 @@ class ForgotPasswordRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME ]
+        return ["username": USERNAME! ]
         
     }
     

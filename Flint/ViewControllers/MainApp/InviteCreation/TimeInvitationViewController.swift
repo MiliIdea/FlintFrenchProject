@@ -78,6 +78,7 @@ class TimeInvitationViewController: UIViewController {
         b.normalTextColor = UIColor("#FFFFFF")
         
         GlobalFields.inviteExactTime = Date().addingTimeInterval(Double(b.tag - 1) * 60.0 * 30.0)
+        GlobalFields.inviteWhen = b.tag - 1
         
         self.navigationController?.popViewController(animated: true)
         
@@ -125,8 +126,10 @@ class TimeInvitationViewController: UIViewController {
     @IBAction func setDateAndTimeParty(_ sender: Any) {
         if(self.partyIsRightNow){
             GlobalFields.inviteExactTime = Date()
+            GlobalFields.inviteWhen = 0
         }else{
             GlobalFields.inviteExactTime = self.datePicker.date
+            GlobalFields.inviteWhen = 7
         }
         self.navigationController?.popViewController(animated: true)
     }

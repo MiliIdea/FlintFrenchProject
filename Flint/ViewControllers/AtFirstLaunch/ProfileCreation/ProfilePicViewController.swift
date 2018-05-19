@@ -56,9 +56,19 @@ class ProfilePicViewController: UIViewController ,GalleryControllerDelegate , IG
     
     func uploadImage(){
         
+        let l = GlobalFields.showLoading(vc: self)
+        var parameters = Dictionary<String , String>()
+        parameters = ["token" : GlobalFields.TOKEN , "username" : GlobalFields.USERNAME ]
         Alamofire.upload(multipartFormData: { (multipartFormData) in
-            multipartFormData.append(UIImagePNGRepresentation(self.imageView.image!)!, withName: Date().description, fileName: Date().description + ".png", mimeType: "image/png")
-        }, to: URLs.uploadImage)
+            
+            if  let imageData = GlobalFields.compressImage(image: self.imageView.image!) {
+                multipartFormData.append(imageData, withName: "submit", fileName: Date().timeIntervalSince1970.description + ".png", mimeType: "image/png")
+            }
+            for (key, value) in parameters {
+                multipartFormData.append(value.data(using: String.Encoding.utf8)!, withName: key)
+            }
+            
+        }, to: URLs.uploadImage , method : .post , headers : parameters)
         { (result) in
             switch result {
             case .success(let upload, _, _):
@@ -70,6 +80,7 @@ class ProfilePicViewController: UIViewController ,GalleryControllerDelegate , IG
                 decoder.dateDecodingStrategy = .secondsSince1970
                 upload.responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<UploadImageRes>>) in
                     
+                    l.disView()
                     let res = response.result.value
                     
                     if(res?.status == "success"){

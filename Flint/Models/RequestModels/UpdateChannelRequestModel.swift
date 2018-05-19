@@ -32,7 +32,7 @@ class UpdateChannelRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME ,"token" : TOKEN , "channel" : CHANNEL , "chat" : CHAT]
+        return ["username": USERNAME! ,"token" : TOKEN! , "channel" : CHANNEL! , "chat" : CHAT!]
         
     }
     
