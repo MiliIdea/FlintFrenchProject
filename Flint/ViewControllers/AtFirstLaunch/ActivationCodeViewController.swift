@@ -71,13 +71,19 @@ class ActivationCodeViewController: UIViewController, UITextFieldDelegate {
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
-        request(URLs.resendActivationCode, method: .post , parameters: ForgotPasswordRequestModel.init(username : self.userNameFromForgotten).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+        var use : String = ""
+        if(isForgottenMode){
+            use = self.userNameFromForgotten
+        }else{
+            use = GlobalFields.USERNAME
+        }
+        request(URLs.resendActivationCode, method: .post , parameters: ForgotPasswordRequestModel.init(username : use).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
             
             let res = response.result.value
             
             if(res?.status == "success"){
-                let vC : ActivationCodeViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ActivationCodeViewController"))! as! ActivationCodeViewController
-                self.navigationController?.pushViewController(vC, animated: true)
+
+                self.view.makeToast(res?.message)
             }
             
         }
@@ -92,22 +98,30 @@ class ActivationCodeViewController: UIViewController, UITextFieldDelegate {
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
-        
-        
-        request(URLs.activeUser, method: .post , parameters: ActiveUserRequestModel.init(userName: GlobalFields.USERNAME, code: actCode).getParams(), headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<ActivationRes>>) in
-            
+        let l = GlobalFields.showLoading(vc: self)
+        var use : String = ""
+        if(isForgottenMode){
+            use = self.userNameFromForgotten
+        }else{
+            use = GlobalFields.USERNAME
+        }
+        request(URLs.activeUser, method: .post , parameters: ActiveUserRequestModel.init(userName: use, code: actCode).getParams(), headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<ActivationRes>>) in
+            l.disView()
             let res = response.result.value
-            
-            GlobalFields.TOKEN = res?.data?.token
-            
-            let vC : PasswordViewController = (self.storyboard?.instantiateViewController(withIdentifier: "PasswordViewController"))! as! PasswordViewController
-            if(self.isForgottenMode){
-                vC.isFromForgottenMode = true
-                vC.activeCode = self.actCode
+            if(res?.status == "success"){
+                GlobalFields.TOKEN = res?.data?.token
+                let vC : PasswordViewController = (self.storyboard?.instantiateViewController(withIdentifier: "PasswordViewController"))! as! PasswordViewController
+                if(self.isForgottenMode){
+                    vC.isFromForgottenMode = true
+                    vC.activeCode = self.actCode
+                }else{
+                    vC.isFromForgottenMode = false
+                }
+                self.navigationController?.pushViewController(vC, animated: true)
             }else{
-                vC.isFromForgottenMode = false
+                self.view.makeToast(res?.message)
             }
-            self.navigationController?.pushViewController(vC, animated: true)
+            
             
         }
         
@@ -148,10 +162,11 @@ class ActivationCodeViewController: UIViewController, UITextFieldDelegate {
                 code.append((self.view.viewWithTag(i) as! UITextField).text!)
                 
                 self.actCode = code
-                
-                self.next("")
+                self.view.endEditing(true)
                 
             }
+            
+            next("")
             
         }
         

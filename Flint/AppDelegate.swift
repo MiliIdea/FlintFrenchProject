@@ -76,6 +76,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
                                             let payload: OSNotificationPayload = notification!.payload
                                             if payload.additionalData != nil  && GlobalFields.TOKEN != nil {
                                                 self.handleNotification(payload.additionalData)
+                                                
                                             }
                                         },
                                         handleNotificationAction: notificationOpenedBlock,
@@ -207,11 +208,60 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
     }
     
     func handleNotification(_ data:Dictionary<AnyHashable, Any>) {
-        
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
         print(data)
         print()
         
-//        let type = "\(data["type"] ?? "")"
+        let type = "\(data["type"] ?? "")"
+        print(type)
+        if(type == "cancel"){
+            let inv = "\(data["invite"] ?? "")"
+            print("now i should call getInviteInfo")
+            request(URLs.getInviteInfo, method: .post , parameters: GetInviteInfoRequestModel.init(invite: Int(inv)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<InviteInfoRes>>) in
+                let res = response.result.value
+                if(res?.data != nil){
+                    if((res?.data?.main?.status)! < 5){
+                        request(URLs.cancelInvite, method: .post , parameters: CancelInviteRequestModel.init(invite: Int(inv)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response2 : DataResponse<ResponseModel<LoginRes>>) in
+                            
+                            let res2 = response2.result.value
+                            if(res2?.status == "success"){
+                                
+                            }
+                            
+                        }
+                    }
+                }
+                
+            }
+        }
+        
+        if(type == "finish"){
+            let inv = "\(data["invite"] ?? "")"
+            print("now i should call getInviteInfo")
+            request(URLs.getInviteInfo, method: .post , parameters: GetInviteInfoRequestModel.init(invite: Int(inv)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<InviteInfoRes>>) in
+                let res = response.result.value
+                if(res?.data != nil){
+                    if((res?.data?.main?.status)! < 6){
+                        request(URLs.finishDate, method: .post , parameters: GetInviteInfoRequestModel.init(invite: Int(inv)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+                            
+                            let res = response.result.value
+                            
+                            if(res?.data != nil){
+//                                let vC : PollViewController = (self.storyboard?.instantiateViewController(withIdentifier: "PollViewController"))! as! PollViewController
+//                                //TODO inja bayad datahayi k niazaro ferestad
+//                                vC.invite = invite.id
+//                                
+//                                self.navigationController?.pushViewController(vC, animated: true)
+                            }
+                            
+                        }
+                    }
+                }
+                
+            }
+        }
+        
 //        if (type == OneSignalModel.TYPE_BROADCAST) {
 //            let id = "\(data["id"] ?? "")"
 //            let single = MessagesShowView()
@@ -219,42 +269,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
 //            single.boardId = Int(id)
 //            self.window?.rootViewController = single
 //            self.window?.makeKeyAndVisible()
-//        } else if (type == OneSignalModel.TYPE_OFFER) {
-//            let id = "\(data["id"] ?? "")"
-//            let question = SingleOfferView()
-//            question.offerId = Int(id)
-//            self.window?.rootViewController = question
-//            self.window?.makeKeyAndVisible()
-//        } else if (type == OneSignalModel.TYPE_CUSTOMER) {
-//            //            let date = "\(data["date"] ?? "")"
-//            let near = SingleNearCustomerViewController()
-//            self.window?.rootViewController = near
-//            self.window?.makeKeyAndVisible()
-//
-//        } else if (type == OneSignalModel.TYPE_UPDATE) {
-//            let version = "\(data["version"] ?? "")"
-//            let description = "\(data["description"] ?? "")"
-//
-//        } else if (type == OneSignalModel.TYPE_STORE_MESSAGE) {
-//            let id = "\(data["id"] ?? "")"
-//            let question = QuestionsAnswerView()
-//            question.isOpenFromNotification = true
-//            question.messageId = Int(id)
-//            self.window?.rootViewController = question
-//            self.window?.makeKeyAndVisible()
-//        } else if (type == OneSignalModel.TYPE_MESSAGE) {
-//            let channel = "\(data["channel"] ?? "")"
-//            let chatId = "\(data["chatId"] ?? "")"
-//            let chatView = SingleChatView()
-//            chatView.isOpenFromNotification = true
-//            chatView.chatId = Int(chatId)!
-//            chatView.channelName = channel
-//            self.window?.rootViewController = chatView
-//            self.window?.makeKeyAndVisible()
-//
 //        }
         
     }
+
     
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
@@ -265,11 +283,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
         do {
             if(notification.request.content.userInfo as? [String : String] == ["mili" : "haminjuri "]){
                 print("its ok")
-                
+                completionHandler(.init(rawValue: 0))
             }else{
                 completionHandler([.alert, .badge, .sound])
             }
         }catch {
+            
+            completionHandler([])
             print(error)
         }
         // Play a sound.
@@ -279,27 +299,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
-        if response.notification.request.content.categoryIdentifier == "TIMER_EXPIRED" {
-            // Handle the actions for the expired timer.
-            if response.actionIdentifier == "SNOOZE_ACTION" {
-                // Invalidate the old timer and create a new one. . .
-            }
-            else if response.actionIdentifier == "STOP_ACTION" {
-                // Invalidate the timer. . .
-            }
-        }
+//        if response.notification.request.content.categoryIdentifier == "TIMER_EXPIRED" {
+//            // Handle the actions for the expired timer.
+//            if response.actionIdentifier == "SNOOZE_ACTION" {
+//                // Invalidate the old timer and create a new one. . .
+//            }
+//            else if response.actionIdentifier == "STOP_ACTION" {
+//                // Invalidate the timer. . .
+//            }
+//        }
         completionHandler()
         // Else handle actions for other notification types. . .
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

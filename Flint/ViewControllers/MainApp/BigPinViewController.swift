@@ -78,7 +78,8 @@ class BigPinViewController: UIViewController , UITableViewDelegate ,UITableViewD
         
         if(indexPath.row * 3 + 0 < invites.count){
             cell.b1.alpha = 1
-            cell.b1.setTitle(String(UnicodeScalar(Int(invites[indexPath.row * 3 + 0].emoji!.split(separator: "{")[1].split(separator: "}")[0], radix: 16)!)!) , for: .normal)
+//            cell.b1.setTitle(String(UnicodeScalar(Int(invites[indexPath.row * 3 + 0].emoji!.split(separator: "{")[1].split(separator: "}")[0], radix: 16)!)!) , for: .normal)
+            cell.b1.setTitle(invites[indexPath.row * 3 + 0].emoji!, for: .normal)
             cell.b1.normalBorderColor = UIColor(getColorBorder(type: indexPath.row * 3 + 0))
             cell.b1.addTarget(self, action:  #selector(self.connected(sender:)), for: .touchUpInside)
         }else{
@@ -87,7 +88,7 @@ class BigPinViewController: UIViewController , UITableViewDelegate ,UITableViewD
         
         if(indexPath.row * 3 + 1 < invites.count){
             cell.b2.alpha = 1
-            cell.b2.setTitle(String(UnicodeScalar(Int(invites[indexPath.row * 3 + 1].emoji!.split(separator: "{")[1].split(separator: "}")[0], radix: 16)!)!) , for: .normal)
+            cell.b2.setTitle(invites[indexPath.row * 3 + 1].emoji!, for: .normal)
             cell.b2.normalBorderColor = UIColor(getColorBorder(type: indexPath.row * 3 + 1))
             cell.b2.addTarget(self, action: #selector(self.connected(sender:)), for: .touchUpInside)
         }else{
@@ -96,7 +97,7 @@ class BigPinViewController: UIViewController , UITableViewDelegate ,UITableViewD
         
         if(indexPath.row * 3 + 2 < invites.count){
             cell.b3.alpha = 1
-            cell.b3.setTitle(String(UnicodeScalar(Int(invites[indexPath.row * 3 + 2].emoji!.split(separator: "{")[1].split(separator: "}")[0], radix: 16)!)!) , for: .normal)
+            cell.b3.setTitle(invites[indexPath.row * 3 + 2].emoji!, for: .normal)
             cell.b3.normalBorderColor = UIColor(getColorBorder(type: indexPath.row * 3 + 2))
             cell.b3.addTarget(self, action: #selector(self.connected(sender:)), for: .touchUpInside)
         }else{
@@ -125,7 +126,7 @@ class BigPinViewController: UIViewController , UITableViewDelegate ,UITableViewD
         
         let p = invites[sender.tag]
         let vC : MainInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainInvitationViewController"))! as! MainInvitationViewController
-        
+        vC.inviteID = p.invite_id
         if(p.type == 1){
             vC.viewType = .PartyInviteAcception
         }else{

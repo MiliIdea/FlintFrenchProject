@@ -57,7 +57,11 @@ class LoginRes : NSObject, Codable , NSCoding{
         self.vibration  = aDecoder.decodeObject(forKey: "vibration") as! Bool?
         self.min_age  = aDecoder.decodeObject(forKey: "min_age") as! Int?
         self.max_age  = aDecoder.decodeObject(forKey: "max_age") as! Int?
-        self.birthdate  = aDecoder.decodeObject(forKey: "birthdate") as! Int?
+        if(aDecoder.decodeObject(forKey: "birthdate") is String){
+            self.birthdate  = Int((aDecoder.decodeObject(forKey: "birthdate") as! String) )
+        }else{
+            self.birthdate  = aDecoder.decodeObject(forKey: "birthdate") as! Int?
+        }
         self.bio  = aDecoder.decodeObject(forKey: "bio") as! String?
         self.job  = aDecoder.decodeObject(forKey: "job") as! String?
         self.studies  = aDecoder.decodeObject(forKey: "studies") as! String?

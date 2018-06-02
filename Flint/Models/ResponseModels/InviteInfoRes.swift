@@ -13,7 +13,7 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 import Foundation
 struct InviteInfoRes : Codable {
-	let main : Main?
+	let main : GlobalInfo?
 	let users : [Users]?
 	let poll : [String]?
 

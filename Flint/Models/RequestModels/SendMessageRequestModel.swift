@@ -10,7 +10,7 @@ import Foundation
 
 class SendMessageRequestModel {
     
-    init(TEXT : String , TARGET : Int) {
+    init(TEXT : String , TARGET : Int , INVITE : Int) {
         
         self.USERNAME = GlobalFields.USERNAME
         
@@ -19,6 +19,8 @@ class SendMessageRequestModel {
         self.TEXT = TEXT
         
         self.TARGET = TARGET
+        
+        self.INVITE = INVITE
     }
     
     var USERNAME: String!
@@ -29,10 +31,12 @@ class SendMessageRequestModel {
     
     var TARGET : Int!
     
+    var INVITE : Int!
+    
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME! ,"token" : TOKEN! , "text" : TEXT! , "target" : TARGET!]
+        return ["username": USERNAME! ,"token" : TOKEN! , "text" : TEXT! , "target" : TARGET! , "invite" : INVITE!]
         
     }
     

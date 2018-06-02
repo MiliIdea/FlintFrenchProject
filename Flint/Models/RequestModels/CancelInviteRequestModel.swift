@@ -16,7 +16,7 @@ class CancelInviteRequestModel {
         
         self.TOKEN = GlobalFields.TOKEN
         
-        self.INVITE = invite
+        self.INVITE = invite.description
         
     }
     
@@ -24,7 +24,7 @@ class CancelInviteRequestModel {
     
     var TOKEN: String!
     
-    var INVITE : Int!
+    var INVITE : String!
     
     
     

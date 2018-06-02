@@ -22,7 +22,7 @@ class OneAtATimeViewController: UIViewController {
     }
     
     @IBAction func accept(_ sender: Any) {
-        (self.parent as! MainInvitationViewController).like("")
+        (self.parent as! MainInvitationViewController).like2()
         self.view.removeFromSuperview()
         self.removeFromParentViewController()
     }

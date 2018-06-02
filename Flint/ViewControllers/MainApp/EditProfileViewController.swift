@@ -47,7 +47,7 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
         self.sex.text = GlobalFields.userInfo.GENDER
         
         self.img1Button.kf.setBackgroundImage(with: URL(string: URLs.imgServer + (GlobalFields.userInfo.AVATAR)!), for: .normal)
-        self.img2Button.kf.setBackgroundImage(with: URL(string: URLs.imgServer + (GlobalFields.userInfo.SECOND_AVATAR)!), for: .normal)
+        self.img2Button.kf.setBackgroundImage(with: URL(string: URLs.imgServer + (GlobalFields.userInfo.SECOND_AVATAR ?? "")!), for: .normal)
         // Do any additional setup after loading the view.
     }
 
@@ -203,8 +203,9 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
             let button = UIButton(type: .system) // let preferred over var here
             button.frame = CGRect.init(x: self.view.frame.width - 100, y: self.view.frame.height - 100, width: 100, height: 100)
             button.layer.cornerRadius = 50
-            button.backgroundColor = UIColor.red
-            button.setTitle("Mili", for: .normal)
+            button.backgroundColor = UIColor.white
+            button.setTitle("", for: .normal)
+            button.setBackgroundImage(UIImage.init(named: "tikIcon"), for: .normal)
             button.tag = 777
             button.addTarget(self, action: #selector(self.cropAction), for: UIControlEvents.touchUpInside)
             cropViewController.view.addSubview(button)

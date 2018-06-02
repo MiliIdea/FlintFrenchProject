@@ -64,10 +64,10 @@ open class TextMessageCollectionViewCellFlintStyle: TextMessageCollectionViewCel
         self.baseStyle = baseStyle
         baseStyle.baseColorIncoming = UIColor.white
         baseStyle.baseColorOutgoing = UIColor.white
-        baseStyle.borderOutgoingTail = UIImage.init(named: "chat_line_out")
-        baseStyle.borderOutgoingNoTail = UIImage.init(named: "chat_line_out")
-        baseStyle.borderIncomingTail = UIImage.init(named: "chat_line")
-        baseStyle.borderIncomingNoTail = UIImage.init(named: "chat_line")
+        baseStyle.borderOutgoingTail = UIImage.init(named: lineOutImg)
+        baseStyle.borderOutgoingNoTail = UIImage.init(named: lineOutImg)
+        baseStyle.borderIncomingTail = UIImage.init(named: lineInImg)
+        baseStyle.borderIncomingNoTail = UIImage.init(named: lineInImg)
         
     }
     

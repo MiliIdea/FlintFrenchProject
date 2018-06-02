@@ -13,28 +13,46 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 import Foundation
 struct Pending_list : Codable {
-	let id : Int?
-	let name : String?
-	let avatar : String?
-	let available_at : Int?
-	let type : Int?
-
-	enum CodingKeys: String, CodingKey {
-
-		case id = "id"
-		case name = "name"
-		case avatar = "avatar"
-		case available_at = "available_at"
-		case type = "type"
-	}
-
-	init(from decoder: Decoder) throws {
-		let values = try decoder.container(keyedBy: CodingKeys.self)
-		id = try values.decodeIfPresent(Int.self, forKey: .id)
-		name = try values.decodeIfPresent(String.self, forKey: .name)
-		avatar = try values.decodeIfPresent(String.self, forKey: .avatar)
-		available_at = try values.decodeIfPresent(Int.self, forKey: .available_at)
-		type = try values.decodeIfPresent(Int.self, forKey: .type)
-	}
+    let user : Int?
+    let user_name : String?
+    let user_avatar : String?
+    let user_second_avatar : String?
+    let invite : Int?
+    let invite_type : Int?
+    let invite_available_at : Int?
+    let created_at : Int?
+    let accepted_at : Int?
+    let liked_at : Int?
+    let superliked_at : Int?
+    let owner_confirm_at : Int?
+    let reconfirm_at : Int?
+    let owner_reconfirm_at : Int?
+    let owner : Int?
+    let owner_name : String?
+    let owner_avatar : String?
+    let owner_second_avatar : String?
+    
+    enum CodingKeys: String, CodingKey {
+        
+        case user = "user"
+        case user_name = "user_name"
+        case user_avatar = "user_avatar"
+        case user_second_avatar = "user_second_avatar"
+        case invite = "invite"
+        case invite_type = "invite_type"
+        case invite_available_at = "invite_available_at"
+        case created_at = "created_at"
+        case accepted_at = "accepted_at"
+        case liked_at = "liked_at"
+        case superliked_at = "superliked_at"
+        case owner_confirm_at = "owner_confirm_at"
+        case reconfirm_at = "reconfirm_at"
+        case owner_reconfirm_at = "owner_reconfirm_at"
+        case owner = "owner"
+        case owner_name = "owner_name"
+        case owner_avatar = "owner_avatar"
+        case owner_second_avatar = "owner_second_avatar"
+    }
+    
 
 }

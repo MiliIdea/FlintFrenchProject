@@ -20,7 +20,7 @@ class SignInViewController: UIViewController {
     // MARK: - ViewMethodes
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        emailAddressOrPhone.text = ""
         // Do any additional setup after loading the view.
     }
 
@@ -54,6 +54,7 @@ class SignInViewController: UIViewController {
                 //inja bayad check kard k ta koja takmil karde
                 
                 if(res?.data != nil){
+                    GlobalFields.defaults.set(false, forKey: "reconfirm")
                     
                     GlobalFields.loginResData = res?.data!
                     
@@ -61,31 +62,40 @@ class SignInViewController: UIViewController {
                     
                     GlobalFields.USERNAME = res?.data?.username
                     
+                    GlobalFields.ID = res?.data?.id
+                    
                     let data = res?.data
                     if(data?.name == nil || data?.name == ""){
                         let vC : CreateNameViewController = (self.storyboard?.instantiateViewController(withIdentifier: "CreateNameViewController"))! as! CreateNameViewController
+                        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                         self.navigationController?.pushViewController(vC, animated: true)
                     }else if(data?.birthdate == nil){
                         let vC : BirthDateViewController = (self.storyboard?.instantiateViewController(withIdentifier: "BirthDateViewController"))! as! BirthDateViewController
+                        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                         self.navigationController?.pushViewController(vC, animated: true)
                     }else if(data?.gender == nil){
                         let vC : ManOrWomanViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ManOrWomanViewController"))! as! ManOrWomanViewController
+                        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                         self.navigationController?.pushViewController(vC, animated: true)
                     }else if(data?.avatar == nil || (data?.avatar?.contains("avatar.jpeg"))!){
                         let vC : ProfilePicViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ProfilePicViewController"))! as! ProfilePicViewController
+                        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                         self.navigationController?.pushViewController(vC, animated: true)
                     }else if(data?.selfie == nil || (data?.selfie?.contains("avatar.jpeg"))!){
                         let vC : SelfiTrustViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SelfiTrustViewController"))! as! SelfiTrustViewController
+                        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                         self.navigationController?.pushViewController(vC, animated: true)
                     }else if(data?.bio == nil){
                         let vC : ProfileBioViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ProfileBioViewController"))! as! ProfileBioViewController
+                        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                         self.navigationController?.pushViewController(vC, animated: true)
                     }else if(data?.looking_for == nil){
                         let vC : XViewController = (self.storyboard?.instantiateViewController(withIdentifier: "XViewController"))! as! XViewController
+                        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                         self.navigationController?.pushViewController(vC, animated: true)
                     }else {
                         let vC : FirstMapViewController = (self.storyboard?.instantiateViewController(withIdentifier: "FirstMapViewController"))! as! FirstMapViewController
-                        
+                        GlobalFields.defaults.set(true, forKey: "isRegisterCompleted")
                         self.navigationController?.pushViewController(vC, animated: true)
                     }
                 }

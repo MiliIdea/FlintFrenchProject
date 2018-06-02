@@ -19,8 +19,8 @@ struct GetMyChatsRes : Codable {
 
 	enum CodingKeys: String, CodingKey {
 
-		case pending_list = "pending_list"
-		case message_list = "message_list"
+		case pending_list = "pendings"
+		case message_list = "messages"
 		case chats = "chats"
 	}
 

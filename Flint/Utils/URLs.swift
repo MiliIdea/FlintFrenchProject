@@ -11,8 +11,10 @@ import Foundation
 class URLs {
     
     static let server = "http://api-flint.com/web/index.php?r=flint/"
+//    static let server = "http://185.125.206.203/~apiflint/web/index.php?r=flint/"
     
     static let imgServer = "http://api-flint.com/web/"
+//    static let imgServer = "http://185.125.206.203/~apiflint/web/"
     
     static let login = server + "login"
     
@@ -28,7 +30,7 @@ class URLs {
     
     static let resetPassword = server + "reset-password"
     
-    static let activeUser = server + "active_user"
+    static let activeUser = server + "active-user"
     
     static let resendActivationCode = server + "resend-activation-code"
     
@@ -58,11 +60,13 @@ class URLs {
     
     static let likePersonForInvite = server + "like-person-for-invite"
     
-    static let superlikeForInvite = server + "superlike-person-for-invite"
+    static let superlikeForInvite = server + "super-like-person-for-invite"
     
     static let cancelInvite = server + "cancel-invite"
     
     static let confirmInvitation = server + "confirm-invite"
+    
+    static let reconfirmInvitation = server + "reconfirm-invite"
     
     static let getConfirmListForInvite = server + "get-invite-confirm-list"
     
@@ -84,11 +88,9 @@ class URLs {
     
     static let getActiveInvite = server + "get-user-active-invitation"
     
-    static let getMyChats = server + "get-my-chats"
+    static let getMyChats = server + "get-message-list"
     
     static let sendInviteMessage = server + "send-invite-message"
-    
-    static let sendMessage = server + "send-message"
     
     static let createChannel = server + "create-channel"
     
@@ -98,5 +100,14 @@ class URLs {
     
     static let getChatMessage = server + "get-chat-messages"
     
+    static let getInviteMessage = server + "get-invite-message"
+    
+    static let finishDate = server + "finish-date"
+    
+    static let getHoureMessage = server + "get-message"
+    
+    static let sendHoureMessage = server + "send-message"
+    
+    static let sendChatMessage = server + "send-chat-message"
     
 }

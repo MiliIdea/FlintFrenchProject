@@ -135,9 +135,13 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
     
     @IBAction func logout(_ sender: Any) {
         let vC : IntroViewController = (self.storyboard?.instantiateViewController(withIdentifier: "IntroViewController"))! as! IntroViewController
-        self.navigationController?.pushViewController(vC, animated: true)
         GlobalFields.USERNAME = ""
         GlobalFields.TOKEN = ""
+        GlobalFields.USERNAME = nil
+        GlobalFields.TOKEN = nil
+        GlobalFields.ID = nil
+        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
+        self.navigationController?.pushViewController(vC, animated: true)
     }
 
     @IBAction func deleteMyAccount(_ sender: Any) {

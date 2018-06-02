@@ -38,16 +38,25 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate{
         }
         
         nameLabel.text = GlobalFields.userInfo.NAME
+        if(GlobalFields.userInfo.BIRTHDATE != nil){
+            let now = Date()
+            let birthday: Date = Date(timeIntervalSince1970: TimeInterval(GlobalFields.userInfo.BIRTHDATE!))
+            let calendar = Calendar.current
+            let ageComponents = calendar.dateComponents([.year], from: birthday, to: now)
+            let age = ageComponents.year!
+            nameLabel.text = GlobalFields.userInfo.NAME! + " | " + age.description
+        }
+        self.profilePic.kf.setImage(with: URL(string: URLs.imgServer + (GlobalFields.userInfo.AVATAR)!))
         
         if(GlobalFields.userInfo.JOB != nil && GlobalFields.userInfo.JOB != ""){
+            jobLabel.alpha = 1
             jobLabel.text = GlobalFields.userInfo.JOB
         }else if(GlobalFields.userInfo.STUDIES != nil && GlobalFields.userInfo.STUDIES != ""){
             jobLabel.text = GlobalFields.userInfo.STUDIES
+            jobLabel.alpha = 1
         }else{
             jobLabel.alpha = 0
         }
-        
-        self.profilePic.kf.setImage(with: URL(string: URLs.imgServer + (GlobalFields.userInfo.AVATAR)!))
         
         
     }
@@ -62,6 +71,7 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate{
             let age = ageComponents.year!
             nameLabel.text = GlobalFields.userInfo.NAME! + " | " + age.description
         }
+        self.profilePic.kf.setImage(with: URL(string: URLs.imgServer + (GlobalFields.userInfo.AVATAR)!))
         
         if(GlobalFields.userInfo.JOB != nil && GlobalFields.userInfo.JOB != ""){
             jobLabel.alpha = 1
@@ -87,14 +97,13 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate{
     }
     
     @IBAction func goShootingPhotoPage(_ sender: Any) {
+        
     }
     
     @IBAction func goEditPage(_ sender: Any) {
     }
     
     @IBAction func goSetting(_ sender: Any) {
-        
-        
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
@@ -125,7 +134,8 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate{
     
     
     @IBAction func goMessaging(_ sender: Any) {
-        
+        let vC : SparksViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SparksViewController"))! as! SparksViewController
+        self.navigationController?.pushViewController(vC, animated: true)
     }
     
     @IBAction func back(_ sender: Any) {

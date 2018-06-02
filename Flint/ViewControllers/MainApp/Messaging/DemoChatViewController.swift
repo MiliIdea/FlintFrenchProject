@@ -12,17 +12,20 @@ class DemoChatViewController: BaseChatViewController {
     let messagesSelector = BaseMessagesSelector()
     
     
-    var type : Int = 1 //type Business , lets see ,friendly          ///////////ALL MODES
+    var type : Int = 1           ///////////ALL MODES
     
-    var inviteID : Int?          ///////////INVITE MODE
+    var inviteID : Int?          ///////////INVITE AND PENDINGS AND MESSAGES MODE
     
-    var targetId : Int?          ///////////CHAT MODE
+    var targetId : Int?          ///////////PENDINGS AND MESSAGES MODE
     
-    var isOneTextMode : Bool = false
+    var chatID : Int?            ///////////CHAT MODE
+    
+    var isOneTextMode : ChatPageTypes = .Invites
+    
     var isSendedOneMessage : Bool = false
     
     // MARK : -Pusher Channel
-    var channelName : String = ""          ///////////CHAT MODE
+    var channelName : String?         ///////////CHAT MODE
     var options : PusherClientOptions?
     var pusher : Pusher?
     var pusherChannel : PusherChannel?
@@ -47,7 +50,7 @@ class DemoChatViewController: BaseChatViewController {
         self.messagesSelector.delegate = self
         self.chatItemsDecorator = DemoChatItemsDecorator(messagesSelector: self.messagesSelector)
         
-        if(isSendedOneMessage && isOneTextMode){
+        if(isSendedOneMessage && isOneTextMode == .Invites){
             self.chatInputPresenter.chatInputBar.alpha = 0
             self.view.endEditing(true)
         }
@@ -58,24 +61,39 @@ class DemoChatViewController: BaseChatViewController {
             key: "6a39f8875e90a2c2cec5",
             options: options!
         )
-        pusher?.connect()
         
-        pusherChannel = pusher?.subscribe(self.channelName)
-        
-        let _ = pusherChannel?.bind(eventName: "receive-message", callback: { (data: Any?) -> Void in
-            if let data = data as? [String : AnyObject] {
-                if let message = data["message"] as? String {
-                    print(message)
-                    self.dataSource.addIncommingTextMessage(message)
-                }
-            }
-        })
+        self.callBinding()
         
         
     }
     
 
+    override func viewDidAppear(_ animated: Bool) {
+        if(self.isOneTextMode == .Chats){
+            //call history chat
+        }
+    }
+    
 
+    func callBinding(){
+        pusherChannel = pusher?.subscribe(self.channelName ?? "")
+        let _ =  pusherChannel?.unbindAll(forEventName: "receive-message")
+        let _ = pusherChannel?.bind(eventName: "receive-message", callback: { (data: Any?) -> Void in
+            if let data = data as? [String : AnyObject] {
+                if let message = data["text"] as? String {
+                    print(message)
+                    print(GlobalFields.ID.description)
+                    if((data["senderId"] as! Int).description != GlobalFields.ID.description){
+                        self.dataSource.addIncommingTextMessage(message)
+                    }
+                    
+                }
+            }
+        })
+        
+        pusher?.connect()
+    }
+    
     var chatInputPresenter: BasicChatInputBarPresenter!
     override func createChatInputView() -> UIView {
         let chatInputView = ChatInputBar.loadNib()
@@ -124,27 +142,34 @@ class DemoChatViewController: BaseChatViewController {
         let item = TextChatInputItem()
         item.textInputHandler = { [weak self] text in
             self?.dataSource.addTextMessage(text)
-            if(self?.isOneTextMode ?? false)!{
+            if(self?.parent is MessagePageViewController){
+                (self?.parent as! MessagePageViewController).backLabel.alpha = 0
+            }
+            if(self?.isOneTextMode == .Invites){
                 self?.chatInputPresenter.chatInputBar.alpha = 0
                 self?.view.endEditing(true)
                 //inja bayad service rest call she
-                self?.sendOneMessageModeToServer(txt: text)
-            }else{
+                self?.sendInviteMessageModeToServer(txt: text)
+            }else if(self?.isOneTextMode == .Messages || self?.isOneTextMode == .Pendings){
                 //call send Message
+                self?.chatInputPresenter.chatInputBar.alpha = 0
+                self?.view.endEditing(true)
                 self?.sendMessageToServer(txt :text)
+            }else if(self?.isOneTextMode == .Chats){
+                self?.sendChatMessageToServer(txt: text)
             }
             
         }
         return item
     }
     
-    func sendOneMessageModeToServer(txt : String){
+    func sendInviteMessageModeToServer(txt : String){
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         request(URLs.sendInviteMessage, method: .post , parameters: SendInviteMessageRequestModel.init(TEXT: txt, INVITE: self.inviteID!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
             
             let res = response.result.value
-            
+            (self.parent as! MessagePageViewController).botBackButton.alpha = 1
             
         }
     }
@@ -152,13 +177,26 @@ class DemoChatViewController: BaseChatViewController {
     func sendMessageToServer(txt : String){
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
-        request(URLs.sendMessage, method: .post , parameters: SendMessageRequestModel.init(TEXT: txt, TARGET: self.targetId! ).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+        request(URLs.sendHoureMessage, method: .post , parameters: SendMessageRequestModel.init(TEXT: txt, TARGET: self.targetId! ,INVITE: self.inviteID!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+            
+            let res = response.result.value
+            (self.parent as! MessagePageViewController).botBackButton.alpha = 1
+            
+        }
+    }
+    
+    
+    func sendChatMessageToServer(txt : String){
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        request(URLs.sendChatMessage, method: .post , parameters: SendChatRequestModel.init(TEXT: txt, CHAT: self.chatID! ).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
             
             let res = response.result.value
             
             
         }
     }
+    
 
     private func createPhotoInputItem() -> PhotosChatInputItem {
         let item = PhotosChatInputItem(presentingController: self)

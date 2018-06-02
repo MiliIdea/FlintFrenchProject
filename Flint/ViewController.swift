@@ -57,6 +57,21 @@ class ViewController: UIViewController {
      7 after poll
      */
 
+    
+    
+    /*
+ 
+     finish kardane date : availabel + 10min
+     reconfirm popup : availble - 40min
+     poll : availabel + 12min
+     cancel invite : availbel - 5min
+ 
+ 
+ 
+ */
+    
+    
+    
 }
 
 

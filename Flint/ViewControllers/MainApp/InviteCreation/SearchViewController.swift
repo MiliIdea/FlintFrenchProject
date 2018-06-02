@@ -265,7 +265,7 @@ extension SearchViewController: UITableViewDelegate {
                 if(res?.status == "success" && res?.data != nil && (res?.data?.count)! > 0){
                     for p in (res?.data)!{
                         let marker = MyAnnotation()
-                        marker.coordinate = .init(latitude: Double(p.st_x!)!, longitude: Double(p.st_y!)!)
+                        marker.coordinate = .init(latitude: Double(p.st_y!)!, longitude: Double(p.st_x!)!)
                         marker.identifier = p.title
                         self.map.addAnnotation(marker)
                     }

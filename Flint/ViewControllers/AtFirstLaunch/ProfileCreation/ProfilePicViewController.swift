@@ -22,7 +22,7 @@ class ProfilePicViewController: UIViewController ,GalleryControllerDelegate , IG
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        uploadButton.setTitle("CHOOSE IMAGE", for: .normal)
+        uploadButton.setTitle("CHOISISSEZ IMAGE", for: .normal)
         // Do any additional setup after loading the view.
     }
 
@@ -37,12 +37,12 @@ class ProfilePicViewController: UIViewController ,GalleryControllerDelegate , IG
     
     @IBAction func uploadImage(_ sender: Any) {
         
-        if(uploadButton.title(for: .normal)! == "NEXT"){
+        if(uploadButton.title(for: .normal)! == "SUIVANT"){
             let vC : SelfiTrustViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SelfiTrustViewController"))! as! SelfiTrustViewController
             self.navigationController?.pushViewController(vC, animated: true)
         }else if(uploadButton.title(for: .normal)! == "UPLOAD"){
             uploadImage()
-        }else if(uploadButton.title(for: .normal)! == "CHOOSE IMAGE"){
+        }else if(uploadButton.title(for: .normal)! == "CHOISISSEZ IMAGE"){
             let gallery = GalleryController()
             gallery.delegate = self
             
@@ -85,7 +85,7 @@ class ProfilePicViewController: UIViewController ,GalleryControllerDelegate , IG
                     
                     if(res?.status == "success"){
                         GlobalFields.userInfo.AVATAR = res?.data?.name
-                        self.uploadButton.setTitle("NEXT", for: .normal)
+                        self.uploadButton.setTitle("SUIVANT", for: .normal)
                     }
                     
                 }
@@ -120,8 +120,9 @@ class ProfilePicViewController: UIViewController ,GalleryControllerDelegate , IG
             let button = UIButton(type: .system) // let preferred over var here
             button.frame = CGRect.init(x: self.view.frame.width - 100, y: self.view.frame.height - 100, width: 100, height: 100)
             button.layer.cornerRadius = 50
-            button.backgroundColor = UIColor.red
-            button.setTitle("Mili", for: .normal)
+            button.backgroundColor = UIColor.white
+            button.setTitle("", for: .normal)
+            button.setBackgroundImage(UIImage.init(named: "tikIcon"), for: .normal)
             button.tag = 777
             button.addTarget(self, action: #selector(self.cropAction), for: UIControlEvents.touchUpInside)
             cropViewController.view.addSubview(button)

@@ -29,8 +29,8 @@ struct Users : Codable {
 	let superliked_at : Int?
 	let hood : String?
 	let city : String?
-	let longitude : Double?
-	let latitude : Double?
+	let longitude : String?
+	let latitude : String?
 
 	enum CodingKeys: String, CodingKey {
 

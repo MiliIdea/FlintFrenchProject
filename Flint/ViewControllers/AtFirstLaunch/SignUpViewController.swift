@@ -44,7 +44,7 @@ class SignUpViewController: UIViewController {
     }
     
     @IBAction func goAnotherSignUp(_ sender: Any) {
-        if( self.titleNumbOrEmail.text == "Enter your phone number" ){
+        if( self.titleNumbOrEmail.text == "Entrez votre numéro de téléphone" ){
             setEmailMode()
         }else{
             setMobileNumberMode()
@@ -61,11 +61,31 @@ class SignUpViewController: UIViewController {
             
             let res = response.result.value
             
-            GlobalFields.USERNAME = res?.data?.username
+            if(res?.status == "success"){
             
-            let vC : ActivationCodeViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ActivationCodeViewController"))! as! ActivationCodeViewController
+                GlobalFields.USERNAME = res?.data?.username
             
-            self.navigationController?.pushViewController(vC, animated: true)
+                let vC : ActivationCodeViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ActivationCodeViewController"))! as! ActivationCodeViewController
+            
+                vC.isForgottenMode = false
+                
+                self.navigationController?.pushViewController(vC, animated: true)
+                
+            }else{
+                self.view.makeToast(res?.message)
+                
+                if(res?.errCode! == -5){
+                    
+                    GlobalFields.USERNAME = self.inputField.text
+                    
+                    let vC : ActivationCodeViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ActivationCodeViewController"))! as! ActivationCodeViewController
+                    
+                    vC.isForgottenMode = false
+                    
+                    self.navigationController?.pushViewController(vC, animated: true)
+                }
+                
+            }
             
         }
         
@@ -79,18 +99,18 @@ class SignUpViewController: UIViewController {
     
     func setMobileNumberMode(){
         self.preNumLabel.alpha = 0
-        self.titleNumbOrEmail.text = "Enter your phone number"
-        self.inputField.placeholder = "Phone number"
-        self.Sdescription.text = "A tdxt confirmation will be sent to you. This phone number will allow you to connect or reset your password if need be"
-        self.goAnotherSignUpButton.setTitle("Use your e-mail adress", for: .normal)
+        self.titleNumbOrEmail.text = "Entrez votre numéro de téléphone"
+        self.inputField.placeholder = "Numéro téléphone"
+        self.Sdescription.text = "Un texto de confirmation vous sera envoyé.Ce numéro vous permettra de vous connectez et de réinitialiser  votre mot de passe le cas échéant."
+        self.goAnotherSignUpButton.setTitle("Utilisez votre adresse e-mail", for: .normal)
     }
     
     func setEmailMode(){
         self.preNumLabel.alpha = 0
-        self.titleNumbOrEmail.text = "Enter your e-mail adress"
-        self.inputField.placeholder = "E-mail adress"
-        self.Sdescription.text = "An e-mail of confirmation will be sent to you. This e-mail adress will allow you to connect or reset your password if need be."
-        self.goAnotherSignUpButton.setTitle("Use your phone number", for: .normal)
+        self.titleNumbOrEmail.text = "Entrez votre adresse e-mail"
+        self.inputField.placeholder = "Adresse e-mail"
+        self.Sdescription.text = "Un e-mail de confirmation vous sera envoyé.Cette adresse e-mail vous permettra de vous connectez et de réinitialiser  votre mot de passe le cas échéant."
+        self.goAnotherSignUpButton.setTitle("Utilisez votre numéro de téléphone", for: .normal)
     }
     
     @IBAction func dismiss(_ sender: Any) {

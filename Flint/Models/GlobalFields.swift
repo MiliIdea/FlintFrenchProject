@@ -67,6 +67,15 @@ public class GlobalFields {
         }
     }
     
+    static var ID : Int! {
+        get{
+            return (self.defaults.object(forKey: "ID") ?? "") as! Int
+        }
+        set(newValue){
+            self.defaults.set(newValue, forKey: "ID")
+        }
+    }
+    
     static var oneSignalId : String?
     
     static var userInfo : EditUserInformationRequestModel = EditUserInformationRequestModel()

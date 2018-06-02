@@ -117,7 +117,7 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
             let res = response.result.value
             
             if(res?.status == "success"){
-                
+                GlobalFields.defaults.set(false, forKey: "reconfirm")
                 GlobalFields.invite = (res?.data?.invite)!
                 
                 request(URLs.getUsersListForInvite, method: .post , parameters: GetUsersListForInviteRequestModel.init(invite: (res?.data?.invite)!, page: 1, perPage: 100, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetUserListForInviteRes]>>) in
@@ -125,6 +125,7 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
                     let res = response.result.value
                     
                     let vC : MainInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainInvitationViewController"))! as! MainInvitationViewController
+                    vC.inviteID = GlobalFields.invite
                     if(res?.data != nil && (res?.data?.count)! > 0){
                         vC.usersList = (res?.data)!
                         vC.viewType = .AddPersonToInvite

@@ -51,7 +51,12 @@ class XViewController: UIViewController {
             
             let res = response.result.value
             l.disView()
-            if(res?.status == "success"){
+            if(res?.status! == "success"){
+                GlobalFields.defaults.set(true, forKey: "isRegisterCompleted")
+                GlobalFields.TOKEN = res?.data?.token
+                GlobalFields.USERNAME = res?.data?.username
+                GlobalFields.ID = res?.data?.id
+                GlobalFields.loginResData = res?.data
                 let vC : FirstMapViewController = (self.storyboard?.instantiateViewController(withIdentifier: "FirstMapViewController"))! as! FirstMapViewController
                 self.navigationController?.pushViewController(vC, animated: true)
             }

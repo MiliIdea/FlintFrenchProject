@@ -38,6 +38,7 @@ class DetermineInvitationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        
         if(isParty){
             //button party mood bayad namayesh dade beshe
             self.partyButton.alpha = 1
@@ -70,14 +71,21 @@ class DetermineInvitationViewController: UIViewController {
            
             let w = GlobalFields.inviteExactTime
             
-            self.timeButton.setTitle(w?.toStringWithRelativeTime(strings : [.nowPast: "right now"]), for: .normal)
+            self.timeButton.setTitle(w?.toStringWithRelativeTime(strings : [.nowPast: "Right now" ,.secondsPast: "Right now"]), for: .normal)
             
+        }else{
+            GlobalFields.inviteExactTime = Date()
+            GlobalFields.inviteWhen = 0
         }
         
         if(GlobalFields.inviteExactTime != nil && self.isParty){
-            let dateFormatterGet : DateFormatter = DateFormatter()
-            dateFormatterGet.dateFormat = "dd MMM yyyy - HH:mm"
-            self.timeButton.setTitle(dateFormatterGet.string(from: GlobalFields.inviteExactTime!), for: .normal)
+//            let dateFormatterGet : DateFormatter = DateFormatter()
+//            dateFormatterGet.dateFormat = "dd MMM yyyy - HH:mm"
+//            self.timeButton.setTitle(dateFormatterGet.string(from: GlobalFields.inviteExactTime!), for: .normal)
+            self.timeButton.setTitle((GlobalFields.inviteExactTime)?.toStringWithRelativeTime(strings : [.nowPast: "Right now" ,.secondsPast: "Right now"]), for: .normal)
+        }else{
+            GlobalFields.inviteExactTime = Date()
+            GlobalFields.inviteWhen = 0
         }
         
         if(GlobalFields.inviteNumber != nil){
@@ -146,7 +154,7 @@ class DetermineInvitationViewController: UIViewController {
     @IBAction func next(_ sender: Any) {
         
         //ag hame chi ok bud ejaze midim bere marhale bad
-        if(self.timeButton.title(for: .normal) == "" || self.numberOfPersonButton.title(for: .normal) == "" || self.positionButton.title(for: .normal) == ""){
+        if(self.timeButton.title(for: .normal) == "" || self.numberOfPersonButton.title(for: .normal) == "" || self.positionButton.title(for: .normal) == "" || self.positionButton.title(for: .normal) == "Your Position"){
             return
         }
         
@@ -181,7 +189,7 @@ class DetermineInvitationViewController: UIViewController {
                 let res = response.result.value
                 
                 if(res?.status == "success"){
-                    
+                    GlobalFields.defaults.set(false, forKey: "reconfirm")
                     GlobalFields.invite = (res?.data?.invite)!
                     
                     request(URLs.getUsersListForInvite, method: .post , parameters: GetUsersListForInviteRequestModel.init(invite: (res?.data?.invite)!, page: 1, perPage: 10, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetUserListForInviteRes]>>) in
@@ -189,6 +197,7 @@ class DetermineInvitationViewController: UIViewController {
                         let res = response.result.value
                         
                         let vC : MainInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainInvitationViewController"))! as! MainInvitationViewController
+                        vC.inviteID = GlobalFields.invite
                         if(res?.data != nil && (res?.data?.count)! > 0){
                             vC.usersList = (res?.data)!
                             vC.viewType = .AddPersonToInvite

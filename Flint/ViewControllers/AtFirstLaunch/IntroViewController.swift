@@ -14,7 +14,7 @@ import OneSignal
 import Alamofire
 import CodableAlamofire
 
-class IntroViewController: UIViewController , UICollectionViewDataSource, UICollectionViewDelegate{
+class IntroViewController: UIViewController , UICollectionViewDataSource, UICollectionViewDelegate , UICollectionViewDelegateFlowLayout{
 
     //MARK: -Fields
     
@@ -39,20 +39,16 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
         
         slider.dataSource = self
         slider.delegate = self
-     
-//        LocalNotifications().pushLocalNotification(info: ["mili" : "haminjuri "], title: "", subtitle: "", body: "", timeInterval: .init(10), identifier: "test")
-        
-        
-        
-        
-//        if(GlobalFields.TOKEN != nil && GlobalFields.TOKEN != ""){
-//            let vC : FirstMapViewController = (self.storyboard?.instantiateViewController(withIdentifier: "FirstMapViewController"))! as! FirstMapViewController
-//    
-//            self.navigationController?.pushViewController(vC, animated: true)
-//        }
+        print(GlobalFields.TOKEN)
+        if(GlobalFields.TOKEN != nil && GlobalFields.TOKEN != "" && GlobalFields.defaults.bool(forKey: "isRegisterCompleted")){
+            let vC : FirstMapViewController = (self.storyboard?.instantiateViewController(withIdentifier: "FirstMapViewController"))! as! FirstMapViewController
+    
+            self.navigationController?.pushViewController(vC, animated: true)
+        }
         
     }
-
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -143,6 +139,8 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
                     
                     GlobalFields.USERNAME = res?.data?.username
                     
+                    GlobalFields.ID = res?.data?.id
+                    
                     //inja bayad birthday va nameo khodemun por konim
                     GlobalFields.userInfo.NAME = self.fbName
                     
@@ -203,6 +201,8 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
                 
                 GlobalFields.USERNAME = res?.data?.username
                 
+                GlobalFields.ID = res?.data?.id
+                
                 //inja bayad birthday va nameo khodemun por konim
                 GlobalFields.userInfo.NAME = self.fbName
                 
@@ -249,6 +249,11 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
         return 3
     }
 
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize.init(width: self.view.frame.width, height: self.slider.frame.height)
+    }
     
 }
 
