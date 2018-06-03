@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Futura_heavy.ttf</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -30,7 +26,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>7</string>
+	<string>8</string>
 	<key>FacebookAppID</key>
 	<string>185022978807760</string>
 	<key>FacebookDisplayName</key>
@@ -61,6 +57,10 @@
 	<string>detect beacons around you!</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app requires access to photo library</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Futura_heavy.ttf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>

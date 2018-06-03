@@ -309,19 +309,18 @@ class MessagePageViewController: UIViewController {
                 if(res?.data?.count != 0){
                     self.backLabel.alpha = 0
                 }
-                var messages : [DemoTextMessageModel] = [DemoTextMessageModel]()
+//                var messages : [DemoTextMessageModel] = [DemoTextMessageModel]()
                 for m in (res?.data)! {
                     if((m.user?.description)! == GlobalFields.ID.description){
                         controller.isSendedOneMessage = true
+                        self.botBackButton.backgroundColor = GlobalFields.getTypeColor(type: self.type)
                         self.botBackButton.alpha = 1
-
+                        controller.chatInputPresenter.chatInputBar.alpha = 0
                         controller.dataSource.addTextMessage(m.text!)
                     }else{
                         controller.dataSource.addIncommingTextMessage(m.text!)
                     }
                 }
-                
-                controller.dataSource = DemoChatDataSource.init(messages: messages, pageSize: 100)
                 
             }
             

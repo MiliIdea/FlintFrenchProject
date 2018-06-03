@@ -39,6 +39,9 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
         
         slider.dataSource = self
         slider.delegate = self
+        
+        slider.isScrollEnabled = false
+        
         print(GlobalFields.TOKEN)
         if(GlobalFields.TOKEN != nil && GlobalFields.TOKEN != "" && GlobalFields.defaults.bool(forKey: "isRegisterCompleted")){
             let vC : FirstMapViewController = (self.storyboard?.instantiateViewController(withIdentifier: "FirstMapViewController"))! as! FirstMapViewController
@@ -235,7 +238,7 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
         let cell : IntroCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: "IntroCollectionViewCell", for: indexPath as IndexPath) as! IntroCollectionViewCell
         
         if(indexPath.row == 0){
-            cell.introImage.image = UIImage.init(named: "Img1")
+            cell.introImage.image = UIImage.init(named: "splash")
         }else if(indexPath.row == 1){
             cell.introImage.image = UIImage.init(named: "Img2")
         }else if(indexPath.row == 2){
@@ -246,7 +249,7 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return 1
     }
 
     func collectionView(_ collectionView: UICollectionView,

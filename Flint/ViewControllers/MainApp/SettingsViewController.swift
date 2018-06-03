@@ -21,7 +21,6 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
     
     @IBOutlet weak var seekSlider: RangeSeekSlider? = RangeSeekSlider()
     
-    @IBOutlet weak var SwHaveLighter: UISwitch!
     @IBOutlet weak var SwNewPin: UISwitch!
     @IBOutlet weak var SwInvitationAccepted: UISwitch!
     @IBOutlet weak var SwMessages: UISwitch!
@@ -64,7 +63,7 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
         
         self.invite_accepted_notification = self.SwInvitationAccepted.isOn
         
-        self.lighter = self.SwHaveLighter.isOn
+//        self.lighter = self.SwHaveLighter.isOn
        
         if(butSetMan.titleColor(for: .normal) == UIColor("#0A0A0A")){
             looking_for = 1
@@ -168,7 +167,7 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
         
         self.SwInvitationAccepted.isOn = (settings?.invite_accepted_notification)!
         
-        self.SwHaveLighter.isOn = (settings?.lighter)!
+//        self.SwHaveLighter.isOn = (settings?.lighter)!
         
         if(settings?.looking_for == 1){
             self.setSex("man")
