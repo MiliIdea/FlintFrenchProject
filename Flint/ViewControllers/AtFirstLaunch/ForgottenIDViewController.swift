@@ -33,14 +33,17 @@ class ForgottenIDViewController: UIViewController {
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
+        let l = GlobalFields.showLoading(vc: self)
         request(URLs.forgotPassword, method: .post , parameters: ForgotPasswordRequestModel.init(username : self.inputField.text!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
             
             let res = response.result.value
-            
+            l.disView()
             if(res?.status == "success"){
                 let vC : ActivationCodeViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ActivationCodeViewController"))! as! ActivationCodeViewController
                 vC.userNameFromForgotten = self.inputField.text!
                 self.navigationController?.pushViewController(vC, animated: true)
+            }else{
+                self.view.makeToast(res?.message)
             }
             
         }

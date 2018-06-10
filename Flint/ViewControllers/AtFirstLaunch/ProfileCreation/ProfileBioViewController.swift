@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Toast_Swift
 
 class ProfileBioViewController: UIViewController , UITextViewDelegate{
 
@@ -31,10 +32,28 @@ class ProfileBioViewController: UIViewController , UITextViewDelegate{
     }
     
     @IBAction func next(_ sender: Any) {
+        if(!checkValidation()){
+            return
+        }
         GlobalFields.userInfo.BIO = self.bioText.text
         let vC : XViewController = (self.storyboard?.instantiateViewController(withIdentifier: "XViewController"))! as! XViewController
         self.navigationController?.pushViewController(vC, animated: true)
     }
+    
+    func checkValidation() -> Bool{
+        if(self.bioText.text.isEmpty){
+            self.view.makeToast("pls write more than 10 characters")
+            return false
+        }else if(self.bioText.text.characters.count < 10){
+            self.view.makeToast("pls write more than 10 characters")
+            return false
+        }else{
+            return true
+        }        
+        
+    }
+    
+    
     @IBAction func dismiss(_ sender: Any) {
         self.view.endEditing(true)
     }

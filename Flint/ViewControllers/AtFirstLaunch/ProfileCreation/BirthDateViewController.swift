@@ -26,6 +26,13 @@ class BirthDateViewController: UIViewController {
         datePicker.alpha = 0
         // Do any additional setup after loading the view.
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        //min 18 max 55
+        datePicker.minimumDate = Date.init(timeIntervalSinceNow: -1 * (55 * 31104000))
+        datePicker.maximumDate = Date.init(timeIntervalSinceNow: -1 * (17 * 31104000))
+        
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

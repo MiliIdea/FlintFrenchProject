@@ -18,8 +18,12 @@ import BvMapCluster
 import ClusterKit
 import Kingfisher
 import AFDateHelper
+import TransitionTreasury
 
-class FirstMapViewController: UIViewController ,MKMapViewDelegate{
+
+class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTransitionable{
+    var tr_pushTransition: TRNavgationTransitionDelegate?
+    
 
     
     @IBOutlet weak var mapView: MKMapView!
@@ -114,6 +118,18 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate{
         self.invitationButton.layer.cornerRadius = self.invitationButton.frame.height / 2
         self.invitationButton.cornerRadius = self.invitationButton.frame.height / 2
         
+        
+        ownerImageButton.titleLabel?.numberOfLines = 1
+        ownerImageButton.titleLabel?.minimumScaleFactor = 0.5
+        ownerImageButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        
+        messageButton.titleLabel?.numberOfLines = 1
+        messageButton.titleLabel?.minimumScaleFactor = 0.5
+        messageButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        
+        invitationButton.titleLabel?.numberOfLines = 1
+        invitationButton.titleLabel?.minimumScaleFactor = 0.5
+        invitationButton.titleLabel?.adjustsFontSizeToFitWidth = true
     }
     
     override func viewDidAppear(_ animated: Bool) {

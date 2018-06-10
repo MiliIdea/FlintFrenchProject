@@ -12,8 +12,12 @@ import CodableAlamofire
 import UIColor_Hex_Swift
 import Kingfisher
 import IQKeyboardManagerSwift
+import TransitionTreasury
 
-class SparksViewController: UIViewController , UITableViewDelegate , UITableViewDataSource , UICollectionViewDelegate , UICollectionViewDataSource {
+class SparksViewController: UIViewController , UITableViewDelegate , UITableViewDataSource , UICollectionViewDelegate , UICollectionViewDataSource , NavgationTransitionable{
+    
+    var tr_pushTransition: TRNavgationTransitionDelegate?
+    
     
 
     @IBOutlet weak var profilesCollectionView: UICollectionView!
@@ -83,11 +87,28 @@ class SparksViewController: UIViewController , UITableViewDelegate , UITableView
     
     
     @IBAction func goProfile(_ sender: Any) {
+        var isThereBack : Bool = false
+        for controller in self.navigationController!.viewControllers as Array {
+            if controller.isKind(of: MainProfileViewController.self) {
+                isThereBack = true
+                self.navigationController!.popToViewController(controller, animated: true)
+                break
+            }
+        }
+        if(!isThereBack){
+            let vC : MainProfileViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainProfileViewController"))! as! MainProfileViewController
+            self.navigationController?.pushViewController(vC, animated: true)
+        }
         
     }
     
     @IBAction func back(_ sender: Any) {
-        self.navigationController?.popViewController(animated: true)
+        for controller in self.navigationController!.viewControllers as Array {
+            if controller.isKind(of: FirstMapViewController.self) {
+                self.navigationController!.popToViewController(controller, animated: true)
+                break
+            }
+        }
     }
     
     
@@ -281,6 +302,8 @@ class SparksViewController: UIViewController , UITableViewDelegate , UITableView
         vC.diffMin = Calendar.current.dateComponents([.minute], from: Date.init(timeIntervalSince1970: Double(recAt)) , to: Date()).minute
         self.navigationController?.pushViewController(vC, animated: true)
     }
+    
+    
     
     
 }

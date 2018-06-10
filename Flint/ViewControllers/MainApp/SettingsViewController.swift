@@ -27,6 +27,13 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
     @IBOutlet weak var SwVibrations: UISwitch!
     @IBOutlet weak var SwSounds: UISwitch!
     
+    @IBOutlet var community: UIButton!
+    @IBOutlet var policy: UIButton!
+    
+    
+    
+    
+    
     var looking_for : Int = 0
     var new_pin_notif : Bool = false
     var lighter : Bool = false
@@ -42,12 +49,19 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
         print(viewInScroller.frame.height)
         self.scroller.delegate = self
         scroller.contentSize = CGSize(width: self.view.frame.width, height: 2059 * self.view.frame.height / 667)
+        self.viewInScroller.frame.origin.y = 0
         // Do any additional setup after loading the view.
         
         if(GlobalFields.settingsResData != nil){
             self.updateSettings()
         }
         
+        community.titleLabel?.numberOfLines = 1
+        community.titleLabel?.minimumScaleFactor = 0.5
+        community.titleLabel?.adjustsFontSizeToFitWidth = true
+        policy.titleLabel?.numberOfLines = 1
+        policy.titleLabel?.minimumScaleFactor = 0.5
+        policy.titleLabel?.adjustsFontSizeToFitWidth = true
     }
 
     override func didReceiveMemoryWarning() {
@@ -65,10 +79,12 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
         
 //        self.lighter = self.SwHaveLighter.isOn
        
-        if(butSetMan.titleColor(for: .normal) == UIColor("#0A0A0A")){
-            looking_for = 1
-        }else{
+        if(butSetMan.titleColor(for: .normal) == UIColor("#0A0A0A") && butSetWoman.titleColor(for: .normal) != UIColor("#0A0A0A")){
             looking_for = 0
+        }else if(butSetMan.titleColor(for: .normal) != UIColor("#0A0A0A") && butSetWoman.titleColor(for: .normal) == UIColor("#0A0A0A")){
+            looking_for = 1
+        }else if(butSetMan.titleColor(for: .normal) == UIColor("#0A0A0A") && butSetWoman.titleColor(for: .normal) == UIColor("#0A0A0A")){
+            looking_for = 2
         }
         
         self.message_notification = self.SwMessages.isOn
@@ -83,13 +99,17 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
         
         self.max_age = Int((self.seekSlider?.selectedMaxValue)!)
 
-        
+        let l = GlobalFields.showLoading(vc: self)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         request(URLs.changeUserSettings, method: .post , parameters: ChangeUserSettingsRequestModel.init(LF: looking_for, NPN: new_pin_notif, L: lighter, IAN: invite_accepted_notification, MN: message_notification, V: vibration, S: sounds, MINA: min_age, MAXA: max_age).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
-            
+            l.disView()
             let res = response.result.value
-            
+            if(res?.status == "success"){
+                self.navigationController?.popViewController(animated: true)
+            }else{
+                self.view.makeToast(res?.message)
+            }
             
         }
         
@@ -98,27 +118,42 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
     
     @IBAction func setSex(_ sender: Any) {
         if(sender is String){
-            if(sender as! String == "man"){
+            if(sender as! String == "0"){
                 
                 butSetMan.setTitleColor(UIColor("#0A0A0A"), for: .normal)
                 
                 butSetWoman.setTitleColor(UIColor("#BFBFBF"), for: .normal)
-            }else if(sender as! String == "woman"){
+            }else if(sender as! String == "1" ){
                 
                 butSetMan.setTitleColor(UIColor("#BFBFBF"), for: .normal)
+                
+                butSetWoman.setTitleColor(UIColor("#0A0A0A"), for: .normal)
+                
+            }else if(sender as! String == "2" ){
+                
+                butSetMan.setTitleColor(UIColor("#0A0A0A"), for: .normal)
                 
                 butSetWoman.setTitleColor(UIColor("#0A0A0A"), for: .normal)
             }
         }else{
             if(sender as! UIButton == butSetMan){
                 
-                butSetMan.setTitleColor(UIColor("#0A0A0A"), for: .normal)
+                if(butSetMan.titleColor(for: .normal) == UIColor("#0A0A0A")){
+                    butSetMan.setTitleColor(UIColor("#BFBFBF"), for: .normal)
+                }else{
+                    butSetMan.setTitleColor(UIColor("#0A0A0A"), for: .normal)
+                }
+               
+            }
+            
+            if(sender as! UIButton == butSetWoman){
                 
-                butSetWoman.setTitleColor(UIColor("#BFBFBF"), for: .normal)
-            }else if(sender as! UIButton == butSetWoman){
-                butSetMan.setTitleColor(UIColor("#BFBFBF"), for: .normal)
+                if(butSetWoman.titleColor(for: .normal) == UIColor("#0A0A0A")){
+                    butSetWoman.setTitleColor(UIColor("#BFBFBF"), for: .normal)
+                }else{
+                    butSetWoman.setTitleColor(UIColor("#0A0A0A"), for: .normal)
+                }
                 
-                butSetWoman.setTitleColor(UIColor("#0A0A0A"), for: .normal)
             }
         }
         
@@ -168,11 +203,13 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
         self.SwInvitationAccepted.isOn = (settings?.invite_accepted_notification)!
         
 //        self.SwHaveLighter.isOn = (settings?.lighter)!
-        
-        if(settings?.looking_for == 1){
-            self.setSex("man")
+        //0 mard 1 zan 2 joftesh
+        if(settings?.looking_for == 0){
+            self.setSex("0")
+        }else if(settings?.looking_for == 1){
+            self.setSex("1")
         }else{
-            self.setSex("woman")
+            self.setSex("2")
         }
         
         self.SwMessages.isOn = (settings?.message_notification)!

@@ -77,12 +77,14 @@ class ActivationCodeViewController: UIViewController, UITextFieldDelegate {
         }else{
             use = GlobalFields.USERNAME
         }
+        let l = GlobalFields.showLoading(vc: self)
         request(URLs.resendActivationCode, method: .post , parameters: ForgotPasswordRequestModel.init(username : use).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
             
             let res = response.result.value
-            
+            l.disView()
             if(res?.status == "success"){
-
+                self.view.makeToast(res?.message)
+            }else{
                 self.view.makeToast(res?.message)
             }
             

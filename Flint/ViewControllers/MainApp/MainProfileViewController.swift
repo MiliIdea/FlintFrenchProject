@@ -11,8 +11,11 @@ import CodableAlamofire
 import Alamofire
 import CoreLocation
 import Kingfisher
+import TransitionTreasury
 
-class MainProfileViewController: UIViewController ,CLLocationManagerDelegate{
+class MainProfileViewController: UIViewController ,CLLocationManagerDelegate , NavgationTransitionable{
+    var tr_pushTransition: TRNavgationTransitionDelegate?
+    
 
     @IBOutlet weak var profilePic: UIImageView!
     
@@ -101,6 +104,7 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate{
     }
     
     @IBAction func goEditPage(_ sender: Any) {
+        
     }
     
     @IBAction func goSetting(_ sender: Any) {
@@ -109,15 +113,19 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate{
         decoder.dateDecodingStrategy = .secondsSince1970
         let lat = locationManager.location?.coordinate.latitude.description
         let long = locationManager.location?.coordinate.longitude.description
-        
-        request(URLs.getUserSettings, method: .post , parameters: GetUserSettingsRequestModel.init(lat : lat!,long : long!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<GetSettingsRes>>) in
+        let l = GlobalFields.showLoading(vc: self)
+        request(URLs.getUserSettings, method: .post , parameters: GetUserSettingsRequestModel.init(lat : lat ?? "35.6892",long : long ?? "51.3890").getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<GetSettingsRes>>) in
             
             let res = response.result.value
-            
-            GlobalFields.settingsResData = res?.data
-            
-            let vC : SettingsViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SettingsViewController"))! as! SettingsViewController
-            self.navigationController?.pushViewController(vC, animated: true)
+            l.disView()
+            if(res?.status == "success"){
+                GlobalFields.settingsResData = res?.data
+                
+                let vC : SettingsViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SettingsViewController"))! as! SettingsViewController
+                self.navigationController?.pushViewController(vC, animated: true)
+            }else{
+                self.view.makeToast(res?.message)
+            }
             
         }
         
@@ -134,12 +142,27 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate{
     
     
     @IBAction func goMessaging(_ sender: Any) {
-        let vC : SparksViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SparksViewController"))! as! SparksViewController
-        self.navigationController?.pushViewController(vC, animated: true)
+        var isThereBack : Bool = false
+        for controller in self.navigationController!.viewControllers as Array {
+            if controller.isKind(of: SparksViewController.self) {
+                isThereBack = true
+                self.navigationController!.popToViewController(controller, animated: true)
+                break
+            }
+        }
+        if(!isThereBack){
+            let vC : SparksViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SparksViewController"))! as! SparksViewController
+            self.navigationController?.pushViewController(vC, animated: true)
+        }
     }
     
     @IBAction func back(_ sender: Any) {
-        self.navigationController?.popViewController(animated: true)
+        for controller in self.navigationController!.viewControllers as Array {
+            if controller.isKind(of: FirstMapViewController.self) {
+                self.navigationController!.popToViewController(controller, animated: true)
+                break
+            }
+        }
     }
     
 

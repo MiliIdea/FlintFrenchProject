@@ -30,6 +30,7 @@ class SearchViewController: UIViewController ,MKMapViewDelegate{
     @IBOutlet weak var map: MKMapView!
     
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet var flintL: UILabel!
     
     var resultCordinate : CLLocationCoordinate2D?
     
@@ -51,8 +52,22 @@ class SearchViewController: UIViewController ,MKMapViewDelegate{
         locationManager.requestAlwaysAuthorization()
         
         configureTileOverlay()
-        
+    
         self.searchResultsTableView.alpha = 0
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(SearchViewController.tapFunction))
+        flintL.isUserInteractionEnabled = true
+        flintL.addGestureRecognizer(tap)
+    }
+    
+    
+    @objc func tapFunction(sender:UITapGestureRecognizer) {
+        for controller in self.navigationController!.viewControllers as Array {
+            if controller.isKind(of: FirstMapViewController.self) {
+                self.navigationController!.popToViewController(controller, animated: true)
+                break
+            }
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {

@@ -9,6 +9,7 @@
 import UIKit
 import Alamofire
 import CodableAlamofire
+import Toast_Swift
 
 class PasswordViewController: UIViewController {
 
@@ -63,26 +64,30 @@ class PasswordViewController: UIViewController {
         if(checkEqualPassword()){
             
             if(isFromForgottenMode){
-                
+                let l = GlobalFields.showLoading(vc: self)
                 request(URLs.resetPassword, method: .post , parameters: ResetPasswordRequestModel.init(userName: GlobalFields.USERNAME , password: self.password.text!, code: self.activeCode).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<ChangePassRes>>) in
                     
                     let res = response.result.value
-                    
+                    l.disView()
                     if(res?.status == "success"){
                         let vC : SignInViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SignInViewController"))! as! SignInViewController
                         self.navigationController?.pushViewController(vC, animated: true)
+                    }else{
+                        self.view.makeToast(res?.message)
                     }
                     
                 }
             }else{
-                
+                let l = GlobalFields.showLoading(vc: self)
                 request(URLs.changePassword, method: .post , parameters: ChangeUserPasswordRequestModel.init(userName: GlobalFields.USERNAME , password: self.password.text!, token: GlobalFields.TOKEN).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<ChangePassRes>>) in
                     
                     let res = response.result.value
-                    
+                    l.disView()
                     if(res?.status == "success"){
                         let vC : CreateNameViewController = (self.storyboard?.instantiateViewController(withIdentifier: "CreateNameViewController"))! as! CreateNameViewController
                         self.navigationController?.pushViewController(vC, animated: true)
+                    }else{
+                        self.view.makeToast(res?.message)
                     }
                     
                 }
@@ -90,12 +95,17 @@ class PasswordViewController: UIViewController {
             
         }else{
             //TODO alert check password
+            self.view.makeToast("Check your password")
         }
         
     }
     
     func checkEqualPassword() -> Bool{
-        return true
+        if(password.text == confirmPassword.text){
+            return true
+        }else{
+            return false
+        }
     }
     
     

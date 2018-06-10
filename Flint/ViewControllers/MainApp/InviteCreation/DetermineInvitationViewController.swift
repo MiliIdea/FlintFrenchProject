@@ -32,6 +32,7 @@ class DetermineInvitationViewController: UIViewController {
     
     @IBOutlet weak var partyButton: UIButton!
     
+    @IBOutlet var flintL: UILabel!
     
     var isParty : Bool = false
     
@@ -53,7 +54,20 @@ class DetermineInvitationViewController: UIViewController {
         self.activityNameLabel.layer.borderWidth = 1
         self.activityNameLabel.layer.borderColor = UIColor("#707070").cgColor
         self.activityNameLabel.layer.cornerRadius = self.activityNameLabel.frame.height / 2
+     
+        let tap = UITapGestureRecognizer(target: self, action: #selector(DetermineInvitationViewController.tapFunction))
+        flintL.isUserInteractionEnabled = true
+        flintL.addGestureRecognizer(tap)
         
+    }
+    
+    @objc func tapFunction(sender:UITapGestureRecognizer) {
+        for controller in self.navigationController!.viewControllers as Array {
+            if controller.isKind(of: FirstMapViewController.self) {
+                self.navigationController!.popToViewController(controller, animated: true)
+                break
+            }
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {

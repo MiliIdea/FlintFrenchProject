@@ -71,6 +71,8 @@ target 'Flint' do
 
   pod 'AFDateHelper', '~> 4.2.2'
   
+  pod 'TransitionTreasury'
+  
 end
 
 post_install do |installer|

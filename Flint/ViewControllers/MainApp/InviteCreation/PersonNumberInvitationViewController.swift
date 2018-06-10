@@ -16,6 +16,7 @@ class PersonNumberInvitationViewController: UIViewController {
     @IBOutlet weak var b1: DCBorderedButton!
     @IBOutlet weak var b2: DCBorderedButton!
     @IBOutlet weak var b3: DCBorderedButton!
+    @IBOutlet var flintL: UILabel!
     
     @IBOutlet weak var titleWithMoodColorLabel: UILabel!
     
@@ -30,8 +31,20 @@ class PersonNumberInvitationViewController: UIViewController {
         
         self.setDefualtButtons()
         // Do any additional setup after loading the view.
+        let tap = UITapGestureRecognizer(target: self, action: #selector(PersonNumberInvitationViewController.tapFunction))
+        flintL.isUserInteractionEnabled = true
+        flintL.addGestureRecognizer(tap)
     }
 
+    @objc func tapFunction(sender:UITapGestureRecognizer) {
+        for controller in self.navigationController!.viewControllers as Array {
+            if controller.isKind(of: FirstMapViewController.self) {
+                self.navigationController!.popToViewController(controller, animated: true)
+                break
+            }
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

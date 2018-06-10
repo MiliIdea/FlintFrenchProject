@@ -54,6 +54,7 @@ class SignInViewController: UIViewController {
                 //inja bayad check kard k ta koja takmil karde
                 
                 if(res?.data != nil){
+                    
                     GlobalFields.defaults.set(false, forKey: "reconfirm")
                     
                     GlobalFields.loginResData = res?.data!

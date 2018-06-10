@@ -8,6 +8,8 @@
 
 import UIKit
 import Alamofire
+import CodableAlamofire
+import Toast_Swift
 
 class SignUpViewController: UIViewController {
 
@@ -54,6 +56,9 @@ class SignUpViewController: UIViewController {
     @IBAction func next(_ sender: Any) {
         //send data to server and go to activation view
         
+        if(!checkValidation()){
+            return
+        }
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
@@ -90,6 +95,30 @@ class SignUpViewController: UIViewController {
         }
         
         
+    }
+    
+    func checkValidation() -> Bool{
+        if(inputField.text?.isEmpty)!{
+            self.view.makeToast("pls fill input field")
+            return false
+        }
+        
+        if( self.titleNumbOrEmail.text != "Entrez votre numéro de téléphone" ){
+            //its email Mode
+            if(!(inputField.text?.contains("@"))! || !(inputField.text?.contains("."))! ){
+                self.view.makeToast("pls enter correct email")
+                return false
+            }
+        }else{
+            //its mobile Mode
+            var num = Int(inputField.text!)
+            if num == nil {
+                self.view.makeToast("pls enter correct phoneNumber")
+                return false
+            }
+        }
+        
+        return true
     }
     
     @IBAction func goLoginPage(_ sender: Any) {

@@ -13,14 +13,36 @@ class ActivityTypeViewController: UIViewController {
     
     @IBOutlet weak var activityNameTextView: UITextField!
     
+    @IBOutlet var nextButton: UIButton!
+    
+    
+    @IBOutlet var flintL: UILabel!
+    
     var emoji : String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        editButtons(v: self.view)
+        nextButton.titleLabel?.numberOfLines = 1
+        nextButton.titleLabel?.minimumScaleFactor = 0.5
+        nextButton.titleLabel?.adjustsFontSizeToFitWidth = true
         // Do any additional setup after loading the view.
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(ActivityTypeViewController.tapFunction))
+        flintL.isUserInteractionEnabled = true
+        flintL.addGestureRecognizer(tap)
     }
 
+    @objc func tapFunction(sender:UITapGestureRecognizer) {
+        for controller in self.navigationController!.viewControllers as Array {
+            if controller.isKind(of: FirstMapViewController.self) {
+                self.navigationController!.popToViewController(controller, animated: true)
+                break
+            }
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -60,5 +82,17 @@ class ActivityTypeViewController: UIViewController {
         let vC : MainProfileViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainProfileViewController"))! as! MainProfileViewController
         self.navigationController?.pushViewController(vC, animated: true)
     }
+    
+    func editButtons(v : UIView){
+        if( v.tag == 1 || v.tag == 3 || v.tag == 5 || v.tag == 7 || v.tag == 9 || v.tag == 11 || v.tag == 13 || v.tag == 15){
+            (v as! UIButton).titleLabel?.numberOfLines = 1
+            (v as! UIButton).titleLabel?.minimumScaleFactor = 0.5
+            (v as! UIButton).titleLabel?.adjustsFontSizeToFitWidth = true
+        }
+        for sv in v.subviews {
+            editButtons(v: sv)
+        }
+    }
+    
     
 }

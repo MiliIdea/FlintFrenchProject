@@ -25,6 +25,7 @@ class TimeInvitationViewController: UIViewController {
     @IBOutlet weak var b5: DCBorderedButton!
     @IBOutlet weak var b6: DCBorderedButton!
     
+    @IBOutlet var flintL: UILabel!
     var isParty : Bool = false
     
     @IBOutlet weak var partyModeView: UIView!
@@ -51,6 +52,9 @@ class TimeInvitationViewController: UIViewController {
         self.titleWithMoodColorLabel.layer.borderColor = UIColor("#707070").cgColor
         self.titleWithMoodColorLabel.layer.cornerRadius = self.titleWithMoodColorLabel.frame.height / 2
         
+        let tap = UITapGestureRecognizer(target: self, action: #selector(TimeInvitationViewController.tapFunction))
+        flintL.isUserInteractionEnabled = true
+        flintL.addGestureRecognizer(tap)
         
         if(isParty){
             self.partyModeView.alpha = 1
@@ -62,6 +66,15 @@ class TimeInvitationViewController: UIViewController {
         }
     }
 
+    @objc func tapFunction(sender:UITapGestureRecognizer) {
+        for controller in self.navigationController!.viewControllers as Array {
+            if controller.isKind(of: FirstMapViewController.self) {
+                self.navigationController!.popToViewController(controller, animated: true)
+                break
+            }
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

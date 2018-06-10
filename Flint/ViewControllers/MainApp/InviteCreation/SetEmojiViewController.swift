@@ -30,6 +30,7 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
     
     var page : Int = 1
     
+    @IBOutlet var flintL: UILabel!
     
     let emojiView = ISEmojiView()
     
@@ -69,6 +70,19 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
             self.emojiTextView.text = GlobalFields.inviteEmoji!
         }
         
+        let tap = UITapGestureRecognizer(target: self, action: #selector(SetEmojiViewController.tapFunction))
+        flintL.isUserInteractionEnabled = true
+        flintL.addGestureRecognizer(tap)
+        
+    }
+    
+    @objc func tapFunction(sender:UITapGestureRecognizer) {
+        for controller in self.navigationController!.viewControllers as Array {
+            if controller.isKind(of: FirstMapViewController.self) {
+                self.navigationController!.popToViewController(controller, animated: true)
+                break
+            }
+        }
     }
     
     override func viewDidLayoutSubviews() {

@@ -45,6 +45,7 @@ PODS:
   - RangeSeekSlider (1.7.0)
   - SWXMLHash (4.0.0)
   - Toast-Swift (3.0.1)
+  - TransitionTreasury (4.1.0)
   - UICircularProgressRing (1.8.4)
   - UIColor_Hex_Swift (4.0.1)
 
@@ -74,6 +75,7 @@ DEPENDENCIES:
   - RangeSeekSlider
   - SWXMLHash (~> 4.0.0)
   - Toast-Swift
+  - TransitionTreasury
   - UICircularProgressRing
   - UIColor_Hex_Swift (~> 4.0.1)
 
@@ -110,6 +112,7 @@ SPEC REPOS:
     - RangeSeekSlider
     - SWXMLHash
     - Toast-Swift
+    - TransitionTreasury
     - UICircularProgressRing
     - UIColor_Hex_Swift
 
@@ -145,9 +148,10 @@ SPEC CHECKSUMS:
   RangeSeekSlider: 0386c5a9aa5ebcb2fa5238e8a627280cf46c7c0a
   SWXMLHash: 6bbc0bf72975a18ceda469fb7d6a886a26d81694
   Toast-Swift: ba0b01b095aada709d915f9beb1d38184a2721c3
+  TransitionTreasury: c3b541a2073ee3060519835afa10791bd4ba55f9
   UICircularProgressRing: 653b31f7252b2959e8234f5b9ea5f925da755954
   UIColor_Hex_Swift: c5ff88470499383b8fd85302d59344bb24ba9436
 
-PODFILE CHECKSUM: e6ffa4a4110b15c9746df41114012ffa5cd8f6de
+PODFILE CHECKSUM: c475470363e85babf9faeaaf2a6c8a5f0817cb49
 
 COCOAPODS: 1.5.2

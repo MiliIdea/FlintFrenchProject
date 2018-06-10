@@ -38,8 +38,8 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
         super.viewDidLoad()
 
         self.scroller.delegate = self
-        scroller.contentSize = CGSize(width: self.view.frame.width, height: 1000 * self.view.frame.height / 667)
-        
+        scroller.contentSize = CGSize(width: self.view.frame.width, height: 811 * self.view.frame.height / 667)
+        viewInScrollView.frame.origin.y = 0
         //avatara set shan
         self.bioText.text = GlobalFields.userInfo.BIO
         self.myJob.text = GlobalFields.userInfo.JOB

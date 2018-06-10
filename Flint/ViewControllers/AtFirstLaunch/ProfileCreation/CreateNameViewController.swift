@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Toast_Swift
 
 class CreateNameViewController: UIViewController{
 
@@ -24,6 +25,11 @@ class CreateNameViewController: UIViewController{
         // Dispose of any resources that can be recreated.
     }
     @IBAction func next(_ sender: Any) {
+        
+        if(name.text == ""){
+            self.view.makeToast("please fill input field!")
+            return
+        }
         
         GlobalFields.userInfo.NAME = self.name.text
         
