@@ -50,6 +50,9 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
     @IBOutlet weak var refuseButton: UIButton!
     
     
+    
+    
+    
     var inviteID : Int? = nil
     
     var viewType : InvitationPageTypes = .NormalInviteAcception
@@ -110,7 +113,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             self.configureView()
             collectionView.dataSource = self
             collectionView.delegate = self
-
+            
         }else if(self.inviteID != nil){
             //inja bayad check beshe getinviteinfo chi hastesh
             let l = GlobalFields.showLoading(vc: self)
@@ -127,6 +130,14 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                     self.collectionView.dataSource = self
                     self.collectionView.delegate = self
                     self.collectionView.reloadData()
+                    if(!GlobalFields.defaults.bool(forKey: "isShowAfterParty") && self.viewType == .AfterParty){
+                        GlobalFields.defaults.set(true, forKey: "isShowAfterParty")
+                        let vC : TheDayAfterViewController = (self.storyboard?.instantiateViewController(withIdentifier: "TheDayAfterViewController"))! as! TheDayAfterViewController
+                        self.addChildViewController(vC)
+                        vC.view.frame = self.view.frame
+                        self.view.addSubview(vC.view)
+                        vC.didMove(toParentViewController: self)
+                    }
                 }
                 
             }
@@ -211,15 +222,6 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             self.inviteTime.text = w.toStringWithRelativeTime(strings : [.nowPast: "right now"])
             
         }else{
-            
-            self.inviteTitle.text = GlobalFields.inviteTitle
-            self.inviteTitle.layer.borderWidth = 1
-            self.inviteTitle.layer.borderColor = GlobalFields.inviteMoodColor?.cgColor
-            self.inviteTitle.layer.backgroundColor = GlobalFields.inviteMoodColor?.cgColor
-            self.inviteTitle.layer.cornerRadius = self.inviteTitle.frame.height / 2
-            
-            inviteNumber.text = ((GlobalFields.inviteNumber?.description) ?? "1") + " person"
-            
             var type : Int = 0
             switch GlobalFields.inviteMood! {
             case "LetsSeeWhatHappens":
@@ -234,6 +236,22 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             default:
                 type = 1
             }
+            
+            if(!GlobalFields.defaults.bool(forKey: "EqualityViewController") && type == 1){
+                GlobalFields.defaults.set(true, forKey: "EqualityViewController")
+                let vC : EqualityViewController = (self.storyboard?.instantiateViewController(withIdentifier: "EqualityViewController"))! as! EqualityViewController
+                addChildViewController(vC)
+                vC.view.frame = self.view.frame
+                self.view.addSubview(vC.view)
+                vC.didMove(toParentViewController: self)
+            }
+            self.inviteTitle.text = GlobalFields.inviteTitle
+            self.inviteTitle.layer.borderWidth = 1
+            self.inviteTitle.layer.borderColor = GlobalFields.inviteMoodColor?.cgColor
+            self.inviteTitle.layer.backgroundColor = GlobalFields.inviteMoodColor?.cgColor
+            self.inviteTitle.layer.cornerRadius = self.inviteTitle.frame.height / 2
+            
+            inviteNumber.text = ((GlobalFields.inviteNumber?.description) ?? "1") + " person"
             
             switch (type) {
             case 1:
@@ -341,6 +359,14 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             self.okButton.alpha = 0
             break
             
+        case .AfterParty :
+            self.superLikeButton.alpha = 0
+            self.likeButton.alpha = 1
+            self.dislikeButton.alpha = 1
+            self.superLikedImage.alpha = 0
+            self.confirmationWhoAcceptedLabel.alpha = 0
+            self.okButton.alpha = 0
+            
         case .NormalInviteAcception :
             self.superLikeButton.alpha = 0
             self.likeButton.alpha = 1
@@ -398,11 +424,11 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         
-        
+        let l = GlobalFields.showLoading(vc: self)
         request(URLs.acceptInvite, method: .post , parameters: AcceptInviteRequestModel.init(invite: (GlobalFields.myInvite?.invite_id)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
             
             let res = response.result.value
-            
+            l.disView()
             if(res?.status == "success"){
                 for controller in self.navigationController!.viewControllers as Array {
                     if controller.isKind(of: FirstMapViewController.self) {
@@ -411,6 +437,11 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                     }
                 }
             }else{
+                let vC : TooLateViewController = (self.storyboard?.instantiateViewController(withIdentifier: "TooLateViewController"))! as! TooLateViewController
+                self.addChildViewController(vC)
+                vC.view.frame = self.view.frame
+                self.view.addSubview(vC.view)
+                vC.didMove(toParentViewController: self)
                 self.view.makeToast(res?.message)
             }
             
@@ -419,8 +450,23 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
     
     @IBAction func like(_ sender: Any) {
         
-        
-        if(self.viewType == .NormalInviteAcception || self.viewType == .PartyInviteAcception){
+        if(self.viewType == .AfterParty){
+            
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            var user = self.usersList[presentIndex]
+            let l = GlobalFields.showLoading(vc: self)
+            request(URLs.likeUser, method: .post , parameters: LikeUserRequestModel.init(targetUser: user.id!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+                l.disView()
+                let res = response.result.value
+                
+                if(res?.status == "success"){
+                    self.goNext()
+                }
+                
+            }
+            
+        }else if(self.viewType == .NormalInviteAcception || self.viewType == .PartyInviteAcception){
             
             if((self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2])?.isKind(of: FirstMapViewController.self))!{
                 if(((self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2]) as! FirstMapViewController).ownInvite != nil){
@@ -438,9 +484,9 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .secondsSince1970
             var user = self.usersList[presentIndex]
-            
+            let l = GlobalFields.showLoading(vc: self)
             request(URLs.likePersonForInvite, method: .post , parameters: LikePersonForInviteRequestModel.init(invite: GlobalFields.invite!, targetUser: user.id!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
-                
+                l.disView()
                 let res = response.result.value
                 
                 if(res?.status == "success"){
@@ -458,9 +504,9 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .secondsSince1970
             
-            
+            let l = GlobalFields.showLoading(vc: self)
             request(URLs.cancelInvite, method: .post , parameters: CancelInviteRequestModel.init(invite: (GlobalFields.myInvite?.invite_id)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
-                
+                l.disView()
                 let res = response.result.value
                 
                 if(res?.status == "success"){
@@ -475,19 +521,32 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
     
     @IBAction func superLike(_ sender: Any) {
         
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .secondsSince1970
-        var user = self.usersList[presentIndex]
-        
-        request(URLs.superlikeForInvite, method: .post , parameters: SuperLikePersonForInviteRequestModel.init(invite: GlobalFields.invite!, targetUser: user.id!).getParams(), headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
-            
-            let res = response.result.value
-            
-            if(res?.status == "success"){
-                self.ok("")
+        if(!GlobalFields.defaults.bool(forKey: "TheOneSpecialPersonViewController")){
+            GlobalFields.defaults.set(true, forKey: "TheOneSpecialPersonViewController")
+            let vC : TheOneSpecialPersonViewController = (self.storyboard?.instantiateViewController(withIdentifier: "TheOneSpecialPersonViewController"))! as! TheOneSpecialPersonViewController
+            addChildViewController(vC)
+            vC.view.frame = self.view.frame
+            self.view.addSubview(vC.view)
+            vC.didMove(toParentViewController: self)
+        }else{
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            var user = self.usersList[presentIndex]
+            let l = GlobalFields.showLoading(vc: self)
+            request(URLs.superlikeForInvite, method: .post , parameters: SuperLikePersonForInviteRequestModel.init(invite: GlobalFields.invite!, targetUser: user.id!).getParams(), headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+                l.disView()
+                let res = response.result.value
+                
+                if(res?.status == "success"){
+                    self.ok("")
+                }else{
+                    self.view.makeToast(res?.message)
+                }
+                
             }
-            
         }
+        
+        
         
     }
     
@@ -523,29 +582,46 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             }
             self.collectionView.reloadData()
         }else{
-            //call page bad
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .secondsSince1970
-            request(URLs.getUsersListForInvite, method: .post , parameters: GetUsersListForInviteRequestModel.init(invite: GlobalFields.invite!, page: 1, perPage: 100, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetUserListForInviteRes]>>) in
-                
-                let res = response.result.value
-                if(res?.data != nil && (res?.data?.count)! > 0){
-                    for r in (res?.data)!{
-                        self.usersList.append(r)
-                    }
-                    self.viewType = .AddPersonToInvite
-                    self.presentIndex += 1
-                    self.collectionView.reloadData()
-                }else{
-                    //TODO : bayad alert bedim k kasi nis doret
-                    return
+            
+            for controller in self.navigationController!.viewControllers as Array {
+                if controller.isKind(of: FirstMapViewController.self) {
+                    self.navigationController!.popToViewController(controller, animated: true)
+                    break
                 }
             }
-
-            
         }
         
+        self.collectionView.scrollToItem(at: .init(item: 0, section: 0), at: .left, animated: true)
+        
     }
+    
+    
+    @objc func callReportPopup(){
+        
+        var target : Int = 0
+        if(self.viewType != .AddPersonToInvite){
+            
+            var user = inviteInfo?.main
+            if((user?.owner!.description)! == GlobalFields.ID.description){
+                target = (inviteInfo?.users![0].user)!
+            }else{
+                target = (user?.owner!)!
+            }
+        }else{
+            var user = self.usersList[presentIndex]
+            target = 	user.id!
+        }
+        
+        
+        let vC : ReportInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ReportInvitationViewController"))! as! ReportInvitationViewController
+        addChildViewController(vC)
+        vC.target = target
+        vC.view.frame = self.view.frame
+        self.view.addSubview(vC.view)
+        vC.didMove(toParentViewController: self)
+        
+    }
+    
     
     
     
@@ -746,7 +822,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                 cell2.distance.text = disDesc
                 cell2.bioText.text = bio
                 cell2.city.text = city
-
+                cell2.reportButton.addTarget(self, action: #selector(self.callReportPopup), for: .touchUpInside)
                 return cell2
             }else if(self.cells[indexPath.item] == "T"){
                 cell3.distanceLabel.text = disDesc
@@ -755,10 +831,12 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                     (cell3.viewWithTag(i) as! UIImageView).kf.setImage(with: URL.init(string: URLs.imgServer + u.avatar!))
                     (cell3.viewWithTag(i) as! UIImageView).alpha = 1
                     (cell3.viewWithTag(i) as! UIImageView).layer.cornerRadius = (cell3.viewWithTag(i) as! UIImageView).frame.height / 2
+                    (cell3.viewWithTag(i) as! UIImageView).clipsToBounds = true
                     (cell3.viewWithTag(i + 6) as! UILabel).text = u.name
                     (cell3.viewWithTag(i + 6) as! UILabel).alpha = 1
                     i += 1
                 }
+                cell3.reportButton.addTarget(self, action: #selector(self.callReportPopup), for: .touchUpInside)
                 return cell3
             }else if(self.cells[indexPath.item] == "F"){
                 cell3.distanceLabel.text = disDesc
@@ -768,11 +846,13 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                         (cell3.viewWithTag(i - 6) as! UIImageView).kf.setImage(with: URL.init(string: URLs.imgServer + u.avatar!))
                         (cell3.viewWithTag(i - 6) as! UIImageView).alpha = 1
                         (cell3.viewWithTag(i - 6) as! UIImageView).layer.cornerRadius = (cell3.viewWithTag(i - 6) as! UIImageView).frame.height / 2
+                        (cell3.viewWithTag(i - 6) as! UIImageView).clipsToBounds = true
                         (cell3.viewWithTag(i + 6 - 6) as! UILabel).text = u.name
                         (cell3.viewWithTag(i + 6 - 6) as! UILabel).alpha = 1
                     }
                     i += 1
                 }
+                cell3.reportButton.addTarget(self, action: #selector(self.callReportPopup), for: .touchUpInside)
                 return cell3
             }
             
@@ -820,7 +900,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                 cell2.distance.text = disDesc
                 cell2.bioText.text = user.bio
                 cell2.city.text = ""
-                
+                cell2.reportButton.addTarget(self, action: #selector(self.callReportPopup), for: .touchUpInside)
                 return cell2
             }
             

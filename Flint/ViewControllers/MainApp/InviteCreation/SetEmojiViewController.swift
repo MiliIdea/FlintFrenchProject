@@ -12,6 +12,7 @@ import ISEmojiView
 import Alamofire
 import CodableAlamofire
 import AFDateHelper
+import Toast_Swift
 
 
 class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
@@ -74,6 +75,13 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
         flintL.isUserInteractionEnabled = true
         flintL.addGestureRecognizer(tap)
         
+        self.emojiTextView.frame.size = CGSize.init(width: (93 / 115) * self.pinImage.frame.width, height: (93 / 168) * self.pinImage.frame.height)
+        
+        self.emojiTextView.frame.origin.x = self.pinImage.frame.origin.x + (self.pinImage.frame.width / 2) - (self.emojiTextView.frame.width / 2)
+        
+        self.emojiTextView.frame.origin.y = self.pinImage.frame.origin.y + ((6 / 168) * self.pinImage.frame.height)
+        
+        
     }
     
     @objc func tapFunction(sender:UITapGestureRecognizer) {
@@ -98,6 +106,11 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
     }
     
     @IBAction func next(_ sender: Any) {
+        
+        if(emojiTextView.text == ""){
+            self.view.makeToast("pls choose emoji")
+            return
+        }
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
@@ -125,46 +138,50 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
 //        if(Date().timeIntervalSince(date) < 30 * 60 * 6){
 //           diff = Int(Date().timeIntervalSince(date) / (60 * 30))
 //        }
-        
-        request(URLs.createInvitation, method: .post , parameters: CreateInvitationRequestModel.init(type: type, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!, peopleCount: GlobalFields.inviteNumber!, exactTime: Int(date.timeIntervalSince1970), when: GlobalFields.inviteWhen!, emoji: GlobalFields.inviteEmoji!, title: GlobalFields.inviteTitle!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<CreateInviteRes>>) in
-            
-            let res = response.result.value
-            
-            if(res?.status == "success"){
-                GlobalFields.defaults.set(false, forKey: "reconfirm")
-                GlobalFields.invite = (res?.data?.invite)!
+        if(GlobalFields.inviteLocation == nil){
+            self.view.makeToast("pls check your location settings")
+        }else{
+            request(URLs.createInvitation, method: .post , parameters: CreateInvitationRequestModel.init(type: type, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!, peopleCount: GlobalFields.inviteNumber!, exactTime: Int(date.timeIntervalSince1970), when: GlobalFields.inviteWhen!, emoji: GlobalFields.inviteEmoji!, title: GlobalFields.inviteTitle!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<CreateInviteRes>>) in
                 
-                request(URLs.getUsersListForInvite, method: .post , parameters: GetUsersListForInviteRequestModel.init(invite: (res?.data?.invite)!, page: 1, perPage: 100, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetUserListForInviteRes]>>) in
+                let res = response.result.value
+                
+                if(res?.status == "success"){
+                    GlobalFields.defaults.set(false, forKey: "reconfirm")
+                    GlobalFields.invite = (res?.data?.invite)!
                     
-                    let res = response.result.value
-                    
-                    let vC : MainInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainInvitationViewController"))! as! MainInvitationViewController
-                    vC.inviteID = GlobalFields.invite
-                    if(res?.data != nil && (res?.data?.count)! > 0){
-                        vC.usersList = (res?.data)!
-                        vC.viewType = .AddPersonToInvite
-                        self.navigationController?.pushViewController(vC, animated: true)
-                    }else{
-                        for controller in self.navigationController!.viewControllers as Array {
-                            if controller.isKind(of: FirstMapViewController.self) {
-                                self.navigationController!.popToViewController(controller, animated: true)
-                                break
+                    request(URLs.getUsersListForInvite, method: .post , parameters: GetUsersListForInviteRequestModel.init(invite: (res?.data?.invite)!, page: 1, perPage: 100, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetUserListForInviteRes]>>) in
+                        
+                        let res = response.result.value
+                        
+                        let vC : MainInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainInvitationViewController"))! as! MainInvitationViewController
+                        vC.inviteID = GlobalFields.invite
+                        if(res?.data != nil && (res?.data?.count)! > 0){
+                            vC.usersList = (res?.data)!
+                            vC.viewType = .AddPersonToInvite
+                            self.navigationController?.pushViewController(vC, animated: true)
+                        }else{
+                            for controller in self.navigationController!.viewControllers as Array {
+                                if controller.isKind(of: FirstMapViewController.self) {
+                                    self.navigationController!.popToViewController(controller, animated: true)
+                                    break
+                                }
                             }
+                            return
                         }
-                        return
+                    }
+                    
+                }else{
+                    for controller in self.navigationController!.viewControllers as Array {
+                        if controller.isKind(of: FirstMapViewController.self) {
+                            self.navigationController!.popToViewController(controller, animated: true)
+                            break
+                        }
                     }
                 }
                 
-            }else{
-                for controller in self.navigationController!.viewControllers as Array {
-                    if controller.isKind(of: FirstMapViewController.self) {
-                        self.navigationController!.popToViewController(controller, animated: true)
-                        break
-                    }
-                }
             }
-            
         }
+        
         
     }
     

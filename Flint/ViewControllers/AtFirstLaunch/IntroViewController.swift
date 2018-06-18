@@ -17,6 +17,7 @@ import CodableAlamofire
 class IntroViewController: UIViewController , UICollectionViewDataSource, UICollectionViewDelegate , UICollectionViewDelegateFlowLayout{
 
     //MARK: -Fields
+    @IBOutlet var splashView: UIView!
     
     @IBOutlet weak var Ititle: UILabel!
     
@@ -43,11 +44,19 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
         slider.isScrollEnabled = false
         
         print(GlobalFields.TOKEN)
-        if(GlobalFields.TOKEN != nil && GlobalFields.TOKEN != "" && GlobalFields.defaults.bool(forKey: "isRegisterCompleted")){
-            let vC : FirstMapViewController = (self.storyboard?.instantiateViewController(withIdentifier: "FirstMapViewController"))! as! FirstMapViewController
-    
-            self.navigationController?.pushViewController(vC, animated: true)
+
+        if(GlobalFields.USERNAME != "" && GlobalFields.TOKEN != "" && GlobalFields.PASSWORD != "" && GlobalFields.defaults.bool(forKey: "isRegisterCompleted")){
+            
+            if(GlobalFields.PASSWORD == "FACEBOOK"){
+                (UIApplication.shared.delegate as? AppDelegate)?.loginWithFaceBook()
+            }else{
+                (UIApplication.shared.delegate as? AppDelegate)?.login()
+            }
+            
+        }else{
+            self.splashView.alpha = 0
         }
+        
         
     }
     
@@ -140,6 +149,8 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
                     
                     GlobalFields.TOKEN = res?.data?.token
                     
+                    GlobalFields.PASSWORD = "FACEBOOK"
+                    
                     GlobalFields.USERNAME = res?.data?.username
                     
                     GlobalFields.ID = res?.data?.id
@@ -182,6 +193,10 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
                 
                 
                 
+            }else if (res?.errCode == -2){
+                GlobalFields.USERNAME = email
+                let vC : ActivationCodeViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ActivationCodeViewController"))! as! ActivationCodeViewController
+                self.navigationController?.pushViewController(vC, animated: true)
             }else{
                 //inja yani bayad register kone
                 self.callRegisterWithFacebook(email: email, token: token)

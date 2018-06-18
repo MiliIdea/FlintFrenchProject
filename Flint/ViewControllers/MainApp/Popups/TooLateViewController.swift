@@ -22,6 +22,13 @@ class TooLateViewController: UIViewController {
     }
     
     @IBAction func back(_ sender: Any) {
+        
+        for controller in (self.parent!.navigationController!.viewControllers as Array) {
+            if controller.isKind(of: FirstMapViewController.self) {
+                self.parent!.navigationController!.popToViewController(controller, animated: true)
+                break
+            }
+        }
         self.view.removeFromSuperview()
         self.removeFromParentViewController()
     }

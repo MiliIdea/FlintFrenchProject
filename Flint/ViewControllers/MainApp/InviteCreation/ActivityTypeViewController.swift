@@ -8,13 +8,14 @@
 
 import UIKit
 
-class ActivityTypeViewController: UIViewController {
+class ActivityTypeViewController: UIViewController  , UITextFieldDelegate{
 
     
     @IBOutlet weak var activityNameTextView: UITextField!
     
     @IBOutlet var nextButton: UIButton!
     
+    @IBOutlet var extraCharacterPopupView: UIView!
     
     @IBOutlet var flintL: UILabel!
     
@@ -24,6 +25,9 @@ class ActivityTypeViewController: UIViewController {
         super.viewDidLoad()
         
         editButtons(v: self.view)
+        
+        activityNameTextView.delegate = self
+        
         nextButton.titleLabel?.numberOfLines = 1
         nextButton.titleLabel?.minimumScaleFactor = 0.5
         nextButton.titleLabel?.adjustsFontSizeToFitWidth = true
@@ -60,6 +64,9 @@ class ActivityTypeViewController: UIViewController {
     
     @IBAction func next(_ sender: Any) {
         if(emoji == "" || self.activityNameTextView.text == ""){
+            self.view.makeToast("pls fill all fields")
+            return
+        }else if((self.activityNameTextView.text?.count)! > 30){
             return
         }
         let vC : DetermineInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "DetermineInvitationViewController"))! as! DetermineInvitationViewController
@@ -94,5 +101,13 @@ class ActivityTypeViewController: UIViewController {
         }
     }
     
+    func textViewDidChange(_ textView: UITextView) {
+        print(activityNameTextView.text!.count)
+        if(activityNameTextView.text!.count > 30){
+            self.extraCharacterPopupView.alpha = 1
+        }else{
+            self.extraCharacterPopupView.alpha = 0
+        }
+    }
     
 }

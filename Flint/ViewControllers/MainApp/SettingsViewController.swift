@@ -168,14 +168,47 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
     }
     
     @IBAction func logout(_ sender: Any) {
-        let vC : IntroViewController = (self.storyboard?.instantiateViewController(withIdentifier: "IntroViewController"))! as! IntroViewController
-        GlobalFields.USERNAME = ""
-        GlobalFields.TOKEN = ""
-        GlobalFields.USERNAME = nil
-        GlobalFields.TOKEN = nil
-        GlobalFields.ID = nil
-        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
-        self.navigationController?.pushViewController(vC, animated: true)
+
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        let l = GlobalFields.showLoading(vc: self)
+        request(URLs.logout, method: .post , parameters: UploadImageRequestModel.init().getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+            l.disView()
+            let res = response.result.value
+            if(res?.status == "success"){
+                GlobalFields.USERNAME = ""
+                GlobalFields.TOKEN = ""
+                GlobalFields.PASSWORD = nil
+                GlobalFields.USERNAME = nil
+                GlobalFields.TOKEN = nil
+                GlobalFields.ID = nil
+                GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
+                
+                
+                var isInStack = false
+                for controller in self.navigationController!.viewControllers as Array {
+                    if controller.isKind(of: IntroViewController.self) {
+                        isInStack = true
+                        self.navigationController!.popToViewController(controller, animated: true)
+                        break
+                    }
+                }
+                if(!isInStack){
+                    
+                    let appdelegate = UIApplication.shared.delegate as! AppDelegate
+                    let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                    var homeViewController = mainStoryboard.instantiateViewController(withIdentifier: "IntroViewController") as! IntroViewController
+                    var nav = UINavigationController(rootViewController: homeViewController)
+                    nav.setNavigationBarHidden(true, animated: false)
+                    nav.setToolbarHidden(true, animated: false)
+                    appdelegate.window!.rootViewController = nav
+                }
+            }else{
+                self.view.makeToast(res?.message)
+            }
+            
+        }
+        
     }
 
     @IBAction func deleteMyAccount(_ sender: Any) {

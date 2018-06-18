@@ -69,29 +69,29 @@ class LoginRes : NSObject, Codable , NSCoding{
     }
     
 
-	let id : Int?
-	let username : String?
-	let token : String?
-	let email : String?
-	let name : String?
-	let gender : String?
-	let status : Int?
-	let avatar : String?
-	let second_avatar : String?
-	let selfie : String?
-	let looking_for : Int?
-	let new_pin_notif : Bool?
-	let lighter : Bool?
-	let invite_accepted_notification : Bool?
-	let message_notification : Bool?
-	let vibration : Bool?
-	let sounds : Bool?
-	let min_age : Int?
-	let max_age : Int?
-	let birthdate : Int?
-    let bio : String?
-    let job : String?
-    let studies : String?
+	var id : Int?
+	var username : String?
+	var token : String?
+	var email : String?
+	var name : String?
+	var gender : String?
+	var status : Int?
+	var avatar : String?
+	var second_avatar : String?
+	var selfie : String?
+	var looking_for : Int?
+	var new_pin_notif : Bool?
+	var lighter : Bool?
+	var invite_accepted_notification : Bool?
+	var message_notification : Bool?
+	var vibration : Bool?
+	var sounds : Bool?
+	var min_age : Int?
+	var max_age : Int?
+	var birthdate : Int?
+    var bio : String?
+    var job : String?
+    var studies : String?
 
 	enum CodingKeys: String, CodingKey {
 

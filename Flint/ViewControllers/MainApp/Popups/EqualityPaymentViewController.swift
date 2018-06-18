@@ -26,7 +26,7 @@ class EqualityPaymentViewController: UIViewController {
         self.removeFromParentViewController()
     }
     @IBAction func dontRemind(_ sender: Any) {
-        GlobalFields.defaults.set(false, forKey: "showEquality")
+        GlobalFields.defaults.set(true, forKey: "dontShowEquality")
         self.view.removeFromSuperview()
         self.removeFromParentViewController()
     }

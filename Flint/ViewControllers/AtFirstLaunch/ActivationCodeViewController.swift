@@ -78,7 +78,13 @@ class ActivationCodeViewController: UIViewController, UITextFieldDelegate {
             use = GlobalFields.USERNAME
         }
         let l = GlobalFields.showLoading(vc: self)
-        request(URLs.resendActivationCode, method: .post , parameters: ForgotPasswordRequestModel.init(username : use).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+        var ur : String = ""
+        if(self.isForgottenMode){
+            ur = URLs.forgetCode
+        }else{
+            ur = URLs.resendActivationCode
+        }
+        request(ur, method: .post , parameters: ForgotPasswordRequestModel.init(username : use).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
             
             let res = response.result.value
             l.disView()
@@ -107,7 +113,13 @@ class ActivationCodeViewController: UIViewController, UITextFieldDelegate {
         }else{
             use = GlobalFields.USERNAME
         }
-        request(URLs.activeUser, method: .post , parameters: ActiveUserRequestModel.init(userName: use, code: actCode).getParams(), headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<ActivationRes>>) in
+        var ur : String = ""
+        if(self.isForgottenMode){
+            ur = URLs.forgetCode
+        }else{
+            ur = URLs.activeUser
+        }
+        request(ur, method: .post , parameters: ActiveUserRequestModel.init(userName: use, code: actCode).getParams(), headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<ActivationRes>>) in
             l.disView()
             let res = response.result.value
             if(res?.status == "success"){

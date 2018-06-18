@@ -54,7 +54,12 @@ public class GlobalFields {
             return (self.defaults.object(forKey: "TOKEN") ?? "") as! String
         }
         set(newValue){
-            self.defaults.set(newValue, forKey: "TOKEN")
+            if(newValue == nil){
+                self.defaults.set("", forKey: "TOKEN")
+            }else{
+                self.defaults.set(newValue, forKey: "TOKEN")
+            }
+            
         }
     }
     
@@ -63,7 +68,24 @@ public class GlobalFields {
             return (self.defaults.object(forKey: "USERNAME") ?? "") as! String
         }
         set(newValue){
-            self.defaults.set(newValue, forKey: "USERNAME")
+            if(newValue == nil){
+                self.defaults.set("", forKey: "USERNAME")
+            }else{
+                self.defaults.set(newValue, forKey: "USERNAME")
+            }
+        }
+    }
+    
+    static var PASSWORD : String! {
+        get{
+            return (self.defaults.object(forKey: "PASSWORD") ?? "") as! String
+        }
+        set(newValue){
+            if(newValue == nil){
+                self.defaults.set("", forKey: "PASSWORD")
+            }else{
+                self.defaults.set(newValue, forKey: "PASSWORD")
+            }
         }
     }
     
@@ -72,7 +94,11 @@ public class GlobalFields {
             return (self.defaults.object(forKey: "ID") ?? "") as! Int
         }
         set(newValue){
-            self.defaults.set(newValue, forKey: "ID")
+            if(newValue == nil){
+                self.defaults.set(0, forKey: "ID")
+            }else{
+                self.defaults.set(newValue, forKey: "ID")
+            }
         }
     }
     
@@ -106,7 +132,7 @@ public class GlobalFields {
     
     static var myInvite : MyInvites?
     
-    
+    static var myLocation : CLLocationCoordinate2D?
     
     
     static func getTypeColor(type : Int) -> UIColor{
@@ -125,6 +151,7 @@ public class GlobalFields {
     }
     
     static func showLoading(vc : UIViewController) -> LoadingViewController{
+        vc.view.endEditing(true)
         let loadingView : LoadingViewController = (vc.storyboard?.instantiateViewController(withIdentifier: "LoadingViewController"))! as! LoadingViewController
         vc.addChildViewController(loadingView)
         loadingView.view.frame = vc.view.frame

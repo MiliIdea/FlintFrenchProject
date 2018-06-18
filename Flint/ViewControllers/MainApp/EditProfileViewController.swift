@@ -13,6 +13,7 @@ import Gallery
 import UIColor_Hex_Swift
 import IGRPhotoTweaks
 import Kingfisher
+import McPicker
 
 class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,GalleryControllerDelegate , IGRPhotoTweakViewControllerDelegate{
 
@@ -22,7 +23,7 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
     @IBOutlet weak var bioText: UITextView!
     @IBOutlet weak var myJob: UITextField!
     @IBOutlet weak var myStudies: UITextField!
-    @IBOutlet weak var sex: UITextField!
+    @IBOutlet var sex: UIButton!
     @IBOutlet weak var viewInScrollView: UIView!
     @IBOutlet weak var scroller: UIScrollView!
     var isCHangedImg1 : Bool = false
@@ -44,7 +45,13 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
         self.bioText.text = GlobalFields.userInfo.BIO
         self.myJob.text = GlobalFields.userInfo.JOB
         self.myStudies.text = GlobalFields.userInfo.STUDIES
-        self.sex.text = GlobalFields.userInfo.GENDER
+        if(GlobalFields.userInfo.GENDER == "male"){
+            self.sex.setTitle("Un Homme", for: .normal)
+        }else if(GlobalFields.userInfo.GENDER == "female"){
+            self.sex.setTitle("Une Femme", for: .normal)
+        }else{
+            self.sex.setTitle("", for: .normal)
+        }
         
         self.img1Button.kf.setBackgroundImage(with: URL(string: URLs.imgServer + (GlobalFields.userInfo.AVATAR)!), for: .normal)
         self.img2Button.kf.setBackgroundImage(with: URL(string: URLs.imgServer + (GlobalFields.userInfo.SECOND_AVATAR ?? "")!), for: .normal)
@@ -146,6 +153,20 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
         }
     }
     
+    @IBAction func selectGender(_ sender: Any) {
+        McPicker.show(data: [["Un Homme", "Une Femme"]]) {  [weak self] (selections: [Int : String]) -> Void in
+            if let male = selections[0] {
+                self?.sex.setTitle(male, for: .normal)
+            }
+            
+            if let female = selections[1] {
+                self?.sex.setTitle(female, for: .normal)
+            }
+        }
+    }
+    
+    
+    
     
     func callEditIngo(){
         
@@ -159,7 +180,7 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         var gen : String = ""
-        if(sex.text == "man" || sex.text == "male"){
+        if(sex.title(for: .normal) == "Un Homme"){
             gen = "male"
         }else{
             gen = "female"
@@ -169,11 +190,11 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
             self.l?.disView()
             let res = response.result.value
             if(res?.status == "success"){
-                
+               
                 GlobalFields.userInfo.BIO = self.bioText.text
                 GlobalFields.userInfo.JOB = self.myJob.text
                 GlobalFields.userInfo.STUDIES =  self.myStudies.text
-                GlobalFields.userInfo.GENDER = self.sex.text
+                GlobalFields.userInfo.GENDER = gen
                 
                 self.navigationController?.popViewController(animated: true)
             }
@@ -205,7 +226,7 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
             button.layer.cornerRadius = 50
             button.backgroundColor = UIColor.white
             button.setTitle("", for: .normal)
-            button.setBackgroundImage(UIImage.init(named: "tikIcon"), for: .normal)
+            button.setBackgroundImage(UIImage.init(named: "Groupe 1484"), for: .normal)
             button.tag = 777
             button.addTarget(self, action: #selector(self.cropAction), for: UIControlEvents.touchUpInside)
             cropViewController.view.addSubview(button)

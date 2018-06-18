@@ -106,10 +106,11 @@ class MessagePageViewController: UIViewController {
             
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .secondsSince1970
+            let l = GlobalFields.showLoading(vc: self)
             request(URLs.getChatMessage, method: .post , parameters: GetChatMessageRequestModel.init(ID: chatID!, PAGE: 1, PER_PAGE: 100).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetChatMessageRes]>>) in
                 
                 let res = response.result.value
-                
+                l.disView()
                 if(res?.status == "success"){
                 
                     if(res?.data != nil){
@@ -184,47 +185,51 @@ class MessagePageViewController: UIViewController {
                     
                     let res2 = response2.result.value
                     
-                    if(res2?.data != nil || res2?.data?.count == 0){
-                        self.backLabel.alpha = 1
-                        if(res?.data?.main?.type == 1){
-                            self.backLabel.text = "Donnez plus d’information quand au lieu, horaire et conditions dans lesquelles se tiendront la soirée. Ce message unique sera envoyé à tous les invités ayant accepté l’invitation. Il est très fortement conseillé de leur donner votre numéro de téléphone"
-                        }else{
-                            self.backLabel.text = "Décrivez vous, vos habits ainsi que l’endroit où vous l’attendez dans un seul message."
-                        }
-                    }
-                    
-                    if(res2?.data != nil){
-                        if(res2?.data?.count != 0){
-                            self.backLabel.alpha = 0
-                        }
-                        for m in (res2?.data)! {
-                            if((m.user?.description)! == GlobalFields.ID.description){
-                                controller.isSendedOneMessage = true
-                                self.botBackButton.alpha = 1
-                                controller.dataSource.addTextMessage(m.text!)
+                    if(res2?.status == "success"){
+                        if(res2?.data != nil || res2?.data?.count == 0){
+                            self.backLabel.alpha = 1
+                            if(res?.data?.main?.type == 1){
+                                self.backLabel.text = "Donnez plus d’information quand au lieu, horaire et conditions dans lesquelles se tiendront la soirée. Ce message unique sera envoyé à tous les invités ayant accepté l’invitation. Il est très fortement conseillé de leur donner votre numéro de téléphone"
                             }else{
-                                controller.dataSource.addIncommingTextMessage(m.text!)
+                                self.backLabel.text = "Décrivez vous, vos habits ainsi que l’endroit où vous l’attendez dans un seul message."
                             }
                         }
                         
-                    }
-                    
-                    controller.didMove(toParentViewController: self)
-                    
-                    if(res?.data?.main?.type == 1){
-                        //ag party bud bayad akse bala doros she
-                        self.image.kf.setImage(with: URL.init(string: URLs.imgServer + (self.imageAddress ?? "")))
-                        self.nameLabel.alpha = 0
-                    }else{
-                        self.nameLabel.alpha = 1
-                        if((res?.data?.main?.owner!.description)! != GlobalFields.ID.description){
-                            self.image.kf.setImage(with: URL.init(string: URLs.imgServer + (res?.data?.main?.owner_avatar ?? "")))
-                            self.nameLabel.text = res?.data?.main?.owner_name
-                        }else{
-                            self.image.kf.setImage(with: URL.init(string: URLs.imgServer + (res?.data?.users![0].avatar ?? "")))
-                            self.nameLabel.text = res?.data?.users![0].name
+                        if(res2?.data != nil){
+                            if(res2?.data?.count != 0){
+                                self.backLabel.alpha = 0
+                            }
+                            for m in (res2?.data)! {
+                                if((m.user?.description)! == GlobalFields.ID.description){
+                                    controller.isSendedOneMessage = true
+                                    self.botBackButton.alpha = 1
+                                    controller.dataSource.addTextMessage(m.text!)
+                                }else{
+                                    controller.dataSource.addIncommingTextMessage(m.text!)
+                                }
+                            }
+                            
                         }
                         
+                        controller.didMove(toParentViewController: self)
+                        
+                        if(res?.data?.main?.type == 1){
+                            //ag party bud bayad akse bala doros she
+                            self.image.kf.setImage(with: URL.init(string: URLs.imgServer + (self.imageAddress ?? "")))
+                            self.nameLabel.alpha = 0
+                        }else{
+                            self.nameLabel.alpha = 1
+                            if((res?.data?.main?.owner!.description)! != GlobalFields.ID.description){
+                                self.image.kf.setImage(with: URL.init(string: URLs.imgServer + (res?.data?.main?.owner_avatar ?? "")))
+                                self.nameLabel.text = res?.data?.main?.owner_name
+                            }else{
+                                self.image.kf.setImage(with: URL.init(string: URLs.imgServer + (res?.data?.users![0].avatar ?? "")))
+                                self.nameLabel.text = res?.data?.users![0].name
+                            }
+                            
+                        }
+                    }else{
+                        self.navigationController?.popViewController(animated: true)
                     }
                     
                 }

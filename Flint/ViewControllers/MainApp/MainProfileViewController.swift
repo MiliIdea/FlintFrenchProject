@@ -23,11 +23,16 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate , N
     
     @IBOutlet weak var jobLabel: UILabel!
     
+    @IBOutlet var editButton: UIButton!
+    
     let locationManager = CLLocationManager()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        editButton.adjustsImageWhenHighlighted = false
         
         self.locationManager.requestAlwaysAuthorization()
         
@@ -123,6 +128,27 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate , N
                 
                 let vC : SettingsViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SettingsViewController"))! as! SettingsViewController
                 self.navigationController?.pushViewController(vC, animated: true)
+            }else if(res?.errCode! == -1){
+                GlobalFields.USERNAME = ""
+                GlobalFields.TOKEN = ""
+                GlobalFields.PASSWORD = ""
+                GlobalFields.USERNAME = nil
+                GlobalFields.TOKEN = nil
+                GlobalFields.ID = nil
+                GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
+                
+                var isInStack = false
+                for controller in self.navigationController!.viewControllers as Array {
+                    if controller.isKind(of: IntroViewController.self) {
+                        isInStack = true
+                        self.navigationController!.popToViewController(controller, animated: true)
+                        break
+                    }
+                }
+                if(!isInStack){
+                    let vC : IntroViewController = (self.storyboard?.instantiateViewController(withIdentifier: "IntroViewController"))! as! IntroViewController
+                    self.navigationController?.pushViewController(vC, animated: true)
+                }
             }else{
                 self.view.makeToast(res?.message)
             }

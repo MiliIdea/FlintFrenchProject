@@ -34,22 +34,53 @@ class DetermineInvitationViewController: UIViewController {
     
     @IBOutlet var flintL: UILabel!
     
+    @IBOutlet var numberOfPersonIcon: UIImageView!
+    
+    @IBOutlet var numberOfPersonLabel: UILabel!
+    
+    
+    var resultAdderess : String = ""
+    
     var isParty : Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        print(GlobalFields.defaults.bool(forKey: "isntShowCompletionPopup"))
+        if(!GlobalFields.defaults.bool(forKey: "isntShowCompletionPopup")){
+            GlobalFields.defaults.set(true, forKey: "isntShowCompletionPopup")
+            let vC : CompletionViewController = (self.storyboard?.instantiateViewController(withIdentifier: "CompletionViewController"))! as! CompletionViewController
+            addChildViewController(vC)
+            vC.view.frame = self.view.frame
+            self.view.addSubview(vC.view)
+            vC.didMove(toParentViewController: self)
+        }
         
+        self.positionButton.setTitle("Votre position", for: .normal)
+        
+        if(GlobalFields.myLocation != nil){
+            self.getAddressFromLatLon()
+        }
         if(isParty){
             //button party mood bayad namayesh dade beshe
             self.partyButton.alpha = 1
             GlobalFields.inviteMood = "Party"
             GlobalFields.inviteMoodColor = UIColor("#0035CF")
+            numberOfPersonIcon.alpha = 1
+            numberOfPersonLabel.alpha = 1
+            numberOfPersonButton.alpha = 1
+            numberOfPersonButton.isEnabled = true
+            GlobalFields.inviteNumber = 2
+            self.numberOfPersonButton.setTitle((GlobalFields.inviteNumber?.description)! + " person", for: .normal)
         }else{
             self.partyButton.alpha = 0
             GlobalFields.inviteNumber = 1
+            numberOfPersonIcon.alpha = 0
+            numberOfPersonLabel.alpha = 0
+            numberOfPersonButton.alpha = 0
+            numberOfPersonButton.isEnabled = false
         }
-        
+
         
         self.activityNameLabel.layer.borderWidth = 1
         self.activityNameLabel.layer.borderColor = UIColor("#707070").cgColor
@@ -69,6 +100,8 @@ class DetermineInvitationViewController: UIViewController {
             }
         }
     }
+    
+    
     
     override func viewDidAppear(_ animated: Bool) {
         
@@ -168,10 +201,14 @@ class DetermineInvitationViewController: UIViewController {
     @IBAction func next(_ sender: Any) {
         
         //ag hame chi ok bud ejaze midim bere marhale bad
-        if(self.timeButton.title(for: .normal) == "" || self.numberOfPersonButton.title(for: .normal) == "" || self.positionButton.title(for: .normal) == "" || self.positionButton.title(for: .normal) == "Your Position"){
+        if(self.timeButton.title(for: .normal) == "" || self.numberOfPersonButton.title(for: .normal) == "" || self.positionButton.title(for: .normal) == "" || self.positionButton.title(for: .normal) == "Votre position"){
             return
         }
-        
+        if(GlobalFields.inviteMood == nil || GlobalFields.inviteMood == ""){
+            
+            self.view.makeToast("pls select your invite mood")
+            return
+        }
         if(!isParty){
             let vC : SetEmojiViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SetEmojiViewController"))! as! SetEmojiViewController
             self.navigationController?.pushViewController(vC, animated: true)
@@ -198,41 +235,45 @@ class DetermineInvitationViewController: UIViewController {
             
             let date : Date = GlobalFields.inviteExactTime!
             
-            request(URLs.createInvitation, method: .post , parameters: CreateInvitationRequestModel.init(type: type, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!, peopleCount: GlobalFields.inviteNumber!, exactTime: Int(date.timeIntervalSince1970), when: GlobalFields.inviteWhen!, emoji: GlobalFields.inviteEmoji!, title: GlobalFields.inviteTitle!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<CreateInviteRes>>) in
-                
-                let res = response.result.value
-                
-                if(res?.status == "success"){
-                    GlobalFields.defaults.set(false, forKey: "reconfirm")
-                    GlobalFields.invite = (res?.data?.invite)!
+            if(GlobalFields.inviteLocation == nil){
+                self.view.makeToast("pls check your location settings")
+            }else{
+                request(URLs.createInvitation, method: .post , parameters: CreateInvitationRequestModel.init(type: type, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!, peopleCount: GlobalFields.inviteNumber!, exactTime: Int(date.timeIntervalSince1970), when: GlobalFields.inviteWhen!, emoji: GlobalFields.inviteEmoji!, title: GlobalFields.inviteTitle!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<CreateInviteRes>>) in
                     
-                    request(URLs.getUsersListForInvite, method: .post , parameters: GetUsersListForInviteRequestModel.init(invite: (res?.data?.invite)!, page: 1, perPage: 10, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetUserListForInviteRes]>>) in
+                    let res = response.result.value
+                    
+                    if(res?.status == "success"){
+                        GlobalFields.defaults.set(false, forKey: "reconfirm")
+                        GlobalFields.invite = (res?.data?.invite)!
                         
-                        let res = response.result.value
-                        
-                        let vC : MainInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainInvitationViewController"))! as! MainInvitationViewController
-                        vC.inviteID = GlobalFields.invite
-                        if(res?.data != nil && (res?.data?.count)! > 0){
-                            vC.usersList = (res?.data)!
-                            vC.viewType = .AddPersonToInvite
-                            self.navigationController?.pushViewController(vC, animated: true)
-                        }else{
-                            //TODO : bayad alert bedim k kasi nis doret
-                            for controller in self.navigationController!.viewControllers as Array {
-                                if controller.isKind(of: FirstMapViewController.self) {
-                                    self.navigationController!.popToViewController(controller, animated: true)
-                                    break
+                        request(URLs.getUsersListForInvite, method: .post , parameters: GetUsersListForInviteRequestModel.init(invite: (res?.data?.invite)!, page: 1, perPage: 10, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetUserListForInviteRes]>>) in
+                            
+                            let res = response.result.value
+                            
+                            let vC : MainInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainInvitationViewController"))! as! MainInvitationViewController
+                            vC.inviteID = GlobalFields.invite
+                            if(res?.data != nil && (res?.data?.count)! > 0){
+                                vC.usersList = (res?.data)!
+                                vC.viewType = .AddPersonToInvite
+                                self.navigationController?.pushViewController(vC, animated: true)
+                            }else{
+                                //TODO : bayad alert bedim k kasi nis doret
+                                for controller in self.navigationController!.viewControllers as Array {
+                                    if controller.isKind(of: FirstMapViewController.self) {
+                                        self.navigationController!.popToViewController(controller, animated: true)
+                                        break
+                                    }
                                 }
+                                return
                             }
-                            return
                         }
-                    }
-                    
-                }else{
-                    for controller in self.navigationController!.viewControllers as Array {
-                        if controller.isKind(of: FirstMapViewController.self) {
-                            self.navigationController!.popToViewController(controller, animated: true)
-                            break
+                        
+                    }else{
+                        for controller in self.navigationController!.viewControllers as Array {
+                            if controller.isKind(of: FirstMapViewController.self) {
+                                self.navigationController!.popToViewController(controller, animated: true)
+                                break
+                            }
                         }
                     }
                 }
@@ -240,6 +281,59 @@ class DetermineInvitationViewController: UIViewController {
         }
     }
     
+    
+    func getAddressFromLatLon(){
+        var center : CLLocationCoordinate2D = CLLocationCoordinate2D()
+        let ceo: CLGeocoder = CLGeocoder()
+        center.latitude = (GlobalFields.myLocation?.latitude)!
+        center.longitude = (GlobalFields.myLocation?.longitude)!
+        
+        let loc: CLLocation = CLLocation(latitude:center.latitude, longitude: center.longitude)
+        
+        
+        ceo.reverseGeocodeLocation(loc, completionHandler:
+            {(placemarks, error) in
+                if (error != nil)
+                {
+                    self.setAddressAndLocation()
+                    print("reverse geodcode fail: \(error!.localizedDescription)")
+                }
+                let pm = placemarks! as [CLPlacemark]
+                
+                if pm.count > 0 {
+                    let pm = placemarks![0]
+                    
+                    var addressString : String = ""
+                    
+                    if pm.locality != nil {
+                        addressString = addressString + pm.locality! + ", "
+                    }
+                    if pm.thoroughfare != nil {
+                        addressString = addressString + pm.thoroughfare! + ", "
+                    }
+                    if pm.subLocality != nil {
+                        addressString = addressString + pm.subLocality!
+                    }
+                    
+                    
+                    
+                    self.resultAdderess = addressString
+                    
+                    self.setAddressAndLocation()
+                }
+        })
+        
+    }
+    
+    
+    func setAddressAndLocation(){
+        
+        GlobalFields.inviteLocation = GlobalFields.myLocation
+        
+        GlobalFields.inviteAddress = self.resultAdderess
+        
+        
+    }
     
     
 

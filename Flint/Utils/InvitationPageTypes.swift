@@ -14,6 +14,8 @@ enum InvitationPageTypes {
     
     case NormalInviteAcception
     
+    case AfterParty
+    
     /////////////////////////////////////////////////////////
 
     case AddPersonToInvite // like , superlike , dislike , ok

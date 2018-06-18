@@ -73,6 +73,8 @@ target 'Flint' do
   
   pod 'TransitionTreasury'
   
+  pod 'McPicker'
+  
 end
 
 post_install do |installer|

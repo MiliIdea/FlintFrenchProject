@@ -30,7 +30,10 @@ class SignUpViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        goAnotherSignUpButton.titleLabel?.numberOfLines = 1
+        goAnotherSignUpButton.titleLabel?.minimumScaleFactor = 0.5
+        goAnotherSignUpButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        setMobileNumberMode()
         // Do any additional setup after loading the view.
     }
 
@@ -59,13 +62,13 @@ class SignUpViewController: UIViewController {
         if(!checkValidation()){
             return
         }
-        
+        let l = GlobalFields.showLoading(vc: self)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         request(URLs.register, method: .post , parameters: RegisterRequestModel.init(userName: self.inputField.text , password: "123456").getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<RegisterRes>>) in
             
             let res = response.result.value
-            
+            l.disView()
             if(res?.status == "success"){
             
                 GlobalFields.USERNAME = res?.data?.username
@@ -130,16 +133,18 @@ class SignUpViewController: UIViewController {
         self.preNumLabel.alpha = 0
         self.titleNumbOrEmail.text = "Entrez votre numéro de téléphone"
         self.inputField.placeholder = "Numéro téléphone"
+        self.inputField.keyboardType = UIKeyboardType.numberPad
         self.Sdescription.text = "Un texto de confirmation vous sera envoyé.Ce numéro vous permettra de vous connectez et de réinitialiser  votre mot de passe le cas échéant."
         self.goAnotherSignUpButton.setTitle("Utilisez votre adresse e-mail", for: .normal)
     }
     
     func setEmailMode(){
-        self.preNumLabel.alpha = 0
-        self.titleNumbOrEmail.text = "Entrez votre adresse e-mail"
-        self.inputField.placeholder = "Adresse e-mail"
-        self.Sdescription.text = "Un e-mail de confirmation vous sera envoyé.Cette adresse e-mail vous permettra de vous connectez et de réinitialiser  votre mot de passe le cas échéant."
-        self.goAnotherSignUpButton.setTitle("Utilisez votre numéro de téléphone", for: .normal)
+//        self.preNumLabel.alpha = 0
+//        self.inputField.keyboardType = UIKeyboardType.emailAddress
+//        self.titleNumbOrEmail.text = "Entrez votre adresse e-mail"
+//        self.inputField.placeholder = "Adresse e-mail"
+//        self.Sdescription.text = "Un e-mail de confirmation vous sera envoyé.Cette adresse e-mail vous permettra de vous connectez et de réinitialiser  votre mot de passe le cas échéant."
+//        self.goAnotherSignUpButton.setTitle("Utilisez votre numéro de téléphone", for: .normal)
     }
     
     @IBAction func dismiss(_ sender: Any) {

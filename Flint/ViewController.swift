@@ -71,6 +71,8 @@ class ViewController: UIViewController {
  */
     
     
+    // chat: 1 , prfoile : 0 , poll : 2
+    
     
 }
 

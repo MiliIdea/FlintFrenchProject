@@ -60,6 +60,8 @@ class URLs {
     
     static let likePersonForInvite = server + "like-person-for-invite"
     
+    static let likeUser = server + "like-user"
+    
     static let superlikeForInvite = server + "super-like-person-for-invite"
     
     static let cancelInvite = server + "cancel-invite"
@@ -68,7 +70,7 @@ class URLs {
     
     static let reconfirmInvitation = server + "reconfirm-invite"
     
-    static let getConfirmListForInvite = server + "get-invite-confirm-list"
+    static let getConfirmListForInvite = server + "get-invite-reconfirm-list"
     
     static let confirmUser = server + "confirm-user"
     
@@ -109,5 +111,13 @@ class URLs {
     static let sendHoureMessage = server + "send-message"
     
     static let sendChatMessage = server + "send-chat-message"
+    
+    static let forgetCode = server + "check-forget-code"
+    
+    static let updateOneSignal = server + "update-onesignal"
+    
+    static let getChatChannel = server + "get-chat-channel"
+    
+    static let logout = server + "logout"
     
 }

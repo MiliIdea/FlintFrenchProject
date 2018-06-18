@@ -70,6 +70,7 @@ class PasswordViewController: UIViewController {
                     let res = response.result.value
                     l.disView()
                     if(res?.status == "success"){
+                        GlobalFields.PASSWORD = self.password.text!
                         let vC : SignInViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SignInViewController"))! as! SignInViewController
                         self.navigationController?.pushViewController(vC, animated: true)
                     }else{
@@ -84,6 +85,7 @@ class PasswordViewController: UIViewController {
                     let res = response.result.value
                     l.disView()
                     if(res?.status == "success"){
+                        GlobalFields.PASSWORD = self.password.text!
                         let vC : CreateNameViewController = (self.storyboard?.instantiateViewController(withIdentifier: "CreateNameViewController"))! as! CreateNameViewController
                         self.navigationController?.pushViewController(vC, animated: true)
                     }else{

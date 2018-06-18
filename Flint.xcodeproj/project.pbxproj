@@ -12,12 +12,18 @@
 		1078A40020AADDE600F1F2AA /* RegisterWithFacebookRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1078A3FF20AADDE600F1F2AA /* RegisterWithFacebookRequestModel.swift */; };
 		1078A40220AB13B100F1F2AA /* RegisterWithFacebookRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1078A40120AB13B100F1F2AA /* RegisterWithFacebookRes.swift */; };
 		1085099020AD857E00DB52DB /* ActiveInviteRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1085098F20AD857E00DB52DB /* ActiveInviteRes.swift */; };
+		1098ABC020CFB18900A0138D /* UpdateOneSignalRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1098ABBF20CFB18900A0138D /* UpdateOneSignalRequestModel.swift */; };
+		1098ABC220CFB76600A0138D /* GetChatChannelRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1098ABC120CFB76600A0138D /* GetChatChannelRequestModel.swift */; };
+		1098ABC420CFB98F00A0138D /* GetChatChannelRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1098ABC320CFB98F00A0138D /* GetChatChannelRes.swift */; };
+		1099290B20D0FFD6008B39AD /* ReportInvitationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1099290A20D0FFD5008B39AD /* ReportInvitationViewController.swift */; };
 		109BD10920B0186500807FEC /* InviteInfoRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109BD10820B0186500807FEC /* InviteInfoRes.swift */; };
 		109BD10B20B018B600807FEC /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109BD10A20B018B600807FEC /* Users.swift */; };
 		109BD10D20B03B7F00807FEC /* GlobalInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109BD10C20B03B7F00807FEC /* GlobalInfo.swift */; };
 		10C3B38120B3E80D006026B6 /* GetInviteMessageRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C3B38020B3E80C006026B6 /* GetInviteMessageRes.swift */; };
 		10C3B38320B57E09006026B6 /* ChatPageTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C3B38220B57E08006026B6 /* ChatPageTypes.swift */; };
 		10C3B38520B58D27006026B6 /* SendChatRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C3B38420B58D27006026B6 /* SendChatRequestModel.swift */; };
+		10D14DE720CE7AA90068DAA4 /* CompletionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10D14DE620CE7AA90068DAA4 /* CompletionViewController.swift */; };
+		10D14DE920CE88720068DAA4 /* LikeUserRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10D14DE820CE88720068DAA4 /* LikeUserRequestModel.swift */; };
 		11111A192080B6C0001606AC /* MyAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11111A182080B6C0001606AC /* MyAnnotation.swift */; };
 		11111A1B2080BC6D001606AC /* FlintAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11111A1A2080BC6D001606AC /* FlintAnnotation.swift */; };
 		1112787C20A17BEC00CCBC82 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1112787B20A17BEC00CCBC82 /* LoadingViewController.swift */; };
@@ -192,12 +198,18 @@
 		1078A3FF20AADDE600F1F2AA /* RegisterWithFacebookRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterWithFacebookRequestModel.swift; sourceTree = "<group>"; };
 		1078A40120AB13B100F1F2AA /* RegisterWithFacebookRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterWithFacebookRes.swift; sourceTree = "<group>"; };
 		1085098F20AD857E00DB52DB /* ActiveInviteRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveInviteRes.swift; sourceTree = "<group>"; };
+		1098ABBF20CFB18900A0138D /* UpdateOneSignalRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateOneSignalRequestModel.swift; sourceTree = "<group>"; };
+		1098ABC120CFB76600A0138D /* GetChatChannelRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatChannelRequestModel.swift; sourceTree = "<group>"; };
+		1098ABC320CFB98F00A0138D /* GetChatChannelRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatChannelRes.swift; sourceTree = "<group>"; };
+		1099290A20D0FFD5008B39AD /* ReportInvitationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportInvitationViewController.swift; sourceTree = "<group>"; };
 		109BD10820B0186500807FEC /* InviteInfoRes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteInfoRes.swift; sourceTree = "<group>"; };
 		109BD10A20B018B600807FEC /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
 		109BD10C20B03B7F00807FEC /* GlobalInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalInfo.swift; sourceTree = "<group>"; };
 		10C3B38020B3E80C006026B6 /* GetInviteMessageRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetInviteMessageRes.swift; sourceTree = "<group>"; };
 		10C3B38220B57E08006026B6 /* ChatPageTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatPageTypes.swift; sourceTree = "<group>"; };
 		10C3B38420B58D27006026B6 /* SendChatRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendChatRequestModel.swift; sourceTree = "<group>"; };
+		10D14DE620CE7AA90068DAA4 /* CompletionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionViewController.swift; sourceTree = "<group>"; };
+		10D14DE820CE88720068DAA4 /* LikeUserRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUserRequestModel.swift; sourceTree = "<group>"; };
 		11111A182080B6C0001606AC /* MyAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAnnotation.swift; sourceTree = "<group>"; };
 		11111A1A2080BC6D001606AC /* FlintAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlintAnnotation.swift; sourceTree = "<group>"; };
 		1112787B20A17BEC00CCBC82 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
@@ -524,6 +536,7 @@
 				1199C65D20861B1B002754AC /* UploadImageRes.swift */,
 				1085098F20AD857E00DB52DB /* ActiveInviteRes.swift */,
 				10C3B38020B3E80C006026B6 /* GetInviteMessageRes.swift */,
+				1098ABC320CFB98F00A0138D /* GetChatChannelRes.swift */,
 			);
 			path = ResponseModels;
 			sourceTree = "<group>";
@@ -555,6 +568,8 @@
 				1176DA8320972D23006D1366 /* PollViewController.swift */,
 				1176DA852097674C006D1366 /* StopShowInviteGaideViewController.swift */,
 				1176DA8720976ED6006D1366 /* WarningReconfirmViewController.swift */,
+				10D14DE620CE7AA90068DAA4 /* CompletionViewController.swift */,
+				1099290A20D0FFD5008B39AD /* ReportInvitationViewController.swift */,
 			);
 			path = Popups;
 			sourceTree = "<group>";
@@ -746,6 +761,9 @@
 				1199C65B2086143D002754AC /* UploadImageRequestModel.swift */,
 				1078A3FF20AADDE600F1F2AA /* RegisterWithFacebookRequestModel.swift */,
 				10C3B38420B58D27006026B6 /* SendChatRequestModel.swift */,
+				10D14DE820CE88720068DAA4 /* LikeUserRequestModel.swift */,
+				1098ABBF20CFB18900A0138D /* UpdateOneSignalRequestModel.swift */,
+				1098ABC120CFB76600A0138D /* GetChatChannelRequestModel.swift */,
 			);
 			path = RequestModels;
 			sourceTree = "<group>";
@@ -899,6 +917,7 @@
 				"${BUILT_PRODUCTS_DIR}/ISEmojiView/ISEmojiView.framework",
 				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
 				"${BUILT_PRODUCTS_DIR}/MapKitGoogleStyler/MapKitGoogleStyler.framework",
+				"${BUILT_PRODUCTS_DIR}/McPicker/McPicker.framework",
 				"${BUILT_PRODUCTS_DIR}/MiniLayout/MiniLayout.framework",
 				"${BUILT_PRODUCTS_DIR}/MultiSlider/MultiSlider.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
@@ -935,6 +954,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ISEmojiView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MapKitGoogleStyler.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/McPicker.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MiniLayout.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MultiSlider.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
@@ -993,12 +1013,14 @@
 				1199C68B208E0A7A002754AC /* StoreChatResponse.swift in Sources */,
 				1199C63020814DD9002754AC /* DemoPhotoMessageViewModel.swift in Sources */,
 				1199C62A20814DD9002754AC /* DemoChatMessageFactory.swift in Sources */,
+				10D14DE720CE7AA90068DAA4 /* CompletionViewController.swift in Sources */,
 				11F6E930207C8D0500DCCF6E /* AcceptInviteRequestModel.swift in Sources */,
 				1176DA762095C083006D1366 /* Pending_list.swift in Sources */,
 				11F013C9207384D7001FCBE3 /* CreateNameViewController.swift in Sources */,
 				11F6E94A207C950B00DCCF6E /* GetInviteInfoRequestModel.swift in Sources */,
 				1199C66220868A01002754AC /* ResetPasswordRequestModel.swift in Sources */,
 				1078A40020AADDE600F1F2AA /* RegisterWithFacebookRequestModel.swift in Sources */,
+				1098ABC020CFB18900A0138D /* UpdateOneSignalRequestModel.swift in Sources */,
 				1199C63A20814DD9002754AC /* BaseMessageCollectionViewCellAvatarStyle.swift in Sources */,
 				1199C6A220907A98002754AC /* TheDayAfterViewController.swift in Sources */,
 				11F6E91E207C84EE00DCCF6E /* RegisterRequestModel.swift in Sources */,
@@ -1032,6 +1054,7 @@
 				1176DA6520947F41006D1366 /* GetMyChatsRequestModel.swift in Sources */,
 				11F013CC207384D7001FCBE3 /* ProfilePicViewController.swift in Sources */,
 				1199C670208B2357002754AC /* PinTypes.swift in Sources */,
+				10D14DE920CE88720068DAA4 /* LikeUserRequestModel.swift in Sources */,
 				1199C6502084E922002754AC /* GlobalFields.swift in Sources */,
 				1199C6542085FB8A002754AC /* ActiveUserRequestModel.swift in Sources */,
 				11F6E922207C856800DCCF6E /* ResendActivationCodeRequestModel.swift in Sources */,
@@ -1073,6 +1096,7 @@
 				1199C6A020907A88002754AC /* JustYouViewController.swift in Sources */,
 				1199C64C20849611002754AC /* LoginRes.swift in Sources */,
 				1199C63820814DD9002754AC /* DemoTextMessageViewModel.swift in Sources */,
+				1098ABC420CFB98F00A0138D /* GetChatChannelRes.swift in Sources */,
 				11F6E920207C851A00DCCF6E /* ForgotPasswordRequestModel.swift in Sources */,
 				1199C68A208E0A7A002754AC /* ChatModel.swift in Sources */,
 				11F013D2207384D7001FCBE3 /* SignInViewController.swift in Sources */,
@@ -1086,6 +1110,7 @@
 				111F611A20762A5900E3B464 /* ActivityTypeViewController.swift in Sources */,
 				11F6E92E207C8BF400DCCF6E /* CreateInvitationRequestModel.swift in Sources */,
 				11F6E918207B99AF00DCCF6E /* UtilsFunctions.swift in Sources */,
+				1099290B20D0FFD6008B39AD /* ReportInvitationViewController.swift in Sources */,
 				11951BAA2073A44600D899DB /* SearchViewController.swift in Sources */,
 				1199C68C208E0A7A002754AC /* ChatHistoryModel.swift in Sources */,
 				11F013D92073854B001FCBE3 /* IntroCollectionViewCell.swift in Sources */,
@@ -1110,6 +1135,7 @@
 				1199C6682088C6EC002754AC /* CreateInviteRes.swift in Sources */,
 				1176DA6F2094A054006D1366 /* UpdateChannelRequestModel.swift in Sources */,
 				1199C65C2086143D002754AC /* UploadImageRequestModel.swift in Sources */,
+				1098ABC220CFB76600A0138D /* GetChatChannelRequestModel.swift in Sources */,
 				11F013CD207384D7001FCBE3 /* SelfiTrustViewController.swift in Sources */,
 				1078A3FE20AAD70A00F1F2AA /* LoginWithFacebookRequestModel.swift in Sources */,
 				1085099020AD857E00DB52DB /* ActiveInviteRes.swift in Sources */,

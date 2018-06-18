@@ -77,12 +77,11 @@ class SearchViewController: UIViewController ,MKMapViewDelegate{
             
             self.map.setRegion(region, animated: true)
             
-            let marker = MyAnnotation()
-            marker.coordinate = (self.locationManager.location?.coordinate)!
-            marker.identifier = "myPosition"
-
-            
-            map.addAnnotation(marker)
+//            let marker = MyAnnotation()
+//            marker.coordinate = (self.locationManager.location?.coordinate)!
+//            marker.identifier = "myPosition"
+//
+//            map.addAnnotation(marker)
 
         }
     }
@@ -143,6 +142,17 @@ class SearchViewController: UIViewController ,MKMapViewDelegate{
         }
     }
     
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        let coordinate = CLLocationCoordinate2DMake(mapView.region.center.latitude, mapView.region.center.longitude)
+        var span = mapView.region.span
+        if span.latitudeDelta < 0.0001 { // MIN LEVEL
+            span = MKCoordinateSpanMake(0.0001, 0.0001)
+        } else if span.latitudeDelta > 0.6 { // MAX LEVEL
+            span = MKCoordinateSpanMake(0.6, 0.6)
+        }
+        let region = MKCoordinateRegionMake(coordinate, span)
+        mapView.setRegion(region, animated:true)
+    }
     
     
     
@@ -203,12 +213,11 @@ class SearchViewController: UIViewController ,MKMapViewDelegate{
     
     func setAddressAndLocation(){
         
-        self.navigationController?.popViewController(animated: true)
- 
         GlobalFields.inviteLocation = self.resultCordinate
         
         GlobalFields.inviteAddress = self.resultAdderess
         
+        self.navigationController?.popViewController(animated: true)
         
     }
     
@@ -273,10 +282,11 @@ extension SearchViewController: UITableViewDelegate {
             //call search In Location
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .secondsSince1970
+            let l = GlobalFields.showLoading(vc: self)
             request(URLs.searchInlocation, method: .post , parameters: SearchInLocationRequestModel.init(lat: (coordinate?.latitude.description)!, long: (coordinate?.longitude.description)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[SearchInLocationRes]>>) in
                 
                 let res = response.result.value
-                
+                l.disView()
                 if(res?.status == "success" && res?.data != nil && (res?.data?.count)! > 0){
                     for p in (res?.data)!{
                         let marker = MyAnnotation()

@@ -45,6 +45,7 @@ class BirthDateViewController: UIViewController {
     
     @IBAction func next(_ sender: Any) {
         
+        print(Int(self.datePicker.date.timeIntervalSince1970))
         GlobalFields.userInfo.BIRTHDATE = Int(self.datePicker.date.timeIntervalSince1970)
         
         let vC : ManOrWomanViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ManOrWomanViewController"))! as! ManOrWomanViewController

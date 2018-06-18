@@ -47,7 +47,7 @@ class SparksViewController: UIViewController , UITableViewDelegate , UITableView
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        self.callChatListRest()
+        self.callChatListRest(showLoading: true)
         IQKeyboardManager.sharedManager().enable = true
     }
 
@@ -56,26 +56,38 @@ class SparksViewController: UIViewController , UITableViewDelegate , UITableView
         // Dispose of any resources that can be recreated.
     }
     
-    func callChatListRest(){
+    func callChatListRest(showLoading : Bool){
         self.pendingList.removeAll()
         self.chatList.removeAll()
         self.messageList.removeAll()
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
-        let l = GlobalFields.showLoading(vc: self)
+        var l : LoadingViewController? = nil
+        if(showLoading){
+            l = GlobalFields.showLoading(vc: self)
+        }
         request(URLs.getMyChats, method: .post , parameters: GetMyChatsRequestModel.init().getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<GetMyChatsRes>>) in
             
             let res = response.result.value
-            l.disView()
+            if(showLoading){
+                l?.disView()
+            }
             //update mishe tableo collection
             if(res?.status == "success"){
-                
                 self.pendingList = (res?.data?.pending_list) ?? [Pending_list]()
                 self.chatList = (res?.data?.chats) ?? [Chats]()
                 self.messageList = (res?.data?.message_list) ?? [Message_list]()
                 self.profilesCollectionView.reloadData()
                 self.chatTable.reloadData()
-                
+                if(res?.data == nil){
+                    self.chatTable.alpha = 0
+                }else{
+                    if(self.chatList.isEmpty && self.messageList.isEmpty){
+                        self.chatTable.alpha = 0
+                    }else{
+                        self.chatTable.alpha = 1
+                    }
+                }
             }
         }
     }
@@ -233,7 +245,24 @@ class SparksViewController: UIViewController , UITableViewDelegate , UITableView
                 vC.targetId = c.user
             }
             
-            self.navigationController?.pushViewController(vC, animated: true)
+            if(c.channel != nil && c.channel != ""){
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .secondsSince1970
+                let l = GlobalFields.showLoading(vc: self)
+                request(URLs.getChatChannel, method: .post , parameters: GetChatChannelRequestModel.init(ID: c.id!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<GetChatChannelRes>>) in
+                    l.disView()
+                    let res = response.result.value
+                    if(res?.status == "success"){
+                        vC.channel = (res?.data?.channel)!
+                        self.navigationController?.pushViewController(vC, animated: true)
+                    }else{
+                        self.view.makeToast(res?.message)
+                    }
+                    
+                }
+            }else{
+                self.navigationController?.pushViewController(vC, animated: true)
+            }
             
         }
         

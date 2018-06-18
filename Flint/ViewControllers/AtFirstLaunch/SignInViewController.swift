@@ -61,6 +61,8 @@ class SignInViewController: UIViewController {
                     
                     GlobalFields.TOKEN = res?.data?.token
                     
+                    GlobalFields.PASSWORD = self.password.text!
+                    
                     GlobalFields.USERNAME = res?.data?.username
                     
                     GlobalFields.ID = res?.data?.id
@@ -103,6 +105,11 @@ class SignInViewController: UIViewController {
                 
                 
                 
+            }else if(res?.errCode == -2){
+                let vC : ActivationCodeViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ActivationCodeViewController"))! as! ActivationCodeViewController
+                self.navigationController?.pushViewController(vC, animated: true)
+            }else{
+                self.view.makeToast(res?.message)
             }
             
             

@@ -10,6 +10,7 @@ import UIKit
 import DCKit
 import Alamofire
 import CodableAlamofire
+import Toast_Swift
 
 class ReportPopupViewController: UIViewController {
 
@@ -67,10 +68,17 @@ class ReportPopupViewController: UIViewController {
     @IBAction func yes(_ sender: Any) {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
-        request(URLs.reportUser, method: .post , parameters: ReportUserRequestModel.init(targetUser: (self.parent as! MessagePageViewController).targetId!, reason: tagReport, txt: tagMessage).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
-            
+        let l = GlobalFields.showLoading(vc: self)
+        request(URLs.reportUser, method: .post , parameters: ReportUserRequestModel.init(targetUser: (self.parent as! MessagePageViewController).targetId!, reason: 1, txt: tagMessage).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+            l.disView()
             let res = response.result.value
-            
+            if(res?.status == "success"){
+                self.parent!.navigationController?.popViewController(animated: true)
+                self.view.removeFromSuperview()
+                self.removeFromParentViewController()
+            }else{
+                self.view.makeToast(res?.message)
+            }
             
         }
     }

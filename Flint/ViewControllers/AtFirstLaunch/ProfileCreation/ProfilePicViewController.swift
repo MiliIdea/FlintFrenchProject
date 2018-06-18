@@ -122,7 +122,7 @@ class ProfilePicViewController: UIViewController ,GalleryControllerDelegate , IG
             button.layer.cornerRadius = 50
             button.backgroundColor = UIColor.white
             button.setTitle("", for: .normal)
-            button.setBackgroundImage(UIImage.init(named: "tikIcon"), for: .normal)
+            button.setBackgroundImage(UIImage.init(named: "Groupe 1484"), for: .normal)
             button.tag = 777
             button.addTarget(self, action: #selector(self.cropAction), for: UIControlEvents.touchUpInside)
             cropViewController.view.addSubview(button)

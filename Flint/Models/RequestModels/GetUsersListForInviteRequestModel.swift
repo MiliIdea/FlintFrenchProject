@@ -23,9 +23,9 @@ class GetUsersListForInviteRequestModel {
         self.PER_PAGE = perPage
         
         //TODO
-        self.LATITUDE = "35.673609"
+        self.LATITUDE = lat
         
-        self.LONGITUDE = "51.215622"
+        self.LONGITUDE = long
         
     }
     

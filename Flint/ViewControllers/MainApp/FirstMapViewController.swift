@@ -51,10 +51,6 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
     
     @IBOutlet weak var lastNightButton: DCBorderedButton!
     
-    
-    
-    
-    
     @IBOutlet weak var inviteTitle: UILabel!
     
     @IBOutlet weak var inviteNumber: UILabel!
@@ -130,15 +126,17 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
         invitationButton.titleLabel?.numberOfLines = 1
         invitationButton.titleLabel?.minimumScaleFactor = 0.5
         invitationButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        
+        Timer.scheduledTimer(timeInterval: 600 , target: self, selector: #selector(callGetMyInvitesRest), userInfo: nil, repeats: true)
     }
     
     override func viewDidAppear(_ animated: Bool) {
 //        configureView()
-        callGetActiveInvites()
+        callGetActiveInvites(showLoading: true)
         if(self.locationManager.location != nil ){
             let center = CLLocationCoordinate2D(latitude: (self.locationManager.location?.coordinate.latitude)!, longitude: (self.locationManager.location?.coordinate.longitude)!)
             let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))
-            
+            self.updateLocationServer(locCor: center)
             self.mapView.setRegion(region, animated: true)
             for an in self.mapView.annotations{
                 if(an is MyAnnotation){
@@ -324,30 +322,43 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
     }
     
     
-    func callGetActiveInvites(){
+    func callGetActiveInvites(showLoading : Bool = false){
         
-        l = GlobalFields.showLoading(vc: self)
+        if(showLoading == true){
+            self.l = GlobalFields.showLoading(vc: self)
+        }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         request(URLs.getActiveInvite, method: .post , parameters: OpenLighterRequestModel.init().getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<ActiveInviteRes>>) in
             
             let res = response.result.value
-
-            self.l?.disView()
+            
             print(res?.status)
             if(res?.status! == "success"){
                 if(res?.data != nil){
                     if(res?.data?.owned_invitation != nil && res?.data?.other_invitations != nil){
+                        if(self.l != nil){
+                            self.l?.disView()
+                            self.l = nil
+                        }
                         self.ownInvite = res?.data?.owned_invitation!
                         self.otherInvite = res?.data?.other_invitations!
                         self.isThereOtherInvite = true
                         self.manageInvitesView(invite: res?.data?.owned_invitation!, res: res?.data!, isOther: false)
                     }else if(res?.data?.owned_invitation != nil && res?.data?.other_invitations == nil){
+                        if(self.l != nil){
+                            self.l?.disView()
+                            self.l = nil
+                        }
                         self.ownInvite = res?.data?.owned_invitation!
                         self.otherInvite = nil
                         self.isThereOtherInvite = false
                         self.manageInvitesView(invite: res?.data?.owned_invitation!, res: res?.data!, isOther: false)
                     }else if(res?.data?.owned_invitation == nil && res?.data?.other_invitations != nil){
+                        if(self.l != nil){
+                            self.l?.disView()
+                            self.l = nil
+                        }
                         self.ownInvite = nil
                         self.otherInvite = res?.data?.other_invitations!
                         self.isThereOtherInvite = true
@@ -365,6 +376,33 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
                     self.configureView()
                     self.callGetMyInvitesRest()
                 }
+            }else if(res?.errCode == -1){
+                GlobalFields.USERNAME = ""
+                GlobalFields.TOKEN = ""
+                GlobalFields.PASSWORD = nil
+                GlobalFields.USERNAME = nil
+                GlobalFields.TOKEN = nil
+                GlobalFields.ID = nil
+                GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
+                
+                var isInStack = false
+                for controller in self.navigationController!.viewControllers as Array {
+                    if controller.isKind(of: IntroViewController.self) {
+                        isInStack = true
+                        self.navigationController!.popToViewController(controller, animated: true)
+                        break
+                    }
+                }
+                if(!isInStack){
+                    
+                    let appdelegate = UIApplication.shared.delegate as! AppDelegate
+                    let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                    var homeViewController = mainStoryboard.instantiateViewController(withIdentifier: "IntroViewController") as! IntroViewController
+                    var nav = UINavigationController(rootViewController: homeViewController)
+                    nav.setNavigationBarHidden(true, animated: false)
+                    nav.setToolbarHidden(true, animated: false)
+                    appdelegate.window!.rootViewController = nav
+                }
             }else{
                 self.type = .NormalMap
                 self.configureView()
@@ -379,12 +417,15 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
         
         
         if(invite.status == 1){ // submit
-            let interval = Double((invite.available_at)!) - Date().timeIntervalSince1970 + (30 * 60)
+//            let interval = Double((invite.available_at)!) - Date().timeIntervalSince1970 + (30 * 60)
             let interval2 = Double((invite.available_at)!) - Date().timeIntervalSince1970 - (5 * 60)
             if(interval2 <= 0){
                 callCancelDate(invite: invite.invite_id!)
             }else{
-                LocalNotifications().sendNotifyToMySelf(data: ["type" : "cancel" , "invite" : (invite.invite_id?.description)!], sendAfterXSec: interval2)
+                if(!GlobalFields.defaults.bool(forKey: "cancel:" + (invite.invite_id?.description)!)){
+                    GlobalFields.defaults.set(true, forKey: "cancel:" + (invite.invite_id?.description)!)
+                    LocalNotifications().sendNotifyToMySelf(data: ["type" : "cancel" , "invite" : (invite.invite_id?.description)!], sendAfterXSec: interval2)
+                }
             }
             self.type = .Awaiting
             self.configureView()
@@ -393,11 +434,14 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             
         }else if(invite.status == 2){ //afterLike
             let interval2 = Double((invite.available_at)!) - Date().timeIntervalSince1970 - (5 * 60)
-            let interval = Double((invite.available_at)!) - Date().timeIntervalSince1970 + (30 * 60)
+//            let interval = Double((invite.available_at)!) - Date().timeIntervalSince1970 + (30 * 60)
             if(interval2 <= 0){
                 callCancelDate(invite: invite.invite_id!)
             }else{
-                LocalNotifications().sendNotifyToMySelf(data: ["type" : "cancel" , "invite" : (invite.invite_id?.description)!], sendAfterXSec: interval2)
+                if(!GlobalFields.defaults.bool(forKey: "cancel:" + (invite.invite_id?.description)!)){
+                    GlobalFields.defaults.set(true, forKey: "cancel:" + (invite.invite_id?.description)!)
+                    LocalNotifications().sendNotifyToMySelf(data: ["type" : "cancel" , "invite" : (invite.invite_id?.description)!], sendAfterXSec: interval2)
+                }
             }
             if((invite.owner?.description)! == GlobalFields.ID.description){
                 self.type = .Awaiting
@@ -417,7 +461,10 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             if(interval < 0){
                 callCancelDate(invite: invite.invite_id!)
             }else{
-                LocalNotifications().sendNotifyToMySelf(data: ["type" : "cancel" , "invite" : (invite.invite_id?.description)!], sendAfterXSec: interval)
+                if(!GlobalFields.defaults.bool(forKey: "cancel:" + (invite.invite_id?.description)!)){
+                    GlobalFields.defaults.set(true, forKey: "cancel:" + (invite.invite_id?.description)!)
+                    LocalNotifications().sendNotifyToMySelf(data: ["type" : "cancel" , "invite" : (invite.invite_id?.description)!], sendAfterXSec: interval)
+                }
             }
             
             if(GlobalFields.ID.description != (invite.owner?.description)!){
@@ -433,6 +480,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             }
             
         }else if(invite.status == 4){
+            GlobalFields.defaults.set(false, forKey: "isntShowJustYouPopup")
             //set notify for reconfirm
             //nabayd ejazeye invite sakhtan bedam
             //invite ham nemitune bebine
@@ -441,7 +489,10 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             if(interval < 0){
                 callCancelDate(invite: invite.invite_id!)
             }else{
-                LocalNotifications().sendNotifyToMySelf(data: ["type" : "cancel" , "invite" : (invite.invite_id?.description)!], sendAfterXSec: interval)
+                if(!GlobalFields.defaults.bool(forKey: "cancel:" + (invite.invite_id?.description)!)){
+                    GlobalFields.defaults.set(true, forKey: "cancel:" + (invite.invite_id?.description)!)
+                    LocalNotifications().sendNotifyToMySelf(data: ["type" : "cancel" , "invite" : (invite.invite_id?.description)!], sendAfterXSec: interval)
+                }
             }
             if(GlobalFields.defaults.bool(forKey: "reconfirm") ){
                 self.type = .GoDate
@@ -469,6 +520,23 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             }
             
         }else if(invite.status == 5){
+            
+            if(!GlobalFields.defaults.bool(forKey: "isntShowJustYouPopup") && invite.type == 1){
+                GlobalFields.defaults.set(true, forKey: "isntShowJustYouPopup")
+                let vC : JustYouViewController = (self.storyboard?.instantiateViewController(withIdentifier: "JustYouViewController"))! as! JustYouViewController
+                addChildViewController(vC)
+                vC.view.frame = self.view.frame
+                self.view.addSubview(vC.view)
+                vC.didMove(toParentViewController: self)
+            }else if(!GlobalFields.defaults.bool(forKey: "dontShowEquality") && invite.type != 1){
+                let vC : EqualityPaymentViewController = (self.storyboard?.instantiateViewController(withIdentifier: "EqualityPaymentViewController"))! as! EqualityPaymentViewController
+                addChildViewController(vC)
+                vC.view.frame = self.view.frame
+                self.view.addSubview(vC.view)
+                vC.didMove(toParentViewController: self)
+            }
+            
+            
             GlobalFields.defaults.set(false, forKey: "reconfirm")
             self.type = .GoDate
             self.configureView()
@@ -484,14 +552,10 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
                 decoder.dateDecodingStrategy = .secondsSince1970
                 request(URLs.finishDate, method: .post , parameters: GetInviteInfoRequestModel.init(invite: (invite.invite_id)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
                     
-                    let res = response.result.value
+                    let res2 = response.result.value
                     
-                    if(res?.data != nil){
-                        let vC : PollViewController = (self.storyboard?.instantiateViewController(withIdentifier: "PollViewController"))! as! PollViewController
-                        //TODO inja bayad datahayi k niazaro ferestad
-                        vC.invite = invite.id
-                        
-                        self.navigationController?.pushViewController(vC, animated: true)
+                    if(res2?.data != nil){
+                        self.goPoll(invID: invite.id!)
                     }
                     
                 }
@@ -499,38 +563,39 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             }else{
                 
                 LocalNotifications().sendNotifyToMySelf(data: ["type" : "finish" , "invite" : (invite.invite_id?.description)!], sendAfterXSec: interval2)
-                
             }
             if(interval <= 0){
                 //alan bayad neshun bedim reConfirmo
-                let vC : PollViewController = (self.storyboard?.instantiateViewController(withIdentifier: "PollViewController"))! as! PollViewController
-                //TODO inja bayad datahayi k niazaro ferestad
-                vC.invite = invite.id
-                
-                self.navigationController?.pushViewController(vC, animated: true)
+                self.goPoll(invID: invite.id!)
                 
             }else{
                 
-                LocalNotifications().sendNotifyToMySelf(title: "poll", message: "pls go poll", subTitle: "", data: ["type" : "poll" , "invite" : (invite.invite_id?.description)!], sendAfterXSec: interval)
+                if(!(GlobalFields.defaults.object(forKey: "pollNotify") != nil && (GlobalFields.defaults.object(forKey: "pollNotify") as! String) == (invite.invite_id?.description)!)){
+                    GlobalFields.defaults.setValue((invite.invite_id?.description)!, forKey: "pollNotify")
+                    LocalNotifications().sendNotifyToMySelf(title: "poll", message: "pls go poll", subTitle: "", data: ["type" : "poll" , "invite" : (invite.invite_id?.description)!], sendAfterXSec: interval)
+                }
+                
                 
             }
             
             
         }else if(invite.status == 6){
+            GlobalFields.defaults.set(false, forKey: "isntShowJustYouPopup")
             GlobalFields.defaults.set(false, forKey: "reconfirm")
             //show poll popup
-            let vC : PollViewController = (self.storyboard?.instantiateViewController(withIdentifier: "PollViewController"))! as! PollViewController
-            vC.invite = invite.invite_id
-            self.navigationController?.pushViewController(vC, animated: true)
+            self.goPoll(invID: invite.invite_id)
             
         }else if(invite.status == 7){
+            GlobalFields.defaults.set(false, forKey: "isntShowJustYouPopup")
             GlobalFields.defaults.set(false, forKey: "reconfirm")
             // faqat baraye party karbord dareq
             if(invite.type == 1){
                 self.type = .AboutLastNight
                 self.configureView()
+                self.callGetMyInvitesRest()
             }
         }else{
+            GlobalFields.defaults.set(false, forKey: "isntShowJustYouPopup")
             GlobalFields.defaults.set(false, forKey: "reconfirm")
             self.type = .NormalMap
             self.configureView()
@@ -550,6 +615,26 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             
         }
     }
+    
+    func goPoll(invID : Int!){
+        let l = GlobalFields.showLoading(vc: self)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        request(URLs.getInviteInfo, method: .post , parameters: GetInviteInfoRequestModel.init(invite: invID).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<InviteInfoRes>>) in
+            
+            let res = response.result.value
+            l.disView()
+            if(res?.data != nil){
+                let vC : PollViewController = (self.storyboard?.instantiateViewController(withIdentifier: "PollViewController"))! as! PollViewController
+                //TODO inja bayad datahayi k niazaro ferestad
+                vC.invite = res?.data
+                vC.inviteID = invID
+                self.navigationController?.pushViewController(vC, animated: true)
+            }
+            
+        }
+    }
+    
     
     
     @IBAction func clickOnOtherInvite(_ sender: Any) {
@@ -604,7 +689,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
                 
                 self.navigationController?.pushViewController(vC, animated: true)
             }else{
-                
+                self.view.makeToast("user not found!")
             }
         }
         
@@ -612,7 +697,14 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
     
     
     @IBAction func goInvitation(_ sender: Any) {
+        
+        
         let vC : ActivityTypeViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ActivityTypeViewController"))! as! ActivityTypeViewController
+        
+        if(self.locationManager.location != nil){
+            GlobalFields.myLocation = self.locationManager.location?.coordinate
+        }
+        
         self.navigationController?.pushViewController(vC, animated: true)
         
     }
@@ -630,14 +722,17 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
 
     
     
-    func callGetMyInvitesRest(){
+    @objc func callGetMyInvitesRest(){
         self.myInvites.removeAll()
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         request(URLs.getMyInvites, method: .post , parameters: GetMyInvitesRequestModel.init().getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[MyInvites]>>) in
             
             let res = response.result.value
-           
+            if(self.l != nil){
+                self.l?.disView()
+                self.l = nil
+            }
             if(res?.status == "success" && res?.data != nil && (res?.data?.count)! > 0){
                 self.myInvites = (res?.data)!
                 self.setMarkers()
@@ -662,7 +757,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             
         }
         
-        if(self.ownInvite != nil){
+        if(self.ownInvite != nil && (self.ownInvite?.status)! > 3){
             let pin = ownInvite
             let coordinate : CLLocationCoordinate2D = CLLocationCoordinate2D.init(latitude: Double(pin!.latitude!)!, longitude: Double(pin!.longitude!)!)
             self.mapView.clusterManager.annotations.append(ClustrableAnnotation.init(coordinate: coordinate, identifier: (pin!.invite_id?.description) ?? (pin?.id?.description)!))
@@ -673,6 +768,8 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             let coordinate : CLLocationCoordinate2D = CLLocationCoordinate2D.init(latitude: Double(pin!.latitude!)!, longitude: Double(pin!.longitude!)!)
             self.mapView.clusterManager.annotations.append(ClustrableAnnotation.init(coordinate: coordinate, identifier: (pin!.invite_id?.description) ?? (pin?.id?.description)!))
         }
+        
+        self.mapView.showAnnotations(self.mapView.clusterManager.annotations, animated: true)
         
     }
     
@@ -737,14 +834,25 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
-        request(URLs.getConfirmListForInvite, method: .post , parameters: GetConfirmListForInviteRequestModel.init(invite: self.myInvites[0].invite_id!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetUserListForInviteRes]>>) in
+        var inv : MyInvites?
+        if(ownInvite != nil){
+            inv = ownInvite
+        }else if(ownInvite == nil && otherInvite != nil){
+            inv = otherInvite
+        }
+        if(inv == nil){
+            return
+        }
+        
+        request(URLs.getConfirmListForInvite, method: .post , parameters: GetConfirmListForInviteRequestModel.init(invite: (inv?.id)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetUserListForInviteRes]>>) in
             
             let res = response.result.value
             
             if(res?.status == "success"){
                 let vC : MainInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainInvitationViewController"))! as! MainInvitationViewController
                 
-                vC.inviteID = self.myInvites[0].invite_id!
+                vC.inviteID = inv?.id
+                vC.viewType = .AfterParty
                 
                 if(res?.data == nil){
                     self.type = .NormalMap
@@ -755,6 +863,8 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
                     self.navigationController?.pushViewController(vC, animated: true)
                 }
                 
+            }else{
+                self.view.makeToast(res?.message)
             }
             
         }
@@ -768,6 +878,10 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
+        print(annotation)
+        print(annotation.title)
+        print(annotation.coordinate)
+        print(annotation.debugDescription)
         var reuseId = ""
         if(annotation is MyAnnotation){
             let annotationIdentifier = (annotation as! MyAnnotation).identifier
@@ -1033,7 +1147,52 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
     }
     
     
-    
+    func updateLocationServer(locCor : CLLocationCoordinate2D){
+        
+        let loc: CLLocation = CLLocation(latitude:locCor.latitude, longitude: locCor.longitude)
+        let ceo: CLGeocoder = CLGeocoder()
+        
+        ceo.reverseGeocodeLocation(loc, completionHandler:
+            {(placemarks, error) in
+                if (error != nil)
+                {
+                    //                    self.setAddressAndLocation()
+                    print("reverse geodcode fail: \(error!.localizedDescription)")
+                }
+                if(placemarks == nil){
+                    return
+                }
+                let pm = placemarks! as [CLPlacemark]
+                
+                if pm.count > 0 {
+                    let pm = placemarks![0]
+                    
+                    var addressString : String = ""
+                    
+                    if pm.locality != nil {
+                        addressString = addressString + pm.locality! + ", "
+                    }
+                    if pm.thoroughfare != nil {
+                        addressString = addressString + pm.thoroughfare! + ", "
+                    }
+                    if pm.subLocality != nil {
+                        addressString = addressString + pm.subLocality!
+                    }
+                    
+                    
+                    let decoder = JSONDecoder()
+                    decoder.dateDecodingStrategy = .secondsSince1970
+                    request(URLs.updateUserLocation, method: .post , parameters: UpdateUserLocationRequestModel.init(lat: (locCor.latitude.description), long: (locCor.longitude.description) , city : pm.locality ?? "" , hood : pm.thoroughfare ?? "").getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+                        
+                        let res = response.result.value
+                        
+                        
+                    }
+                    
+                }
+        })
+        
+    }
     
     
 }

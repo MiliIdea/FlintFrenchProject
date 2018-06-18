@@ -28,8 +28,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
     let locationManager = CLLocationManager()
     
     var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        
+//        if(GlobalFields.USERNAME != "" && GlobalFields.TOKEN != "" && GlobalFields.PASSWORD != "" && GlobalFields.defaults.bool(forKey: "isRegisterCompleted")){
+//            
+//            if(GlobalFields.PASSWORD == "FACEBOOK"){
+//                loginWithFaceBook()
+//            }else{
+//                login()
+//            }
+//            
+//        }
         // Override point for customization after application launch.
         NetworkActivityLogger.shared.startLogging()
         NetworkActivityLogger.shared.level = .debug
@@ -39,7 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
         
         
         locationManager.requestAlwaysAuthorization()
-        locationManager.distanceFilter = 1000
+        locationManager.distanceFilter = 100
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.activityType = .other
         locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
@@ -71,8 +81,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
         OneSignal.initWithLaunchOptions(launchOptions,
                                         appId: "7b25266d-c98f-482f-8954-f15e21029492",
                                         handleNotificationReceived: { (notification) in
-                                            print("handleNotificationReceived")
-                                            print(notification?.payload.description)
+
                                             let payload: OSNotificationPayload = notification!.payload
                                             if payload.additionalData != nil  && GlobalFields.TOKEN != nil {
                                                 self.handleNotification(payload.additionalData)
@@ -97,11 +106,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
         OneSignal.registerForPushNotifications()
         OneSignal.idsAvailable({(_ userId, _ pushToken) in
             GlobalFields.oneSignalId = userId
+            if(GlobalFields.USERNAME != nil && GlobalFields.USERNAME != "" && GlobalFields.TOKEN != nil && GlobalFields.TOKEN != ""){
+                self.updateOneSignal(id : userId)
+            }
         })
+        
         
         return true
     }
 
+    
     func application(_ application: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
         let handled: Bool = FBSDKApplicationDelegate.sharedInstance().application(application, open: url, sourceApplication: options[.sourceApplication] as? String, annotation: options[.annotation])
         // Add any custom logic here.
@@ -226,17 +240,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
                             
                             let res2 = response2.result.value
                             if(res2?.status == "success"){
-                                
+                                let vc : UIViewController? = self.topViewController()
+                                if(vc != nil){
+                                    if(vc?.isKind(of: FirstMapViewController.self))!{
+                                        (vc as! FirstMapViewController).callGetActiveInvites(showLoading: true)
+                                    }
+                                }
                             }
-                            
                         }
                     }
                 }
-                
             }
-        }
-        
-        if(type == "finish"){
+        }else if(type == "finish"){
             let inv = "\(data["invite"] ?? "")"
             print("now i should call getInviteInfo")
             request(URLs.getInviteInfo, method: .post , parameters: GetInviteInfoRequestModel.init(invite: Int(inv)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<InviteInfoRes>>) in
@@ -248,28 +263,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
                             let res = response.result.value
                             
                             if(res?.data != nil){
-//                                let vC : PollViewController = (self.storyboard?.instantiateViewController(withIdentifier: "PollViewController"))! as! PollViewController
-//                                //TODO inja bayad datahayi k niazaro ferestad
-//                                vC.invite = invite.id
-//                                
-//                                self.navigationController?.pushViewController(vC, animated: true)
+                                let vc : UIViewController? = self.topViewController()
+                                if(vc != nil){
+                                    if(vc?.isKind(of: FirstMapViewController.self))!{
+                                        (vc as! FirstMapViewController).callGetActiveInvites(showLoading: false)
+                                    }
+                                }
                             }
-                            
                         }
                     }
                 }
-                
+            }
+        }else if(type == "send_message" || type == "send_invite_message"){
+            let vc : UIViewController? = self.topViewController()
+            if(vc != nil){
+                if(vc?.isKind(of: SparksViewController.self))!{
+                    (vc as! SparksViewController).callChatListRest(showLoading: false)
+                }
+            }
+        }else{
+            let vc : UIViewController? = self.topViewController()
+            if(vc != nil){
+                if(vc?.isKind(of: FirstMapViewController.self))!{
+                    (vc as! FirstMapViewController).callGetActiveInvites(showLoading: false)
+                }
             }
         }
         
-//        if (type == OneSignalModel.TYPE_BROADCAST) {
-//            let id = "\(data["id"] ?? "")"
-//            let single = MessagesShowView()
-//            single.isOpenFromNotification = true
-//            single.boardId = Int(id)
-//            self.window?.rootViewController = single
-//            self.window?.makeKeyAndVisible()
-//        }
         
     }
 
@@ -292,24 +312,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
             completionHandler([])
             print(error)
         }
-        // Play a sound.
-//        completionHandler([.alert, .badge, .sound])
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
-//        if response.notification.request.content.categoryIdentifier == "TIMER_EXPIRED" {
-//            // Handle the actions for the expired timer.
-//            if response.actionIdentifier == "SNOOZE_ACTION" {
-//                // Invalidate the old timer and create a new one. . .
-//            }
-//            else if response.actionIdentifier == "STOP_ACTION" {
-//                // Invalidate the timer. . .
-//            }
-//        }
         completionHandler()
-        // Else handle actions for other notification types. . .
     }
 
     
@@ -336,6 +344,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
         long = String(currentLocation.coordinate.longitude)
         
         lat = String(currentLocation.coordinate.latitude)
+        
+        GlobalFields.myLocation = currentLocation.coordinate
         
         getAddressFromLatLon(pdblLatitude: lat, withLongitude: long)
         
@@ -411,5 +421,160 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
             registerBackgroundTask()
         }
     }
+    
+    func updateOneSignal(id : String!){
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        request(URLs.updateOneSignal, method: .post , parameters: UpdateOneSignalRequestModel.init(PLAYER_ID: id).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+            
+            let res = response.result.value
+            
+            
+        }
+    }
+    
+    
+    func topViewController() -> UIViewController? {
+        var top = UIApplication.shared.keyWindow?.rootViewController
+        while true {
+            if let presented = top?.presentedViewController {
+                top = presented
+            } else if let nav = top as? UINavigationController {
+                top = nav.visibleViewController
+            } else if let tab = top as? UITabBarController {
+                top = tab.selectedViewController
+            } else {
+                break
+            }
+        }
+        return top
+    }
+    
+    func login(){
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        request(URLs.login, method: .post , parameters: LoginRequestModel.init(userName : GlobalFields.USERNAME ,password : GlobalFields.PASSWORD).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+            
+            let res = response.result.value
+
+            if(res?.status == "success" || res?.status == "5"){
+                
+                //inja bayad check kard k ta koja takmil karde
+                
+                if(res?.data != nil){
+                    
+                    GlobalFields.defaults.set(false, forKey: "reconfirm")
+                    
+                    GlobalFields.loginResData = res?.data!
+                    
+                    GlobalFields.TOKEN = res?.data?.token
+                    
+                    GlobalFields.PASSWORD = GlobalFields.PASSWORD
+                    
+                    GlobalFields.USERNAME = res?.data?.username
+                    
+                    GlobalFields.ID = res?.data?.id
+                    
+                    let data = res?.data
+                    if(data?.name == nil || data?.name == ""){
+                        self.goPage(name: "IntroViewController")
+                    }else if(data?.birthdate == nil){
+                        self.goPage(name: "IntroViewController")
+                    }else if(data?.gender == nil){
+                        self.goPage(name: "IntroViewController")
+                    }else if(data?.avatar == nil || (data?.avatar?.contains("avatar.jpeg"))!){
+                        self.goPage(name: "IntroViewController")
+                    }else if(data?.selfie == nil || (data?.selfie?.contains("avatar.jpeg"))!){
+                        self.goPage(name: "IntroViewController")
+                    }else if(data?.bio == nil){
+                        self.goPage(name: "IntroViewController")
+                    }else if(data?.looking_for == nil){
+                        self.goPage(name: "IntroViewController")
+                    }else {
+                        self.goPage(name: "FirstMapViewController")
+                    }
+                }
+                
+                
+                
+            }else if(res?.errCode == -2){
+                self.goPage(name: "IntroViewController")
+            }else{
+                self.goPage(name: "IntroViewController")
+            }
+            
+            
+        }
+        
+        
+    }
+    
+    
+    func loginWithFaceBook(){
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        
+        request(URLs.loginWithFacebook, method: .post , parameters: LoginWithFacebookRequestModel.init(email: GlobalFields.USERNAME, token: GlobalFields.TOKEN ).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+            
+            let res = response.result.value
+            if(res?.status == "success" || res?.status == "5"){
+                //inja bayad check kard k ta koja takmil karde
+                
+                if(res?.data != nil){
+                    
+                    GlobalFields.loginResData = res?.data!
+                    
+                    GlobalFields.TOKEN = res?.data?.token
+                    
+                    GlobalFields.PASSWORD = "FACEBOOK"
+                    
+                    GlobalFields.USERNAME = res?.data?.username
+                    
+                    GlobalFields.ID = res?.data?.id
+                    
+                    let data = res?.data
+                    if(data?.gender == nil){
+                        self.goPage(name: "IntroViewController")
+                    }else if(data?.avatar == nil || (data?.avatar?.contains("avatar.jpeg"))!){
+                        self.goPage(name: "IntroViewController")
+                    }else if(data?.selfie == nil || (data?.selfie?.contains("avatar.jpeg"))!){
+                        self.goPage(name: "IntroViewController")
+                    }else if(data?.bio == nil){
+                        self.goPage(name: "IntroViewController")
+                    }else if(data?.looking_for == nil){
+                        self.goPage(name: "IntroViewController")
+                    }else {
+                        self.goPage(name: "FirstMapViewController")
+                    }
+                }
+                
+                
+                
+            }else if (res?.errCode == -2){
+                self.goPage(name: "IntroViewController")
+            }else{
+                self.goPage(name: "IntroViewController")
+            }
+            
+        }
+    }
+    
+    func goPage(name : String){
+        if(name == "FirstMapViewController"){
+            let viewController = self.window?.rootViewController?.storyboard?.instantiateViewController(withIdentifier: name) as! FirstMapViewController
+            let nav = UINavigationController(rootViewController: viewController)
+            nav.setNavigationBarHidden(true, animated: false)
+            nav.setToolbarHidden(true, animated: false)
+            self.window?.rootViewController = nav
+        }else{
+            let viewController = self.window?.rootViewController?.storyboard?.instantiateViewController(withIdentifier: name) as! IntroViewController
+            let nav = UINavigationController(rootViewController: viewController)
+            nav.setNavigationBarHidden(true, animated: false)
+            nav.setToolbarHidden(true, animated: false)
+            self.window?.rootViewController = nav
+        }
+        
+    }
+    
 }
 
