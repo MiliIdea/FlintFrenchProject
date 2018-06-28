@@ -13,8 +13,8 @@ import CoreLocation
 import Kingfisher
 import TransitionTreasury
 
-class MainProfileViewController: UIViewController ,CLLocationManagerDelegate , NavgationTransitionable{
-    var tr_pushTransition: TRNavgationTransitionDelegate?
+class MainProfileViewController: UIViewController ,CLLocationManagerDelegate , UINavigationControllerDelegate{
+   
     
 
     @IBOutlet weak var profilePic: UIImageView!
@@ -66,10 +66,12 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate , N
             jobLabel.alpha = 0
         }
         
+        self.navigationController?.delegate = self
         
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        self.navigationController?.delegate = self
         nameLabel.text = GlobalFields.userInfo.NAME
         if(GlobalFields.userInfo.BIRTHDATE != nil){
             let now = Date()
@@ -92,6 +94,27 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate , N
         }
     }
     
+    
+    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        if(fromVC.isKind(of: SparksViewController.self)){
+            return nil
+        }else if(fromVC.isKind(of: FirstMapViewController.self)){
+            return nil
+        }else if(toVC.isKind(of: SparksViewController.self)){
+            let t = TransitionManager()
+            t.coef = 1
+            return t
+        }else if(toVC.isKind(of: FirstMapViewController.self)){
+            let t = TransitionManager()
+            t.coef = 1
+            return t
+        }else{
+            return nil
+        }
+        
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.profilePic.frame.size.height = self.profilePic.frame.width
@@ -105,6 +128,8 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate , N
     }
     
     @IBAction func goShootingPhotoPage(_ sender: Any) {
+        UIApplication.shared.open(URL.init(string: "http://iconoclastphoto.com/")!, options: [:], completionHandler: nil)
+
         
     }
     
@@ -158,6 +183,25 @@ class MainProfileViewController: UIViewController ,CLLocationManagerDelegate , N
     }
     
     @IBAction func inviteFriend(_ sender: Any) {
+        let text = " J’ai trouvé une application parfaite pour toi ! Télécharge Flint : https://www.flint- app.com/download "
+
+
+        
+        // set up activity view controller
+        let textToShare = [ text ]
+        let activityViewController = UIActivityViewController(activityItems: textToShare, applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+        
+        // exclude some activity types from the list (optional)
+        activityViewController.excludedActivityTypes = [ UIActivityType.airDrop, UIActivityType.postToFacebook ]
+        
+        // present the view controller
+        self.present(activityViewController, animated: true, completion: nil)
+        
+        
+        
+        
+        
     }
     
     

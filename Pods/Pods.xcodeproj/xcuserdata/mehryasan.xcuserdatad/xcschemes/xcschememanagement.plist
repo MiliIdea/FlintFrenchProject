@@ -79,6 +79,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>GoogleToolboxForMac.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>IGRPhotoTweaks.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -110,16 +115,6 @@
 			<false/>
 		</dict>
 		<key>McPicker.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>MiniLayout.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>MultiSlider.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

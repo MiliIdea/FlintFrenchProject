@@ -120,4 +120,14 @@ class URLs {
     
     static let logout = server + "logout"
     
+    static let checkUpdate = server + "app-version"
+    
+    static let seenInviteMessage = server + "seen-invite-message"
+    
+    static let seenMessage = server + "read-message"
+    
+    static let setAboutLastNight = server + "set-about-last-night"
+    
+    static let newCancelInvite = server + "new-cancel-invite"
+    
 }

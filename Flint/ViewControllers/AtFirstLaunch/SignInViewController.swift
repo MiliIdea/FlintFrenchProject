@@ -101,6 +101,14 @@ class SignInViewController: UIViewController {
                         GlobalFields.defaults.set(true, forKey: "isRegisterCompleted")
                         self.navigationController?.pushViewController(vC, animated: true)
                     }
+                }else{
+                    GlobalFields.USERNAME = ""
+                    GlobalFields.TOKEN = ""
+                    GlobalFields.PASSWORD = nil
+                    GlobalFields.USERNAME = nil
+                    GlobalFields.TOKEN = nil
+                    GlobalFields.ID = nil
+                    GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                 }
                 
                 
@@ -117,6 +125,12 @@ class SignInViewController: UIViewController {
         
         
     }
+    
+    @IBAction func goRegister(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    
     
     @IBAction func dismiss(_ sender: Any) {
         self.view.endEditing(true)

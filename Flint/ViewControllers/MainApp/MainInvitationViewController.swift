@@ -49,6 +49,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
     
     @IBOutlet weak var refuseButton: UIButton!
     
+    @IBOutlet var cancelInviteButton: UIButton!
     
     
     
@@ -70,10 +71,24 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        cancelInviteButton.alpha = 0
         likeButton.alpha = 0
+        likeButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        likeButton.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        likeButton.layer.shadowOpacity = 1.0
+        likeButton.layer.masksToBounds = false
         
         dislikeButton.alpha = 0
+        dislikeButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        dislikeButton.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        dislikeButton.layer.shadowOpacity = 1.0
+        dislikeButton.layer.masksToBounds = false
+        
+        superLikeButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        superLikeButton.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        superLikeButton.layer.shadowOpacity = 1.0
+        superLikeButton.layer.masksToBounds = false
         
         okButton.alpha = 0
         
@@ -165,6 +180,8 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
         
         if(self.viewType != .AddPersonToInvite){
             
+            self.cancelInviteButton.alpha = 0
+            self.cancelInviteButton.isEnabled = false
             self.inviteTitle.text = inviteInfo?.main?.title
             self.inviteTitle.layer.borderWidth = 1
             self.inviteTitle.layer.borderColor = GlobalFields.getTypeColor(type: (inviteInfo?.main?.type)!).cgColor
@@ -201,16 +218,16 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             
             
             
-            inviteNumber.text = Int((inviteInfo?.main?.people_count)!).description + " person"
+            inviteNumber.text = Int((inviteInfo?.main?.people_count)!).description + " personne"
             
             // distance calculation
             let myLoc = locationManager.location?.distance(from: CLLocation.init(latitude: Double((inviteInfo?.main?.location_lat)!)!, longitude: Double((inviteInfo?.main?.location_lng)!)!))
             
             var disDesc : String = ""
             if(Double((myLoc?.description)!)! / 1000 < 1){
-                disDesc = "less than 1km"
+                disDesc = "à moins d’1km"
             }else{
-                disDesc = "about " + String(Double((myLoc?.description)!)! / 1000).split(separator: ".")[0] + "km"
+                disDesc = "à " + String(Double((myLoc?.description)!)! / 1000).split(separator: ".")[0] + "km"
             }
             
             invitePosition.text = disDesc
@@ -219,9 +236,11 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             
             let w = Date.init(timeIntervalSince1970: TimeInterval((inviteInfo?.main?.exact_time)!))
             
-            self.inviteTime.text = w.toStringWithRelativeTime(strings : [.nowPast: "right now"])
+            self.inviteTime.text = w.toStringWithRelativeTime(strings : [.nowPast : "maintenant ",.secondsPast: "Maintenant",.minutesPast: "Maintenant"])
             
         }else{
+            self.cancelInviteButton.alpha = 1
+            self.cancelInviteButton.isEnabled = true
             var type : Int = 0
             switch GlobalFields.inviteMood! {
             case "LetsSeeWhatHappens":
@@ -251,7 +270,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             self.inviteTitle.layer.backgroundColor = GlobalFields.inviteMoodColor?.cgColor
             self.inviteTitle.layer.cornerRadius = self.inviteTitle.frame.height / 2
             
-            inviteNumber.text = ((GlobalFields.inviteNumber?.description) ?? "1") + " person"
+            inviteNumber.text = ((GlobalFields.inviteNumber?.description) ?? "1") + " personne"
             
             switch (type) {
             case 1:
@@ -289,9 +308,9 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             
             var disDesc : String = ""
             if(Double((myLoc?.description)!)! / 1000 < 1){
-                disDesc = "less than 1km"
+                disDesc = "à moins d’1km"
             }else{
-                disDesc = "about " + String(Double((myLoc?.description)!)! / 1000).split(separator: ".")[0] + "km"
+                disDesc = "à " + String(Double((myLoc?.description)!)! / 1000).split(separator: ".")[0] + "km"
             }
             
             invitePosition.text = disDesc
@@ -300,7 +319,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             
             let w = GlobalFields.inviteExactTime
 
-            self.inviteTime.text = w?.toStringWithRelativeTime(strings : [.nowPast: "right now"])
+            self.inviteTime.text = w?.toStringWithRelativeTime(strings : [.nowPast : "maintenant ",.secondsPast: "Maintenant",.minutesPast: "Maintenant"])
             
         }
         
@@ -515,6 +534,13 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                 
             }
         }else{
+            if(self.viewType == .AfterParty){
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .secondsSince1970
+                request(URLs.setAboutLastNight, method: .post , parameters: UploadImageRequestModel.init().getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+                    
+                }
+            }
             self.goNext()
         }
     }
@@ -550,6 +576,17 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
         
     }
     
+    @IBAction func cancelInvite(_ sender: Any) {
+        
+        let vC : CancelInviteViewController = (self.storyboard?.instantiateViewController(withIdentifier: "CancelInviteViewController"))! as! CancelInviteViewController
+        print(GlobalFields.invite!)
+        vC.inviteID = GlobalFields.invite!
+        addChildViewController(vC)
+        vC.view.frame = self.view.frame
+        self.view.addSubview(vC.view)
+        vC.didMove(toParentViewController: self)
+        
+    }
     
     @IBAction func ok(_ sender: Any) {
         
@@ -801,9 +838,9 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             
             var disDesc : String = ""
             if(Double((myLoc?.description)!)! / 1000 < 1){
-                disDesc = "less than 1km"
+                disDesc = "à moins d’1km"
             }else{
-                disDesc = "about " + String(Double((myLoc?.description)!)! / 1000).split(separator: ".")[0] + "km"
+                disDesc = "à " + String(Double((myLoc?.description)!)! / 1000).split(separator: ".")[0] + "km"
             }
             
             if(self.cells[indexPath.item] == "F"){
@@ -877,9 +914,9 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             
             var disDesc : String = ""
             if(Double((myLoc?.description)!)! / 1000 < 1){
-                disDesc = "less than 1km"
+                disDesc = "à moins d’1km"
             }else{
-                disDesc = "about " + String(Double((myLoc?.description)!)! / 1000).split(separator: ".")[0] + "km"
+                disDesc = "à " + String(Double((myLoc?.description)!)! / 1000).split(separator: ".")[0] + "km"
             }
             
             

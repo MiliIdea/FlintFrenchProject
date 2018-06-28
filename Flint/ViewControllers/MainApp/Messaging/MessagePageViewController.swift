@@ -123,6 +123,7 @@ class MessagePageViewController: UIViewController {
                             }
                             
                         }
+                        self.seenMessage(chat: self.chatID!)
                     }
                 
                     if(self.channel == nil){//ag qablan ba ham chat nadashtan
@@ -206,6 +207,9 @@ class MessagePageViewController: UIViewController {
                                     controller.dataSource.addTextMessage(m.text!)
                                 }else{
                                     controller.dataSource.addIncommingTextMessage(m.text!)
+                                    if(m.seen_at == 0){
+                                        self.seenMessageInvite(m : m)
+                                    }
                                 }
                             }
                             
@@ -237,6 +241,14 @@ class MessagePageViewController: UIViewController {
             }else{
                 self.navigationController?.popViewController(animated: true)
             }
+        }
+    }
+    
+    func seenMessageInvite(m : GetInviteMessageRes){
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        request(URLs.seenInviteMessage, method: .post , parameters: SeenInviteRequestModel.init(message: m.id, invite: self.inviteID).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+            
         }
     }
     
@@ -297,7 +309,7 @@ class MessagePageViewController: UIViewController {
         let l = GlobalFields.showLoading(vc: self)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
-        request(URLs.getHoureMessage, method: .post , parameters: GetInviteInfoRequestModel.init(invite: inviteID!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetInviteMessageRes]>>) in
+        request(URLs.getHoureMessage, method: .post , parameters: GetMessagesRequestModel.init(invite: inviteID! , target : self.targetId!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetInviteMessageRes]>>) in
             
             l.disView()
             let res = response.result.value
@@ -337,6 +349,14 @@ class MessagePageViewController: UIViewController {
     
     func callGetChats(){
         
+    }
+    
+    func seenMessage(chat : Int){
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        request(URLs.seenMessage, method: .post , parameters: SeenMessageRequestModel.init(chat: chat).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+            
+        }
     }
     
     
@@ -418,6 +438,12 @@ class MessagePageViewController: UIViewController {
     }
     
     @IBAction func showReport(_ sender: Any) {
+        
+        let vC : ReportPopupViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ReportPopupViewController"))! as! ReportPopupViewController
+        addChildViewController(vC)
+        vC.view.frame = self.view.frame
+        self.view.addSubview(vC.view)
+        vC.didMove(toParentViewController: self)
         
     }
     

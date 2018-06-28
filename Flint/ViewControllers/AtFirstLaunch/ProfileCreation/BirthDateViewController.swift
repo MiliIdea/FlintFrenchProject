@@ -30,7 +30,7 @@ class BirthDateViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         //min 18 max 55
         datePicker.minimumDate = Date.init(timeIntervalSinceNow: -1 * (55 * 31104000))
-        datePicker.maximumDate = Date.init(timeIntervalSinceNow: -1 * (17 * 31104000))
+        datePicker.maximumDate = Date.init(timeIntervalSinceNow: -1 * (18 * 31104000))
         
     }
 
@@ -63,6 +63,7 @@ class BirthDateViewController: UIViewController {
         
         var dateFormatter : DateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd MMM yyyy"
+        dateFormatter.locale = Locale.init(identifier: "fr")
         var strDate = dateFormatter.string(from: datePicker.date)
         self.buttonPresenter.setTitle(strDate, for: .normal)
         

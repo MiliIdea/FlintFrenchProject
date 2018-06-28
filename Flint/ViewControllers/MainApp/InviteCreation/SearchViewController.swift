@@ -142,6 +142,45 @@ class SearchViewController: UIViewController ,MKMapViewDelegate{
         }
     }
     
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+//        self.map.setCenter((view.annotation?.coordinate)!, animated: true)
+    }
+    
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        print("inja ham select shod")
+        resultCordinate =  view.annotation?.coordinate
+        
+        _ = getAddressFromLatLon(pdblLatitude: (resultCordinate?.latitude.description)!, withLongitude: (resultCordinate?.longitude.description)!)
+    }
+    
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "myAnnotation") as? MKPinAnnotationView
+        
+        if annotationView == nil {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myAnnotation")
+            annotationView?.canShowCallout = true
+            let rightButton = UIButton(type: .detailDisclosure)
+            rightButton.setBackgroundImage(UIImage.init(named: "Groupe 1484"), for: .normal)
+            rightButton.backgroundColor = UIColor.white
+            rightButton.tintColor = UIColor.clear
+            rightButton.setImage(UIImage.init(named: "Groupe 1484"), for: .normal)
+            rightButton.addTarget(self, action: #selector(self.didClickDetailDisclosure(button:)), for: .touchUpInside)
+            annotationView?.rightCalloutAccessoryView = rightButton
+        } else {
+            annotationView?.annotation = annotation
+        }
+        
+        return annotationView
+    }
+    
+    @objc func didClickDetailDisclosure(button: UIButton) {
+        
+        print("selected")
+        
+        
+    }
+    
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         let coordinate = CLLocationCoordinate2DMake(mapView.region.center.latitude, mapView.region.center.longitude)
         var span = mapView.region.span
@@ -183,9 +222,9 @@ class SearchViewController: UIViewController ,MKMapViewDelegate{
 
                     var addressString : String = ""
 //                    if pm.postalCode != nil {
-//                        addressString = addressString + pm.postalCode! + " "
+//                        addressString = addressString + pm.postalCode! + ", "
 //                    }
-//                    
+//
 //                    if pm.country != nil {
 //                        addressString = addressString + pm.country! + ", "
 //                    }
@@ -291,7 +330,10 @@ extension SearchViewController: UITableViewDelegate {
                     for p in (res?.data)!{
                         let marker = MyAnnotation()
                         marker.coordinate = .init(latitude: Double(p.st_y!)!, longitude: Double(p.st_x!)!)
-                        marker.identifier = p.title
+//                        marker.identifier = p.title
+                        marker.identifier = "myAnnotation"
+                        marker.title = p.title
+                        
                         self.map.addAnnotation(marker)
                     }
                 }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import OneSignal
 
 class LoginRequestModel {
@@ -28,7 +29,7 @@ class LoginRequestModel {
         
         self.DEVICE = "Apple iOS"
         
-        self.OS_VERSION = "11.1.2"
+        self.OS_VERSION = UIDevice.current.systemVersion
         
     }
     

@@ -154,6 +154,7 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
     }
     
     @IBAction func selectGender(_ sender: Any) {
+        
         McPicker.show(data: [["Un Homme", "Une Femme"]]) {  [weak self] (selections: [Int : String]) -> Void in
             if let male = selections[0] {
                 self?.sex.setTitle(male, for: .normal)
@@ -163,6 +164,7 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
                 self?.sex.setTitle(female, for: .normal)
             }
         }
+
     }
     
     
@@ -222,7 +224,7 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
             cropViewController.setCropAspectRect(aspect: "200:200")
             cropViewController.lockAspectRatio(true)
             let button = UIButton(type: .system) // let preferred over var here
-            button.frame = CGRect.init(x: self.view.frame.width - 100, y: self.view.frame.height - 100, width: 100, height: 100)
+            button.frame = CGRect.init(x: self.view.frame.width - 110, y: self.view.frame.height - 110, width: 100, height: 100)
             button.layer.cornerRadius = 50
             button.backgroundColor = UIColor.white
             button.setTitle("", for: .normal)

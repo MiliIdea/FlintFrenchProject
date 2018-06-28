@@ -19,12 +19,10 @@ import ClusterKit
 import Kingfisher
 import AFDateHelper
 import TransitionTreasury
+import OneSignal
 
 
-class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTransitionable{
-    var tr_pushTransition: TRNavgationTransitionDelegate?
-    
-
+class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigationControllerDelegate{
     
     @IBOutlet weak var mapView: MKMapView!
     
@@ -33,6 +31,8 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
     @IBOutlet weak var lighterButton: DCBorderedButton!
     
     @IBOutlet weak var invitationAwating: DCBorderedButton!
+    
+    @IBOutlet var cancelButton: UIButton!
     
     var locationManager : CLLocationManager = CLLocationManager()
     
@@ -61,8 +61,11 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
     
     @IBOutlet weak var directionButton: UIButton!
     
+    @IBOutlet var centerMapButton: UIButton!
     
     @IBOutlet var whoAcceptedLabel: UILabel!
+    
+    @IBOutlet var chatButton: UIButton!
     
     
     var l : LoadingViewController?
@@ -78,6 +81,9 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        
+        self.navigationController?.delegate = self
+        
         mapView.delegate = self
         self.ownerImageButton.backgroundColor = GlobalFields.getTypeColor(type: 1)
         let algorithm = CKNonHierarchicalDistanceBasedAlgorithm()
@@ -123,16 +129,45 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
         messageButton.titleLabel?.minimumScaleFactor = 0.5
         messageButton.titleLabel?.adjustsFontSizeToFitWidth = true
         
+        messageButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        messageButton.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        messageButton.layer.shadowOpacity = 1.0
+        messageButton.layer.masksToBounds = false
+        
+        
+        
         invitationButton.titleLabel?.numberOfLines = 1
         invitationButton.titleLabel?.minimumScaleFactor = 0.5
         invitationButton.titleLabel?.adjustsFontSizeToFitWidth = true
         
+        invitationButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        invitationButton.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        invitationButton.layer.shadowOpacity = 1.0
+        invitationButton.layer.masksToBounds = false
+        
+        self.showInviteBadge(num: 0)
+        for v in self.messageButton.subviews {
+            v.isUserInteractionEnabled = true
+            v.addGestureRecognizer(UITapGestureRecognizer(target: self, action:  #selector (self.sendMessage(_:))))
+        }
+
         Timer.scheduledTimer(timeInterval: 600 , target: self, selector: #selector(callGetMyInvitesRest), userInfo: nil, repeats: true)
+        
+        Timer.scheduledTimer(timeInterval: 2 , target: self, selector: #selector(showAll), userInfo: nil, repeats: false)
     }
+    
     
     override func viewDidAppear(_ animated: Bool) {
 //        configureView()
+        GlobalFields.setAnalytics("FirstMapViewController")
+        OneSignal.idsAvailable({(_ userId, _ pushToken) in
+            GlobalFields.oneSignalId = userId
+            if(GlobalFields.USERNAME != nil && GlobalFields.USERNAME != "" && GlobalFields.TOKEN != nil && GlobalFields.TOKEN != ""){
+                self.updateOneSignal(id : userId)
+            }
+        })
         callGetActiveInvites(showLoading: true)
+        self.navigationController?.delegate = self
         if(self.locationManager.location != nil ){
             let center = CLLocationCoordinate2D(latitude: (self.locationManager.location?.coordinate.latitude)!, longitude: (self.locationManager.location?.coordinate.longitude)!)
             let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))
@@ -149,14 +184,51 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             marker.coordinate = (self.locationManager.location?.coordinate)!
             marker.identifier = "myPosition"
             mapView.addAnnotation(marker)
-            
-            
+//            var annotations : [MKAnnotation] = self.mapView.clusterManager.annotations
+//            annotations.append(marker)
+//            self.mapView.showAnnotations(annotations, animated: true)
+            self.mapView.fitAll()
         }else{
             //TODO error bayad bede k locationeto roshan kon nadaram
+//            self.mapView.showAnnotations(self.mapView.annotations, animated: true)
+            self.mapView.fitAll()
+        }
+//        self.showChatBadge()
+        if(!GlobalFields.defaults.bool(forKey: "showChatBadge")){
+            self.hideChatBadge()
+        }else{
+            self.showChatBadge()
+        }
+        
+        self.showInviteBadge(num: 0)
+        for v in self.messageButton.subviews {
+            v.isUserInteractionEnabled = true
+            v.addGestureRecognizer(UITapGestureRecognizer(target: self, action:  #selector (self.sendMessage(_:))))
         }
         
     }
 
+    
+    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        if(fromVC.isKind(of: MainProfileViewController.self)){
+            return nil
+        }else if(fromVC.isKind(of: SparksViewController.self)){
+            return nil
+        }else if(toVC.isKind(of: SparksViewController.self)){
+            let t = TransitionManager()
+            t.coef = 1
+            return t
+        }else if(toVC.isKind(of: MainProfileViewController.self)){
+            let t = TransitionManager()
+            t.coef = -1
+            return t
+        }else{
+            return nil
+        }
+        
+    }
+    
     
     func getInviteInfo(inv : MyInvites){
         let l = GlobalFields.showLoading(vc: self)
@@ -174,6 +246,9 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
     }
     
     
+    @objc func showAll(){
+        self.mapView.fitAll()
+    }
     
     func configureView(){
         
@@ -197,6 +272,8 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             self.whoAcceptedLabel.alpha = 0
             self.mapView.frame.origin.y = 96 * self.view.frame.height / 667
             self.mapView.frame.size.height = self.view.frame.height - self.mapView.frame.origin.y
+            self.centerMapButton.alpha = 1
+            self.centerMapButton.isEnabled = true
             
         }else if(type == .GoDate){
             
@@ -225,7 +302,8 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             self.myInvites.append(inv!)
             setMarkers()
             self.getInviteInfo(inv: inv!)
-            
+            self.centerMapButton.alpha = 0
+            self.centerMapButton.isEnabled = false
             
         }else if(type == .NormalMap){
             
@@ -238,6 +316,8 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             self.whoAcceptedLabel.alpha = 0
             self.mapView.frame.origin.y = 96 * self.view.frame.height / 667
             self.mapView.frame.size.height = self.view.frame.height - self.mapView.frame.origin.y
+            self.centerMapButton.alpha = 1
+            self.centerMapButton.isEnabled = true
             
         }else if(type == .AboutLastNight){
             
@@ -250,6 +330,8 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             self.aboutLastNightView.alpha = 1
             self.mapView.frame.origin.y = 96 * self.view.frame.height / 667
             self.mapView.frame.size.height = self.view.frame.height - self.mapView.frame.origin.y
+            self.centerMapButton.alpha = 1
+            self.centerMapButton.isEnabled = true
             
         }
         
@@ -299,7 +381,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
         GlobalFields.inviteMoodColor = col
         self.ownerImageButton.normalBorderColor = col
         
-        inviteNumber.text = (inv?.main?.people_count?.description)! + " person"
+        inviteNumber.text = (inv?.main?.people_count?.description)! + " personne"
         
         // distance calculation
         let myLoc = locationManager.location?.distance(from: CLLocation.init(latitude: Double((inv.main?.location_lat) ?? "35.673609")!, longitude: Double((inv.main?.location_lng ?? "51.215621")!)!))
@@ -408,14 +490,15 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
                 self.configureView()
                 self.callGetMyInvitesRest()
             }
-            
+            self.mapView.fitAll()
         }
         
     }
     
     func manageInvitesView(invite : MyInvites! , res : ActiveInviteRes! , isOther : Bool!){
         
-        
+        self.cancelButton.alpha = 0
+        self.cancelButton.isEnabled = false
         if(invite.status == 1){ // submit
 //            let interval = Double((invite.available_at)!) - Date().timeIntervalSince1970 + (30 * 60)
             let interval2 = Double((invite.available_at)!) - Date().timeIntervalSince1970 - (5 * 60)
@@ -480,6 +563,8 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             }
             
         }else if(invite.status == 4){
+            self.cancelButton.alpha = 1
+            self.cancelButton.isEnabled = true
             GlobalFields.defaults.set(false, forKey: "isntShowJustYouPopup")
             //set notify for reconfirm
             //nabayd ejazeye invite sakhtan bedam
@@ -511,7 +596,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
                 }else{
                     if(!GlobalFields.defaults.bool(forKey: "invite:" + (invite.invite_id?.description)!)){
                         GlobalFields.defaults.set(true, forKey: "invite:" + (invite.invite_id?.description)!)
-                        LocalNotifications().sendNotifyToMySelf(title: "reconfirm", message: "pls reconfirm invite", subTitle: "", data: ["type" : "reconfirm" , "invite" : (invite.invite_id?.description)! ], sendAfterXSec: interval)
+                        LocalNotifications().sendNotifyToMySelf(title: "Reconfirmer", message: "Il faut la reconfirmer votre présence à votre rendez-vous! Il se tient dans moins de 30mn! ", subTitle: "", data: ["type" : "reconfirm" , "invite" : (invite.invite_id?.description)! ], sendAfterXSec: interval)
                     }
                 }
                 self.type = .GoDate
@@ -520,7 +605,8 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             }
             
         }else if(invite.status == 5){
-            
+            self.cancelButton.alpha = 1
+            self.cancelButton.isEnabled = true
             if(!GlobalFields.defaults.bool(forKey: "isntShowJustYouPopup") && invite.type == 1){
                 GlobalFields.defaults.set(true, forKey: "isntShowJustYouPopup")
                 let vC : JustYouViewController = (self.storyboard?.instantiateViewController(withIdentifier: "JustYouViewController"))! as! JustYouViewController
@@ -572,20 +658,22 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
                 
                 if(!(GlobalFields.defaults.object(forKey: "pollNotify") != nil && (GlobalFields.defaults.object(forKey: "pollNotify") as! String) == (invite.invite_id?.description)!)){
                     GlobalFields.defaults.setValue((invite.invite_id?.description)!, forKey: "pollNotify")
-                    LocalNotifications().sendNotifyToMySelf(title: "poll", message: "pls go poll", subTitle: "", data: ["type" : "poll" , "invite" : (invite.invite_id?.description)!], sendAfterXSec: interval)
+                    LocalNotifications().sendNotifyToMySelf(title: "Vous avez un sondage", message: "Comment s'est passé votre rendez-vous? Veuillez donner votre avis sur ce dernier pour pouvoir commencer à parler à la personne rencontrée !", subTitle: "", data: ["type" : "poll" , "invite" : (invite.invite_id?.description)!], sendAfterXSec: interval)
                 }
                 
                 
             }
             
-            
+            self.updateInviteBadge()
         }else if(invite.status == 6){
+            
             GlobalFields.defaults.set(false, forKey: "isntShowJustYouPopup")
             GlobalFields.defaults.set(false, forKey: "reconfirm")
             //show poll popup
             self.goPoll(invID: invite.invite_id)
-            
+            self.updateInviteBadge()
         }else if(invite.status == 7){
+            
             GlobalFields.defaults.set(false, forKey: "isntShowJustYouPopup")
             GlobalFields.defaults.set(false, forKey: "reconfirm")
             // faqat baraye party karbord dareq
@@ -594,6 +682,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
                 self.configureView()
                 self.callGetMyInvitesRest()
             }
+            self.updateInviteBadge()
         }else{
             GlobalFields.defaults.set(false, forKey: "isntShowJustYouPopup")
             GlobalFields.defaults.set(false, forKey: "reconfirm")
@@ -630,6 +719,8 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
                 vC.invite = res?.data
                 vC.inviteID = invID
                 self.navigationController?.pushViewController(vC, animated: true)
+            }else{
+                
             }
             
         }
@@ -689,7 +780,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
                 
                 self.navigationController?.pushViewController(vC, animated: true)
             }else{
-                self.view.makeToast("user not found!")
+                self.view.makeToast("users not found!")
             }
         }
         
@@ -708,6 +799,17 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
         self.navigationController?.pushViewController(vC, animated: true)
         
     }
+    
+    @IBAction func moveCenter(_ sender: Any) {
+        if(self.locationManager.location != nil ){
+            let center = CLLocationCoordinate2D(latitude: (self.locationManager.location?.coordinate.latitude)!, longitude: (self.locationManager.location?.coordinate.longitude)!)
+            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+            
+            self.mapView.setRegion(region, animated: true)
+        }
+    }
+    
+    
     
     @IBAction func goFire(_ sender: Any) {
         
@@ -739,7 +841,6 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             }else{
                 // TODO hich inviti nadari
             }
-            
         }
     }
     
@@ -769,7 +870,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
             self.mapView.clusterManager.annotations.append(ClustrableAnnotation.init(coordinate: coordinate, identifier: (pin!.invite_id?.description) ?? (pin?.id?.description)!))
         }
         
-        self.mapView.showAnnotations(self.mapView.clusterManager.annotations, animated: true)
+        self.mapView.fitAll()
         
     }
     
@@ -815,6 +916,42 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
         self.navigationController?.pushViewController(vC, animated: true)
         
     }
+    
+    func updateInviteBadge(){
+        var invID : Int?
+        if(ownInvite != nil && (ownInvite?.status)! >= 5){
+            invID = self.ownInvite!.invite_id
+        }else if(otherInvite != nil && (otherInvite?.status)! >= 5){
+            invID = self.otherInvite!.invite_id
+        }
+        if(invID == nil){
+            return
+        }
+        var badgeNumber = 0
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        request(URLs.getInviteMessage, method: .post , parameters: GetInviteInfoRequestModel.init(invite: invID!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response2 : DataResponse<ResponseModel<[GetInviteMessageRes]>>) in
+            let res2 = response2.result.value
+            if(res2?.status == "success"){
+                if(res2?.data != nil){
+                    for m in (res2?.data)! {
+                        if((m.user?.description)! != GlobalFields.ID.description){
+                            if(m.seen_at == 0){
+                                badgeNumber += 1
+                            }
+                        }
+                    }
+                    if(badgeNumber == 0){
+                        self.hideInviteBadge()
+                    }else{
+                        self.showInviteBadge(num: badgeNumber)
+                    }
+                }
+            }
+        }
+    }
+    
+    
     
     @IBAction func goInvitedUserProfile(_ sender: Any) {
         //TODO bayad check beshe
@@ -900,6 +1037,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
                     // Configure your annotation view here
                     annotationView.canShowCallout = true
                     annotationView.image = UIImage(named: "MyPositionMarker")
+                    annotationView.frame.size = .init(width: 30 , height: 30)
                 }
                 
                 return annotationView
@@ -1010,7 +1148,9 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
                 return annotationView
                 
             }else{
-                return nil
+                var annotationView: MKAnnotationView? = MKAnnotationView(annotation: annotation, reuseIdentifier: "?")
+                annotationView?.frame.size = .init(width: 0, height: 0)
+                return annotationView
             }
             
         }
@@ -1117,6 +1257,29 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
         return image!
     }
     
+    
+    
+    @IBAction func cancelInvite(_ sender: Any) {
+        
+        let vC : CancelInviteInMapViewController = (self.storyboard?.instantiateViewController(withIdentifier: "CancelInviteInMapViewController"))! as! CancelInviteInMapViewController
+        
+        var inv : MyInvites? = nil
+        if(self.otherInvite == nil && self.ownInvite != nil){
+            inv = ownInvite
+        }else if(self.otherInvite != nil && self.ownInvite == nil){
+            inv = otherInvite
+        }else if(ownInvite != nil){
+            inv = ownInvite
+        }
+        
+        vC.inviteID = (inv?.invite_id)!
+        
+        self.navigationController?.pushViewController(vC, animated: true)
+        
+    }
+    
+    
+    
     //final functions
     
     override func didReceiveMemoryWarning() {
@@ -1143,6 +1306,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
     
     @IBAction func goMessage(_ sender: Any) {
         let vC : SparksViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SparksViewController"))! as! SparksViewController
+        
         self.navigationController?.pushViewController(vC, animated: true)
     }
     
@@ -1193,7 +1357,209 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , NavgationTra
         })
         
     }
+    func updateOneSignal(id : String!){
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        request(URLs.updateOneSignal, method: .post , parameters: UpdateOneSignalRequestModel.init(PLAYER_ID: id).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+            
+            let res = response.result.value
+            
+            
+        }
+    }
     
+    
+    func showChatBadge(){
+        GlobalFields.defaults.set(true, forKey: "showChatBadge")
+        self.chatButton.addBadge(number: " " , r : 5)
+        for v in self.chatButton.subviews {
+            v.isUserInteractionEnabled = true
+            v.addGestureRecognizer(UITapGestureRecognizer(target: self, action:  #selector (self.goMessage(_:))))
+        }
+    }
+    
+    func showInviteBadge(num : Int){
+        if(messageButton.alpha == 0){
+            return
+        }else{
+            if(num == 0){
+                let w = self.messageButton.frame.width
+                self.messageButton.addBadge(number: "0" , r : 12 , withOffset: .init(x: 3 / 4 * w , y: 0 ))
+            }else{
+                GlobalFields.defaults.set(true, forKey: "showInviteBadge")
+                let w = self.messageButton.frame.width
+                self.messageButton.addBadge(number: num.description , r : 12 , withOffset: .init(x: 3 / 4 * w , y: 0 ))
+            }
+            for v in self.messageButton.subviews {
+                v.isUserInteractionEnabled = true
+                v.addGestureRecognizer(UITapGestureRecognizer(target: self, action:  #selector (self.sendMessage(_:))))
+            }
+        }
+    }
+    
+    
+    func hideChatBadge(){
+        GlobalFields.defaults.set(false, forKey: "showChatBadge")
+        self.chatButton.viewWithTag(77)?.removeFromSuperview()
+        self.chatButton.removeBadge()
+    }
+    
+    func hideInviteBadge(){
+        GlobalFields.defaults.set(false, forKey: "showInviteBadge")
+        self.messageButton.removeBadge()
+    }
+    
+    
+}
+
+extension CAShapeLayer {
+    func drawCircleAtLocation(location: CGPoint, withRadius radius: CGFloat, andColor color: UIColor, filled: Bool) {
+        fillColor = filled ? color.cgColor : UIColor.white.cgColor
+        strokeColor = color.cgColor
+        let origin = CGPoint(x: location.x - radius, y: location.y - radius)
+        path = UIBezierPath(ovalIn: CGRect(origin: origin, size: CGSize(width: radius * 2, height: radius * 2))).cgPath
+    }
+}
+
+private var handle: UInt8 = 0
+
+extension UIButton {
+    
+    private var badgeLayer: CAShapeLayer? {
+        if let b: AnyObject = objc_getAssociatedObject(self, &handle) as AnyObject? {
+            return b as? CAShapeLayer
+        } else {
+            return nil
+        }
+    }
+    
+    private var supBadgeView : UIView?  {
+        if let b: AnyObject = objc_getAssociatedObject(self, &handle) as AnyObject? {
+            return b as? UIView
+        } else {
+            return nil
+        }
+    }
+    
+    func addBadge(number: String , r : Int = 0, withOffset offset: CGPoint = CGPoint.zero, andColor color: UIColor = UIColor.red, andFilled filled: Bool = true) {
+        
+        badgeLayer?.removeFromSuperlayer()
+        supBadgeView?.removeFromSuperview()
+        let supBadge = UIView()
+        supBadge.tag = 77
+        supBadge.frame = .init(x: 0 , y: 0 , width: self.frame.width, height: self.frame.height)
+        supBadge.backgroundColor = UIColor.clear
+        
+        let badge2 = CAShapeLayer()
+        let radius2 = self.frame.width / 2
+        let location2 = CGPoint(x: radius2, y: radius2)
+        if(number != " "){
+            badge2.drawCircleAtLocation(location: location2, withRadius: radius2, andColor: UIColor.clear , filled: true)
+            badge2.borderWidth = 1
+            badge2.cornerRadius = self.frame.width / 2
+            badge2.borderColor = UIColor("#26BD00").cgColor
+            badge2.frame = .init(x: 0 , y: 0 , width: self.frame.width, height: self.frame.height)
+        }
+        
+        supBadge.clipsToBounds = false
+        supBadge.alpha = 1
+        // Initialize Badge
+        let badge = CAShapeLayer()
+        let radius = CGFloat(r)
+        let location = CGPoint(x: (offset.x + radius), y: (offset.y  + radius))
+        if(number != "0"){
+            badge.drawCircleAtLocation(location: location, withRadius: radius, andColor: color, filled: filled)
+        }
+        supBadge.layer.addSublayer(badge2)
+        supBadge.layer.addSublayer(badge)
+
+        
+        let label = CATextLayer()
+        label.string = number
+        label.alignmentMode = kCAAlignmentCenter
+        label.fontSize = 14
+        label.frame = CGRect(origin: CGPoint(x: location.x - 4, y: offset.y + 2), size: CGSize(width: 8, height: 16))
+        label.foregroundColor = filled ? UIColor.white.cgColor : color.cgColor
+        label.backgroundColor = UIColor.clear.cgColor
+        label.contentsScale = UIScreen.main.scale
+        badge.addSublayer(label)
+        if(number != "0"){
+            objc_setAssociatedObject(self, &handle, badge, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+        
+        // Save Badge as UIBarButtonItem property
+        self.addSubview(supBadge)
+        self.bringSubview(toFront: supBadge)
+        objc_setAssociatedObject(self, &handle, supBadge, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        if(number == "0"){
+            removeBadge()
+        }
+    }
+    
+    func updateBadge(number: Int) {
+        if let text = badgeLayer?.sublayers?.filter({ $0 is CATextLayer }).first as? CATextLayer {
+            text.string = "\(number)"
+        }
+    }
+    
+    func removeBadge() {
+        badgeLayer?.removeFromSuperlayer()
+    }
+}
+
+
+extension CALayer {
+    
+    func bringToFront() {
+        guard let sLayer = superlayer else {
+            return
+        }
+        removeFromSuperlayer()
+        print(sLayer.sublayers?.count)
+        sLayer.insertSublayer(self, at: UInt32(sLayer.sublayers?.count ?? 0))
+    }
+    
+    func sendToBack() {
+        guard let sLayer = superlayer else {
+            return
+        }
+        removeFromSuperlayer()
+        sLayer.insertSublayer(self, at: 0)
+    }
+}
+
+
+extension MKMapView {
+    /// when we call this function, we have already added the annotations to the map, and just want all of them to be displayed.
+    func fitAll() {
+        var zoomRect            = MKMapRectNull;
+        for annotation in annotations {
+            let annotationPoint = MKMapPointForCoordinate(annotation.coordinate)
+            let pointRect       = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0.01, 0.01);
+            zoomRect            = MKMapRectUnion(zoomRect, pointRect);
+        }
+        setVisibleMapRect(zoomRect, edgePadding: UIEdgeInsetsMake(100, 100, 100, 100), animated: true)
+    }
+    
+    /// we call this function and give it the annotations we want added to the map. we display the annotations if necessary
+    func fitAll(in annotations: [MKAnnotation], andShow show: Bool) {
+        var zoomRect:MKMapRect  = MKMapRectNull
+        
+        for annotation in annotations {
+            let aPoint          = MKMapPointForCoordinate(annotation.coordinate)
+            let rect            = MKMapRectMake(aPoint.x, aPoint.y, 0.1, 0.1)
+            
+            if MKMapRectIsNull(zoomRect) {
+                zoomRect = rect
+            } else {
+                zoomRect = MKMapRectUnion(zoomRect, rect)
+            }
+        }
+        if(show) {
+            addAnnotations(annotations)
+        }
+        setVisibleMapRect(zoomRect, edgePadding: UIEdgeInsets(top: 100, left: 100, bottom: 100, right: 100), animated: true)
+    }
     
 }
 

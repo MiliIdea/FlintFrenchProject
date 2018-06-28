@@ -15,7 +15,7 @@ import Foundation
 struct InviteInfoRes : Codable {
 	let main : GlobalInfo?
 	let users : [Users]?
-	let poll : [String]?
+	let poll : [PollRes]?
 
 	enum CodingKeys: String, CodingKey {
 

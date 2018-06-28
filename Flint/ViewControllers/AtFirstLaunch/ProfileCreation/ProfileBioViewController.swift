@@ -42,10 +42,10 @@ class ProfileBioViewController: UIViewController , UITextViewDelegate{
     
     func checkValidation() -> Bool{
         if(self.bioText.text.isEmpty){
-            self.view.makeToast("pls write more than 10 characters")
+            self.view.makeToast(" Votre description doit faire plus de 10 caractères. ")
             return false
         }else if(self.bioText.text.characters.count < 10){
-            self.view.makeToast("pls write more than 10 characters")
+            self.view.makeToast(" Votre description doit faire plus de 10 caractères. ")
             return false
         }else{
             return true

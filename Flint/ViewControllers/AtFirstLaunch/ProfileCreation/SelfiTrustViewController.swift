@@ -37,10 +37,7 @@ class SelfiTrustViewController: UIViewController , GalleryControllerDelegate{
     
     @IBAction func goTakeSelfie(_ sender: Any) {
         print(self.uploadImage.title(for: .normal))
-        if(self.uploadImage.title(for: .normal)! == "SUIVANT"){
-            let vC : ProfileBioViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ProfileBioViewController"))! as! ProfileBioViewController
-            self.navigationController?.pushViewController(vC, animated: true)
-        }else if(uploadImage.title(for: .normal)! == "UPLOAD"){
+        if(uploadImage.title(for: .normal)! == "SUIVANT"){
             uploadSelfieImage()
         }else{
             let gallery = GalleryController()
@@ -84,7 +81,8 @@ class SelfiTrustViewController: UIViewController , GalleryControllerDelegate{
                     
                     if(res?.status == "success"){
                         GlobalFields.userInfo.SELFIE_IMAGE = res?.data?.name
-                        self.uploadImage.setTitle("SUIVANT", for: .normal)
+                        let vC : ProfileBioViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ProfileBioViewController"))! as! ProfileBioViewController
+                        self.navigationController?.pushViewController(vC, animated: true)
                     }
                 }
                 
@@ -102,7 +100,7 @@ class SelfiTrustViewController: UIViewController , GalleryControllerDelegate{
         
         images[0].resolve{ image in
             self.image.image = image
-            self.uploadImage.setTitle("UPLOAD", for: .normal)
+            self.uploadImage.setTitle("SUIVANT", for: .normal)
         }
         
     }

@@ -13,10 +13,11 @@ import UIColor_Hex_Swift
 import Kingfisher
 import IQKeyboardManagerSwift
 import TransitionTreasury
+import UICircularProgressRing
+import DCKit
 
-class SparksViewController: UIViewController , UITableViewDelegate , UITableViewDataSource , UICollectionViewDelegate , UICollectionViewDataSource , NavgationTransitionable{
+class SparksViewController: UIViewController , UITableViewDelegate , UITableViewDataSource , UICollectionViewDelegate , UICollectionViewDataSource , UINavigationControllerDelegate{
     
-    var tr_pushTransition: TRNavgationTransitionDelegate?
     
     
 
@@ -32,11 +33,16 @@ class SparksViewController: UIViewController , UITableViewDelegate , UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        
+        self.navigationController?.delegate = self
+        
         self.profilesCollectionView.delegate = self
         self.profilesCollectionView.dataSource = self
         
         self.chatTable.delegate = self
         self.chatTable.dataSource = self
+        
+        
         
         chatTable.register(UINib(nibName: "SparksTableViewCell", bundle: nil), forCellReuseIdentifier: "SparksTableViewCell")
         
@@ -49,8 +55,30 @@ class SparksViewController: UIViewController , UITableViewDelegate , UITableView
     override func viewDidAppear(_ animated: Bool) {
         self.callChatListRest(showLoading: true)
         IQKeyboardManager.sharedManager().enable = true
+        self.navigationController?.delegate = self
+        GlobalFields.defaults.set(false, forKey: "showChatBadge")
     }
 
+    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        if(fromVC.isKind(of: MainProfileViewController.self)){
+            return nil
+        }else if(fromVC.isKind(of: FirstMapViewController.self)){
+            return nil
+        }else if(toVC.isKind(of: FirstMapViewController.self)){
+            let t = TransitionManager()
+            t.coef = -1
+            return t
+        }else if(toVC.isKind(of: MainProfileViewController.self)){
+            let t = TransitionManager()
+            t.coef = -1
+            return t
+        }else{
+            return nil
+        }
+        
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -164,6 +192,7 @@ class SparksViewController: UIViewController , UITableViewDelegate , UITableView
             cell.ringView.setProgress(value: 100.0 - CGFloat(Double(Double(diffMin!) / (24.0 * 60.0)) * 100), animationDuration: 0)
             cell.ringView.innerCapStyle = .square
             cell.ringView.innerRingColor = GlobalFields.getTypeColor(type: c.type!)
+            cell.noSeenView.alpha = 0
             
         }else{
             //in chats
@@ -188,7 +217,15 @@ class SparksViewController: UIViewController , UITableViewDelegate , UITableView
                 cell.nameLabel.text = c.user_name
                 cell.profileImage.kf.setImage(with: URL.init(string: URLs.imgServer + c.user_avatar!))
             }
+            cell.noSeenView.alpha = 0
+            if(c.seen_at == 0 && (c.user?.description)! != GlobalFields.ID.description){
+                cell.noSeenView.alpha = 1
+            }
             
+            cell.noSeenView.clipsToBounds = true
+            cell.noSeenView.frame.size.height = cell.noSeenView.frame.size.width
+            cell.noSeenView.cornerRadius = cell.noSeenView.frame.height / 2
+            cell.noSeenView.backgroundColor = GlobalFields.getTypeColor(type: c.type!)
         }
         
         return cell
@@ -272,65 +309,99 @@ class SparksViewController: UIViewController , UITableViewDelegate , UITableView
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if(self.pendingList.count < 3){
+            return 3
+        }
         return self.pendingList.count
+    }
+    
+    @objc func callSelect(sender : DCBorderedButton){
+        self.collectionView(self.profilesCollectionView, didSelectItemAt: .init(item: sender.tag - 1, section: 0))
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell : ProfileChatCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProfileChatCollectionViewCell", for: indexPath as IndexPath) as! ProfileChatCollectionViewCell
-        let c : Pending_list = self.pendingList[indexPath.item]
-        var name : String = ""
-        var avatar : String = ""
-        var recAt : Int = 0
-        if((c.owner?.description)! == GlobalFields.ID.description){
-            name = c.user_name!
-            avatar = c.user_avatar!
-            recAt = c.reconfirm_at!
-        }else{
-            name = c.owner_name!
-            avatar = c.owner_avatar!
-            recAt = c.owner_reconfirm_at!
-        }
-        cell.nameLabel.text = name
-        cell.imageProfileButton.kf.setImage(with: URL.init(string: URLs.imgServer + avatar), for: .normal)
+        cell.imageProfileButton.addTarget(self, action: #selector(callSelect), for: .touchUpInside)
+        cell.imageProfileButton.tag = indexPath.item + 1
+        cell.ringView.frame.size.width = cell.ringView.frame.height
+        cell.imageProfileButton.frame.size = .init(width: cell.ringView.frame.height - 20, height: cell.ringView.frame.height - 20)
+        cell.imageProfileButton.setImage(UIImage.init(named: ""), for: .normal)
+        cell.imageProfileButton.frame.origin.x = cell.ringView.frame.origin.x + (cell.ringView.frame.height / 2) - (cell.imageProfileButton.frame.width / 2)
         
-        let diffMin = Calendar.current.dateComponents([.minute], from: Date.init(timeIntervalSince1970: Double(recAt)) , to: Date()).minute
-        print(CGFloat(Double(Double(diffMin!) / (24.0 * 60.0)) * 100))
-        cell.ringView.setProgress(value: 100.0 - CGFloat(Double(Double(diffMin!) / (24.0 * 60.0)) * 100), animationDuration: 0)
-        cell.ringView.innerCapStyle = .square
-        cell.ringView.innerRingColor = GlobalFields.getTypeColor(type: c.invite_type!)
+        cell.imageProfileButton.frame.origin.y = cell.ringView.frame.origin.y + (cell.ringView.frame.height / 2) - (cell.imageProfileButton.frame.width / 2)
+        
+        if(indexPath.item > self.pendingList.count - 1){
+            
+            cell.nameLabel.text = ""
+            cell.imageProfileButton.alpha = 1
+            cell.imageProfileButton.backgroundColor = UIColor("#E2E2E2")
+            cell.ringView.setProgress(value: 100.0 , animationDuration: 0)
+            cell.ringView.innerCapStyle = .square
+            cell.ringView.innerRingWidth = 10
+            cell.ringView.innerRingColor = UIColor("#E2E2E2")
+            
+        }else{
+            let c : Pending_list = self.pendingList[indexPath.item]
+            var name : String = ""
+            var avatar : String = ""
+            var recAt : Int = 0
+            cell.ringView.innerRingWidth = 10
+            if((c.owner?.description)! == GlobalFields.ID.description){
+                name = c.user_name!
+                avatar = c.user_avatar!
+                recAt = c.reconfirm_at!
+            }else{
+                name = c.owner_name!
+                avatar = c.owner_avatar!
+                recAt = c.owner_reconfirm_at!
+            }
+            cell.nameLabel.text = name
+            cell.imageProfileButton.kf.setImage(with: URL.init(string: URLs.imgServer + avatar), for: .normal)
+            
+            let diffMin = Calendar.current.dateComponents([.minute], from: Date.init(timeIntervalSince1970: Double(recAt)) , to: Date()).minute
+            print(CGFloat(Double(Double(diffMin!) / (24.0 * 60.0)) * 100))
+            cell.ringView.setProgress(value: 100.0 - CGFloat(Double(Double(diffMin!) / (24.0 * 60.0)) * 100), animationDuration: 0)
+            cell.ringView.innerCapStyle = .square
+            cell.ringView.innerRingColor = GlobalFields.getTypeColor(type: c.invite_type!)
+        }
         
         return cell
     }
 
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let vC : MessagePageViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MessagePageViewController"))! as! MessagePageViewController
-        let c : Pending_list = self.pendingList[indexPath.item]
-        var name : String = ""
-        var avatar : String = ""
-        var target : Int = 0
-        var recAt : Int = 0
-        if((c.owner?.description)! == GlobalFields.ID.description){
-            name = c.user_name!
-            avatar = c.user_avatar!
-            target = c.user!
-            recAt = c.reconfirm_at!
-        }else{
-            name = c.owner_name!
-            avatar = c.owner_avatar!
-            target = c.owner!
-            recAt = c.reconfirm_at!
+    
+        if(indexPath.item <= self.pendingList.count - 1){
+            let vC : MessagePageViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MessagePageViewController"))! as! MessagePageViewController
+            let c : Pending_list = self.pendingList[indexPath.item]
+            var name : String = ""
+            var avatar : String = ""
+            var target : Int = 0
+            var recAt : Int = 0
+            if((c.owner?.description)! == GlobalFields.ID.description){
+                name = c.user_name!
+                avatar = c.user_avatar!
+                target = c.user!
+                recAt = c.reconfirm_at!
+            }else{
+                name = c.owner_name!
+                avatar = c.owner_avatar!
+                target = c.owner!
+                recAt = c.reconfirm_at!
+            }
+            vC.type = c.invite_type!
+            vC.inviteID = c.invite
+            vC.imageAddress = avatar
+            vC.name = name
+            vC.targetId = target
+            vC.chatTypeMode = .Pendings
+            vC.isSendedOneMessage = false
+            vC.diffMin = Calendar.current.dateComponents([.minute], from: Date.init(timeIntervalSince1970: Double(recAt)) , to: Date()).minute
+            self.navigationController?.pushViewController(vC, animated: true)
         }
-        vC.type = c.invite_type!
-        vC.inviteID = c.invite
-        vC.imageAddress = avatar
-        vC.name = name
-        vC.targetId = target
-        vC.chatTypeMode = .Pendings
-        vC.isSendedOneMessage = false
-        vC.diffMin = Calendar.current.dateComponents([.minute], from: Date.init(timeIntervalSince1970: Double(recAt)) , to: Date()).minute
-        self.navigationController?.pushViewController(vC, animated: true)
+        
     }
+        
     
     
     

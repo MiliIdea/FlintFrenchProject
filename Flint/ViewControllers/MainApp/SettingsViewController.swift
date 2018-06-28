@@ -10,8 +10,9 @@ import UIKit
 import RangeSeekSlider
 import Alamofire
 import CodableAlamofire
+import McPicker
 
-class SettingsViewController: UIViewController ,UIScrollViewDelegate{
+class SettingsViewController: UIViewController ,UIScrollViewDelegate , RangeSeekSliderDelegate{
 
     @IBOutlet weak var scroller: UIScrollView!
     @IBOutlet weak var viewInScroller: UIView!
@@ -30,6 +31,7 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
     @IBOutlet var community: UIButton!
     @IBOutlet var policy: UIButton!
     
+    @IBOutlet var versionLabel: UILabel!
     
     
     
@@ -62,6 +64,10 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
         policy.titleLabel?.numberOfLines = 1
         policy.titleLabel?.minimumScaleFactor = 0.5
         policy.titleLabel?.adjustsFontSizeToFitWidth = true
+        seekSlider?.delegate = self
+        
+        self.versionLabel.text = "V" + (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String)  + "." + (Bundle.main.infoDictionary?["CFBundleVersion"] as! String)
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -79,11 +85,11 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
         
 //        self.lighter = self.SwHaveLighter.isOn
        
-        if(butSetMan.titleColor(for: .normal) == UIColor("#0A0A0A") && butSetWoman.titleColor(for: .normal) != UIColor("#0A0A0A")){
+        if(butSetMan.title(for: .normal) == "Homme"){
             looking_for = 0
-        }else if(butSetMan.titleColor(for: .normal) != UIColor("#0A0A0A") && butSetWoman.titleColor(for: .normal) == UIColor("#0A0A0A")){
+        }else if(butSetMan.title(for: .normal) == "Femme"){
             looking_for = 1
-        }else if(butSetMan.titleColor(for: .normal) == UIColor("#0A0A0A") && butSetWoman.titleColor(for: .normal) == UIColor("#0A0A0A")){
+        }else if(butSetMan.title(for: .normal) == "Les deux"){
             looking_for = 2
         }
         
@@ -117,41 +123,37 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
     }
     
     @IBAction func setSex(_ sender: Any) {
+        
+        
+        
         if(sender is String){
             if(sender as! String == "0"){
                 
-                butSetMan.setTitleColor(UIColor("#0A0A0A"), for: .normal)
+                butSetMan.setTitle("Homme", for: .normal)
                 
-                butSetWoman.setTitleColor(UIColor("#BFBFBF"), for: .normal)
             }else if(sender as! String == "1" ){
                 
-                butSetMan.setTitleColor(UIColor("#BFBFBF"), for: .normal)
+                butSetMan.setTitle("Femme", for: .normal)
                 
-                butSetWoman.setTitleColor(UIColor("#0A0A0A"), for: .normal)
                 
             }else if(sender as! String == "2" ){
                 
-                butSetMan.setTitleColor(UIColor("#0A0A0A"), for: .normal)
+                butSetMan.setTitle("Les deux", for: .normal)
                 
-                butSetWoman.setTitleColor(UIColor("#0A0A0A"), for: .normal)
             }
         }else{
-            if(sender as! UIButton == butSetMan){
+            McPicker.show(data: [["Homme", "Femme" ,"Les deux"]]) {  [weak self] (selections: [Int : String]) -> Void in
                 
-                if(butSetMan.titleColor(for: .normal) == UIColor("#0A0A0A")){
-                    butSetMan.setTitleColor(UIColor("#BFBFBF"), for: .normal)
-                }else{
-                    butSetMan.setTitleColor(UIColor("#0A0A0A"), for: .normal)
+                if let male = selections[0] {
+                    self?.butSetMan.setTitle(male, for: .normal)
                 }
-               
-            }
-            
-            if(sender as! UIButton == butSetWoman){
                 
-                if(butSetWoman.titleColor(for: .normal) == UIColor("#0A0A0A")){
-                    butSetWoman.setTitleColor(UIColor("#BFBFBF"), for: .normal)
-                }else{
-                    butSetWoman.setTitleColor(UIColor("#0A0A0A"), for: .normal)
+                if let female = selections[1] {
+                    self?.butSetMan.setTitle(female, for: .normal)
+                }
+                
+                if let together = selections[2] {
+                    self?.butSetMan.setTitle(together, for: .normal)
                 }
                 
             }
@@ -165,6 +167,26 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
     
     
     @IBAction func openLink(_ sender: Any) {
+        
+        let b : UIButton = sender as! UIButton
+        
+        switch b.tag {
+            
+        case 11:
+             UIApplication.shared.open(URL.init(string: "https://www.flint-app.com/help")!, options: [:], completionHandler: nil)
+        case 12:
+             UIApplication.shared.open(URL.init(string: "https://www.flint-app.com/regles-de-la-communaute")!, options: [:], completionHandler: nil)
+        case 13:
+            UIApplication.shared.open(URL.init(string: "https://www.flint-app.com/cgu")!, options: [:], completionHandler: nil)
+        case 14:
+             UIApplication.shared.open(URL.init(string: "https://www.flint-app.com/cgu")!, options: [:], completionHandler: nil)
+        case 15:
+             UIApplication.shared.open(URL.init(string: "https://itunes.apple.com/us/app/flint/id1377334495?ls=1&mt=8")!, options: [:], completionHandler: nil)
+            
+        default:
+             UIApplication.shared.open(URL.init(string: "https://itunes.apple.com/us/app/flint/id1377334495?ls=1&mt=8")!, options: [:], completionHandler: nil)
+        }
+        
     }
     
     @IBAction func logout(_ sender: Any) {
@@ -215,13 +237,41 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
+        let l = GlobalFields.showLoading(vc: self)
         request(URLs.deleteAccount, method: .post , parameters: DeleteAccountRequestModel.init().getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
-            
+            l.disView()
             let res = response.result.value
             
             if(res?.status == "success"){
-                let vC : IntroViewController = (self.storyboard?.instantiateViewController(withIdentifier: "IntroViewController"))! as! IntroViewController
-                self.navigationController?.pushViewController(vC, animated: true)
+                
+                GlobalFields.USERNAME = ""
+                GlobalFields.TOKEN = ""
+                GlobalFields.PASSWORD = nil
+                GlobalFields.USERNAME = nil
+                GlobalFields.TOKEN = nil
+                GlobalFields.ID = nil
+                GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
+                
+                var isInStack = false
+                for controller in self.navigationController!.viewControllers as Array {
+                    if controller.isKind(of: IntroViewController.self) {
+                        isInStack = true
+                        self.navigationController!.popToViewController(controller, animated: true)
+                        break
+                    }
+                }
+                if(!isInStack){
+                    
+                    let appdelegate = UIApplication.shared.delegate as! AppDelegate
+                    let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                    var homeViewController = mainStoryboard.instantiateViewController(withIdentifier: "IntroViewController") as! IntroViewController
+                    var nav = UINavigationController(rootViewController: homeViewController)
+                    nav.setNavigationBarHidden(true, animated: false)
+                    nav.setToolbarHidden(true, animated: false)
+                    appdelegate.window!.rootViewController = nav
+                }
+            }else{
+                self.view.makeToast(res?.message)
             }
             
         }
@@ -263,7 +313,14 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate{
     }
     
     
-    
+    func rangeSeekSlider(_ slider: RangeSeekSlider, stringForMaxValue maxValue: CGFloat) -> String? {
+        if(slider.selectedMaxValue < 55){
+            return Int(slider.selectedMaxValue).description
+        }else{
+            return "+55"
+        }
+        
+    }
     
 }
 

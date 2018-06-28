@@ -17,6 +17,8 @@ import Alamofire
 import CodableAlamofire
 import FBSDKLoginKit
 import FBSDKCoreKit
+import Google
+import GGLAnalytics
 
 
 
@@ -111,6 +113,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
             }
         })
         
+        self.setupGoogleAnalytics()
         
         return true
     }
@@ -191,7 +194,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
         }
     }
     
-    
+    func setupGoogleAnalytics() {
+        
+        // Configure tracker from GoogleService-Info.plist.
+//        let configureError:NSError?
+//        GGLContext.sharedInstance().configureWithError(&configureError)
+//        assert(configureError == nil, "Error configuring Google services: \(configureError)")
+        
+        let gai = GAI.sharedInstance()
+        gai?.trackUncaughtExceptions = true  // report uncaught exceptions
+        gai?.logger.logLevel = GAILogLevel.verbose  // remove before app release
+    }
     
     
     func onOSPermissionChanged(_ stateChanges: OSPermissionStateChanges!) {
@@ -274,11 +287,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
                     }
                 }
             }
-        }else if(type == "send_message" || type == "send_invite_message"){
+        }else if(type == "send_message" || type == "send_chat_message"){
             let vc : UIViewController? = self.topViewController()
             if(vc != nil){
                 if(vc?.isKind(of: SparksViewController.self))!{
                     (vc as! SparksViewController).callChatListRest(showLoading: false)
+                }else if(vc?.isKind(of: MessagePageViewController.self))!{
+                    if((vc as! MessagePageViewController).chatTypeMode == .Messages){
+                        (vc as! MessagePageViewController).callGetMessages()
+                    }
+                }
+            }
+        }else if(type == "send_invite_message"){
+            let vc : UIViewController? = self.topViewController()
+            if(vc != nil){
+                if(vc?.isKind(of: FirstMapViewController.self))!{
+                    (vc as! FirstMapViewController).updateInviteBadge()
+                }else if(vc?.isKind(of: MessagePageViewController.self))!{
+                    if((vc as! MessagePageViewController).chatTypeMode == .Invites){
+                        (vc as! MessagePageViewController).callGetInviteInfo()
+                    }
                 }
             }
         }else{
@@ -493,13 +521,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
                     }else {
                         self.goPage(name: "FirstMapViewController")
                     }
+                }else{
+                    GlobalFields.USERNAME = ""
+                    GlobalFields.TOKEN = ""
+                    GlobalFields.PASSWORD = nil
+                    GlobalFields.USERNAME = nil
+                    GlobalFields.TOKEN = nil
+                    GlobalFields.ID = nil
+                    GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                 }
-                
                 
                 
             }else if(res?.errCode == -2){
                 self.goPage(name: "IntroViewController")
             }else{
+                GlobalFields.USERNAME = ""
+                GlobalFields.TOKEN = ""
+                GlobalFields.PASSWORD = nil
+                GlobalFields.USERNAME = nil
+                GlobalFields.TOKEN = nil
+                GlobalFields.ID = nil
+                GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                 self.goPage(name: "IntroViewController")
             }
             
@@ -546,6 +588,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
                     }else {
                         self.goPage(name: "FirstMapViewController")
                     }
+                }else{
+                    GlobalFields.USERNAME = ""
+                    GlobalFields.TOKEN = ""
+                    GlobalFields.PASSWORD = nil
+                    GlobalFields.USERNAME = nil
+                    GlobalFields.TOKEN = nil
+                    GlobalFields.ID = nil
+                    GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                 }
                 
                 
@@ -553,6 +603,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
             }else if (res?.errCode == -2){
                 self.goPage(name: "IntroViewController")
             }else{
+                GlobalFields.USERNAME = ""
+                GlobalFields.TOKEN = ""
+                GlobalFields.PASSWORD = nil
+                GlobalFields.USERNAME = nil
+                GlobalFields.TOKEN = nil
+                GlobalFields.ID = nil
+                GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                 self.goPage(name: "IntroViewController")
             }
             
@@ -567,11 +624,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
             nav.setToolbarHidden(true, animated: false)
             self.window?.rootViewController = nav
         }else{
-            let viewController = self.window?.rootViewController?.storyboard?.instantiateViewController(withIdentifier: name) as! IntroViewController
-            let nav = UINavigationController(rootViewController: viewController)
-            nav.setNavigationBarHidden(true, animated: false)
-            nav.setToolbarHidden(true, animated: false)
-            self.window?.rootViewController = nav
+            let vc : UIViewController? = self.topViewController()
+            if(vc != nil){
+                if(vc?.isKind(of: IntroViewController.self))!{
+                    if(GlobalFields.USERNAME != "" && GlobalFields.TOKEN != "" && GlobalFields.PASSWORD != "" && GlobalFields.defaults.bool(forKey: "isRegisterCompleted")){
+                        (vc as! IntroViewController).splashView.alpha = 1
+                    }else{
+                        (vc as! IntroViewController).splashView.alpha = 0
+                    }
+                }else{
+                    let viewController = self.window?.rootViewController?.storyboard?.instantiateViewController(withIdentifier: name) as! IntroViewController
+                    let nav = UINavigationController(rootViewController: viewController)
+                    nav.setNavigationBarHidden(true, animated: false)
+                    nav.setToolbarHidden(true, animated: false)
+                    self.window?.rootViewController = nav
+                }
+            }else{
+                let viewController = self.window?.rootViewController?.storyboard?.instantiateViewController(withIdentifier: name) as! IntroViewController
+                let nav = UINavigationController(rootViewController: viewController)
+                nav.setNavigationBarHidden(true, animated: false)
+                nav.setToolbarHidden(true, animated: false)
+                self.window?.rootViewController = nav
+            }
+            
+            
+            
         }
         
     }

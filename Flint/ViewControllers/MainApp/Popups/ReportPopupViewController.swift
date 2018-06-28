@@ -42,18 +42,24 @@ class ReportPopupViewController: UIViewController {
         case 1:
             tagReport = 1
             tagMessage = (sender as! UIButton).title(for: .normal)!
+            break
         case 2:
             tagReport = 2
             tagMessage = (sender as! UIButton).title(for: .normal)!
+            break
         case 3:
             tagReport = 3
             tagMessage = (sender as! UIButton).title(for: .normal)!
+            break
         case 4:
             tagReport = 4
             tagMessage = (sender as! UIButton).title(for: .normal)!
+            break
         default:
             return
         }
+        rUSureView.alpha = 1
+        reportView.alpha = 0
     }
     
     

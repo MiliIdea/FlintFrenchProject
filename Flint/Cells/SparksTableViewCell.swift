@@ -8,6 +8,7 @@
 
 import UIKit
 import UICircularProgressRing
+import DCKit
 
 class SparksTableViewCell: UITableViewCell {
 
@@ -18,6 +19,8 @@ class SparksTableViewCell: UITableViewCell {
     @IBOutlet weak var lastText: UILabel!
     
     @IBOutlet weak var ringView: UICircularProgressRingView!
+    
+    @IBOutlet var noSeenView: DCBorderedView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

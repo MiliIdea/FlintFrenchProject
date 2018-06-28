@@ -8,6 +8,7 @@
 
 import Foundation
 import OneSignal
+import UIKit
 
 class LoginWithFacebookRequestModel {
     
@@ -25,7 +26,7 @@ class LoginWithFacebookRequestModel {
         
         self.DEVICE = "Apple iOS"
         
-        self.OS_VERSION = "11.1.2"
+        self.OS_VERSION = UIDevice.current.systemVersion
         
     }
     

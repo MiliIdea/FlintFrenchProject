@@ -46,20 +46,75 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
         print(GlobalFields.TOKEN)
 
         if(GlobalFields.USERNAME != "" && GlobalFields.TOKEN != "" && GlobalFields.PASSWORD != "" && GlobalFields.defaults.bool(forKey: "isRegisterCompleted")){
-            
-            if(GlobalFields.PASSWORD == "FACEBOOK"){
-                (UIApplication.shared.delegate as? AppDelegate)?.loginWithFaceBook()
-            }else{
-                (UIApplication.shared.delegate as? AppDelegate)?.login()
+            self.splashView.alpha = 1
+        }else{
+            self.splashView.alpha = 0
+        }
+        
+        cViaFacebook.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        cViaFacebook.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        cViaFacebook.layer.shadowOpacity = 1.0
+        cViaFacebook.layer.masksToBounds = false
+        
+        
+        connectionButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        connectionButton.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        connectionButton.layer.shadowOpacity = 1.0
+        connectionButton.layer.masksToBounds = false
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        if(GlobalFields.USERNAME != "" && GlobalFields.TOKEN != "" && GlobalFields.PASSWORD != "" && GlobalFields.defaults.bool(forKey: "isRegisterCompleted")){
+            self.splashView.alpha = 1
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            request(URLs.checkUpdate, method: .post , parameters: [:] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<CheckUpdateRes>>) in
+                
+                let res = response.result.value
+                if(res?.status == "success"){
+                    let version = Int(Bundle.main.infoDictionary!["CFBundleShortVersionString"]! as! String)
+                    let build = Int(Bundle.main.infoDictionary!["CFBundleVersion"]! as! String)
+                    let ss = res?.data?.ios_current_version?.split(separator: ".")
+                    let serverVersion = Int(ss![0])
+                    let serverBuild = Int(ss![1])
+                    if(version! < serverVersion!){
+                        
+                        self.view.makeToast("Une nouvelle version de l'application est disponible, veuillez la télécharger")
+                        UIApplication.shared.open(URL.init(string: (res?.data?.ios_link)!)!, options: [:], completionHandler: nil)
+                        
+                    }else if(version! == serverVersion!){
+                        if(build! < serverBuild!){
+                            self.view.makeToast("Une nouvelle version de l'application est disponible, veuillez la télécharger")
+                            UIApplication.shared.open(URL.init(string: (res?.data?.ios_link)!)!, options: [:], completionHandler: nil)
+                        }else{
+                            if(GlobalFields.PASSWORD == "FACEBOOK"){
+                                (UIApplication.shared.delegate as? AppDelegate)?.loginWithFaceBook()
+                            }else{
+                                (UIApplication.shared.delegate as? AppDelegate)?.login()
+                            }
+                        }
+                    }else{
+                        if(GlobalFields.PASSWORD == "FACEBOOK"){
+                            (UIApplication.shared.delegate as? AppDelegate)?.loginWithFaceBook()
+                        }else{
+                            (UIApplication.shared.delegate as? AppDelegate)?.login()
+                        }
+                    }
+                    
+                }else{
+                    self.view.makeToast(res?.message)
+                    self.splashView.alpha = 0
+                }
+                
             }
             
         }else{
             self.splashView.alpha = 0
         }
         
-        
     }
-    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -189,6 +244,14 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
                         
                         self.navigationController?.pushViewController(vC, animated: true)
                     }
+                }else{
+                    GlobalFields.USERNAME = ""
+                    GlobalFields.TOKEN = ""
+                    GlobalFields.PASSWORD = nil
+                    GlobalFields.USERNAME = nil
+                    GlobalFields.TOKEN = nil
+                    GlobalFields.ID = nil
+                    GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                 }
                 
                 
@@ -272,6 +335,13 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize.init(width: self.view.frame.width, height: self.slider.frame.height)
     }
+    
+    
+    @IBAction func openLink(_ sender: Any) {
+        UIApplication.shared.open(URL.init(string: "https://www.flint-app.com/cgu")!, options: [:], completionHandler: nil)
+
+    }
+    
     
 }
 

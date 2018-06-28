@@ -26,7 +26,24 @@ PODS:
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.33.0):
     - FBSDKCoreKit
+  - FirebaseAnalytics (3.9.0):
+    - FirebaseCore (~> 3.6)
+    - FirebaseInstanceID (~> 1.0)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
+  - FirebaseCore (3.6.0):
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
+  - FirebaseInstanceID (1.0.10):
+    - FirebaseCore (~> 3.6)
   - Gallery (2.0.6)
+  - Google/Analytics (3.1.0):
+    - Google/Core
+    - GoogleAnalytics (~> 3.12)
+  - Google/Core (3.1.0):
+    - FirebaseAnalytics (~> 3.2)
+  - GoogleAnalytics (3.17.0)
+  - GoogleToolboxForMac/Defines (2.1.4)
+  - "GoogleToolboxForMac/NSData+zlib (2.1.4)":
+    - GoogleToolboxForMac/Defines (= 2.1.4)
   - IGRPhotoTweaks (1.0.7)
   - IQKeyboardManagerSwift (5.0.8)
   - ISEmojiView (0.0.6)
@@ -34,9 +51,6 @@ PODS:
   - lottie-ios (2.1.5)
   - MapKitGoogleStyler (0.1.1)
   - McPicker (1.0.0)
-  - MiniLayout (1.2.0)
-  - MultiSlider (1.3.0):
-    - MiniLayout
   - ObjectMapper (3.1.0)
   - OneSignal (2.8.2)
   - PusherChatkit (0.7.0):
@@ -62,6 +76,7 @@ DEPENDENCIES:
   - DCKit
   - FBSDKLoginKit
   - Gallery
+  - Google/Analytics
   - IGRPhotoTweaks (~> 1.0.0)
   - IQKeyboardManagerSwift
   - ISEmojiView
@@ -69,7 +84,6 @@ DEPENDENCIES:
   - lottie-ios
   - MapKitGoogleStyler
   - McPicker
-  - MultiSlider
   - ObjectMapper (~> 3.1)
   - OneSignal
   - PusherChatkit
@@ -97,7 +111,13 @@ SPEC REPOS:
     - DCKit
     - FBSDKCoreKit
     - FBSDKLoginKit
+    - FirebaseAnalytics
+    - FirebaseCore
+    - FirebaseInstanceID
     - Gallery
+    - Google
+    - GoogleAnalytics
+    - GoogleToolboxForMac
     - IGRPhotoTweaks
     - IQKeyboardManagerSwift
     - ISEmojiView
@@ -105,8 +125,6 @@ SPEC REPOS:
     - lottie-ios
     - MapKitGoogleStyler
     - McPicker
-    - MiniLayout
-    - MultiSlider
     - ObjectMapper
     - OneSignal
     - PusherChatkit
@@ -134,7 +152,13 @@ SPEC CHECKSUMS:
   DCKit: 5c331146967c08886cc47baf5903699fdb4dca81
   FBSDKCoreKit: 572b047a7e029bc44542bcf8a59414e7ff2b543e
   FBSDKLoginKit: 88cb456349cfb3b554427ce4f8b43729d85dfb40
+  FirebaseAnalytics: e5fe8486efc01bec33f6bf82e2fa9fce4b124052
+  FirebaseCore: 9691ee2ade70c098d7cf92440f4303f16d83ca75
+  FirebaseInstanceID: b9eedd6846fb5e1f0f7279e1deaa7a7e4cf8392e
   Gallery: 5489ae11d8010a3cc163030f6e92d618afbdf4df
+  Google: 98da4b1a60ed0beb80a290387a28333406a1eb90
+  GoogleAnalytics: f42cc53a87a51fe94334821868d9c8481ff47a7b
+  GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
   IGRPhotoTweaks: 8fe6b62c6599238d860b19b46a85a454e202f502
   IQKeyboardManagerSwift: 2e7dc7f98c111458c1ea2b373f893e8cf95e2b97
   ISEmojiView: 2ab7c5ad9c58a318cefcf407af374464ccc56f1d
@@ -142,8 +166,6 @@ SPEC CHECKSUMS:
   lottie-ios: 836cdbba92f62f3c6a00e37a4ce485321fe317cf
   MapKitGoogleStyler: 8efdceb664fc1748a62a9e3b50a34b67a34247bc
   McPicker: 130183cd3d22fc6933ea9e63c5a0d0d1becc0122
-  MiniLayout: 2cee66f3d4887a003a2fdb48ba6d838145b2e2a9
-  MultiSlider: 67176524d11423315b6e96a04448989a264e910a
   ObjectMapper: 20505058f54e5c3ca69e1d6de9897d152a5369a6
   OneSignal: ab5c509192ca8390bdd3570a6261e6decf4c79c1
   PusherChatkit: fdf1ba698d12d4033a4b7b3343d7e0e3a3cf8557
@@ -156,6 +178,6 @@ SPEC CHECKSUMS:
   UICircularProgressRing: 653b31f7252b2959e8234f5b9ea5f925da755954
   UIColor_Hex_Swift: c5ff88470499383b8fd85302d59344bb24ba9436
 
-PODFILE CHECKSUM: 2b7d790e1630b0582c6d9b97f69f5001cfe0c173
+PODFILE CHECKSUM: 58542aaa8ffb531b6a6fca1b21b423fc26eca357
 
-COCOAPODS: 1.5.2
+COCOAPODS: 1.5.3

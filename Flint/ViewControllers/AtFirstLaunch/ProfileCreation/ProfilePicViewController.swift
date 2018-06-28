@@ -22,7 +22,7 @@ class ProfilePicViewController: UIViewController ,GalleryControllerDelegate , IG
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        uploadButton.setTitle("CHOISISSEZ IMAGE", for: .normal)
+        uploadButton.setTitle("Choisissez une image", for: .normal)
         // Do any additional setup after loading the view.
     }
 
@@ -37,12 +37,9 @@ class ProfilePicViewController: UIViewController ,GalleryControllerDelegate , IG
     
     @IBAction func uploadImage(_ sender: Any) {
         
-        if(uploadButton.title(for: .normal)! == "SUIVANT"){
-            let vC : SelfiTrustViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SelfiTrustViewController"))! as! SelfiTrustViewController
-            self.navigationController?.pushViewController(vC, animated: true)
-        }else if(uploadButton.title(for: .normal)! == "UPLOAD"){
+        if(uploadButton.title(for: .normal)! == "Suivant"){
             uploadImage()
-        }else if(uploadButton.title(for: .normal)! == "CHOISISSEZ IMAGE"){
+        }else if(uploadButton.title(for: .normal)! == "Choisissez une image"){
             let gallery = GalleryController()
             gallery.delegate = self
             
@@ -84,8 +81,10 @@ class ProfilePicViewController: UIViewController ,GalleryControllerDelegate , IG
                     let res = response.result.value
                     
                     if(res?.status == "success"){
-                        GlobalFields.userInfo.AVATAR = res?.data?.name
-                        self.uploadButton.setTitle("SUIVANT", for: .normal)
+//                        GlobalFields.userInfo.AVATAR = res?.data?.name
+//                        self.uploadButton.setTitle("SUIVANT", for: .normal)
+                        let vC : SelfiTrustViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SelfiTrustViewController"))! as! SelfiTrustViewController
+                        self.navigationController?.pushViewController(vC, animated: true)
                     }
                     
                 }
@@ -118,7 +117,7 @@ class ProfilePicViewController: UIViewController ,GalleryControllerDelegate , IG
             cropViewController.setCropAspectRect(aspect: "200:200")
             cropViewController.lockAspectRatio(true)
             let button = UIButton(type: .system) // let preferred over var here
-            button.frame = CGRect.init(x: self.view.frame.width - 100, y: self.view.frame.height - 100, width: 100, height: 100)
+            button.frame = CGRect.init(x: self.view.frame.width - 110, y: self.view.frame.height - 110, width: 100, height: 100)
             button.layer.cornerRadius = 50
             button.backgroundColor = UIColor.white
             button.setTitle("", for: .normal)
@@ -149,7 +148,7 @@ class ProfilePicViewController: UIViewController ,GalleryControllerDelegate , IG
     
     func photoTweaksController(_ controller: IGRPhotoTweakViewController, didFinishWithCroppedImage croppedImage: UIImage) {
         self.imageView?.image = croppedImage
-        uploadButton.setTitle("UPLOAD", for: .normal)
+        uploadButton.setTitle("Suivant", for: .normal)
         _ = controller.navigationController?.popViewController(animated: true)
         
     }

@@ -118,7 +118,7 @@ class DetermineInvitationViewController: UIViewController {
            
             let w = GlobalFields.inviteExactTime
             
-            self.timeButton.setTitle(w?.toStringWithRelativeTime(strings : [.nowPast: "Right now" ,.secondsPast: "Right now"]), for: .normal)
+            self.timeButton.setTitle(w?.toStringWithRelativeTime(strings : [.nowPast: "Maintenant" ,.secondsPast: "Maintenant",.minutesPast: "Maintenant"] ), for: .normal)
             
         }else{
             GlobalFields.inviteExactTime = Date()
@@ -129,7 +129,7 @@ class DetermineInvitationViewController: UIViewController {
 //            let dateFormatterGet : DateFormatter = DateFormatter()
 //            dateFormatterGet.dateFormat = "dd MMM yyyy - HH:mm"
 //            self.timeButton.setTitle(dateFormatterGet.string(from: GlobalFields.inviteExactTime!), for: .normal)
-            self.timeButton.setTitle((GlobalFields.inviteExactTime)?.toStringWithRelativeTime(strings : [.nowPast: "Right now" ,.secondsPast: "Right now"]), for: .normal)
+            self.timeButton.setTitle((GlobalFields.inviteExactTime)?.toStringWithRelativeTime(strings : [.nowPast: "Maintenant" ,.secondsPast: "Maintenant" ,.minutesPast: "Maintenant"]), for: .normal)
         }else{
             GlobalFields.inviteExactTime = Date()
             GlobalFields.inviteWhen = 0
@@ -206,7 +206,7 @@ class DetermineInvitationViewController: UIViewController {
         }
         if(GlobalFields.inviteMood == nil || GlobalFields.inviteMood == ""){
             
-            self.view.makeToast("pls select your invite mood")
+            self.view.makeToast("veuillez sélectionner votre humeur d'invitation")
             return
         }
         if(!isParty){
@@ -236,7 +236,7 @@ class DetermineInvitationViewController: UIViewController {
             let date : Date = GlobalFields.inviteExactTime!
             
             if(GlobalFields.inviteLocation == nil){
-                self.view.makeToast("pls check your location settings")
+                self.view.makeToast("s'il vous plaît vérifier vos paramètres de localisation")
             }else{
                 request(URLs.createInvitation, method: .post , parameters: CreateInvitationRequestModel.init(type: type, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!, peopleCount: GlobalFields.inviteNumber!, exactTime: Int(date.timeIntervalSince1970), when: GlobalFields.inviteWhen!, emoji: GlobalFields.inviteEmoji!, title: GlobalFields.inviteTitle!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<CreateInviteRes>>) in
                     
@@ -335,6 +335,9 @@ class DetermineInvitationViewController: UIViewController {
         
     }
     
+    @IBAction func backToSetTitle(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
     
 
 }

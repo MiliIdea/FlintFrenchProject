@@ -10,7 +10,8 @@ import Foundation
 import UIKit
 import CoreLocation
 import UIColor_Hex_Swift
-
+import Google
+import FirebaseAnalytics
 
 public class GlobalFields {
     
@@ -201,6 +202,20 @@ public class GlobalFields {
         return imageData
     }
 
+    
+    static func setAnalytics(_ screenName : String){
+        if let default_tracker = GAI.sharedInstance().defaultTracker {
+            #if DEBUG
+            print("default tracker")
+            #endif
+        }
+        
+        //        let tracker = GAI.sharedInstance().defaultTracker
+        let tracker = GAI.sharedInstance().tracker(withTrackingId: "UA-121430738-1")
+        tracker?.set(kGAIScreenName, value: screenName)
+        let builder = GAIDictionaryBuilder.createScreenView()
+        tracker?.send(builder?.build() as! [NSObject : AnyObject])
+    }
     
     
 }

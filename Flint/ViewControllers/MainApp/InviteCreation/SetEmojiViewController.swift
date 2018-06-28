@@ -47,13 +47,13 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
         self.inviteTitle.layer.borderColor = GlobalFields.inviteMoodColor?.cgColor
         self.inviteTitle.backgroundColor = UIColor.clear
         
-        inviteNumber.text = (GlobalFields.inviteNumber?.description)! + " person"
+        inviteNumber.text = (GlobalFields.inviteNumber?.description)! + " personne"
         
         invitePosition.text = GlobalFields.inviteAddress
         
         let w = GlobalFields.inviteExactTime
         
-        self.inviteTime.text = w?.toStringWithRelativeTime(strings: [.nowPast : "right now"])
+        self.inviteTime.text = w?.toStringWithRelativeTime(strings: [.nowPast : "maintenant ",.secondsPast: "Maintenant",.minutesPast: "Maintenant"])
         
         
         switch GlobalFields.inviteMood! {
@@ -214,4 +214,8 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
         emojiTextView.deleteBackward()
     }
     
+    @IBAction func backToDetermine(_ sender: Any) {
+        GlobalFields.inviteMood == ""
+        self.navigationController?.popViewController(animated: true)
+    }
 }

@@ -25,8 +25,6 @@ target 'Flint' do
 
   pod 'DCKit'
 
-  pod 'MultiSlider'
-
   pod 'CHIPageControl/Aji'
 
   pod 'MapKitGoogleStyler'
@@ -75,9 +73,17 @@ target 'Flint' do
   
   pod 'McPicker'
   
+  pod 'Google/Analytics'
+  
 end
 
 post_install do |installer|
+    installer.pods_project.targets.each do |target|
+        target.build_configurations.each do |config|
+            config.build_settings.delete('CODE_SIGNING_ALLOWED')
+            config.build_settings.delete('CODE_SIGNING_REQUIRED')
+        end
+    end
     installer.pods_project.build_configurations.each do |config|
         config.build_settings.delete('CODE_SIGNING_ALLOWED')
         config.build_settings.delete('CODE_SIGNING_REQUIRED')

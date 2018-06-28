@@ -8,6 +8,7 @@
 
 import Foundation
 import OneSignal
+import UIKit
 
 class RegisterRequestModel {
     
@@ -21,11 +22,11 @@ class RegisterRequestModel {
 
         self.TAG = "male"
         
-        self.COUNTRY = "IR"
+        self.COUNTRY = "FR"
         
         self.DEVICE = "Apple iOS"
         
-        self.OS_VERSION = "11.1.2"
+        self.OS_VERSION = UIDevice.current.systemVersion
         
     }
     

@@ -28,6 +28,7 @@ struct Chats : Codable {
     let target_avatar : String?
     let target_second_avatar : String?
     let target_name : String?
+    let seen_at : Int?
     
     enum CodingKeys: String, CodingKey {
         
@@ -46,25 +47,8 @@ struct Chats : Codable {
         case target_avatar = "target_avatar"
         case target_second_avatar = "target_second_avatar"
         case target_name = "target_name"
+        case seen_at = "seen_at"
     }
-    
-    init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        id = try values.decodeIfPresent(Int.self, forKey: .id)
-        user = try values.decodeIfPresent(Int.self, forKey: .user)
-        target = try values.decodeIfPresent(Int.self, forKey: .target)
-        channel = try values.decodeIfPresent(String.self, forKey: .channel)
-        created_at = try values.decodeIfPresent(Int.self, forKey: .created_at)
-        last_message_at = try values.decodeIfPresent(Int.self, forKey: .last_message_at)
-        last_message = try values.decodeIfPresent(String.self, forKey: .last_message)
-        last_message_type = try values.decodeIfPresent(Int.self, forKey: .last_message_type)
-        type = try values.decodeIfPresent(Int.self, forKey: .type)
-        user_avatar = try values.decodeIfPresent(String.self, forKey: .user_avatar)
-        user_second_avatar = try values.decodeIfPresent(String.self, forKey: .user_second_avatar)
-        user_name = try values.decodeIfPresent(String.self, forKey: .user_name)
-        target_avatar = try values.decodeIfPresent(String.self, forKey: .target_avatar)
-        target_second_avatar = try values.decodeIfPresent(String.self, forKey: .target_second_avatar)
-        target_name = try values.decodeIfPresent(String.self, forKey: .target_name)
-    }
+
 
 }
