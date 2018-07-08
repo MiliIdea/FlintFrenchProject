@@ -80,7 +80,7 @@ class SignUpViewController: UIViewController {
                 self.navigationController?.pushViewController(vC, animated: true)
                 
             }else{
-                self.view.makeToast(res?.message)
+                self.view.makeToast(res?.message,position : .center)
                 
                 if(res?.errCode! == -5){
                     
@@ -102,21 +102,21 @@ class SignUpViewController: UIViewController {
     
     func checkValidation() -> Bool{
         if(inputField.text?.isEmpty)!{
-            self.view.makeToast("pls fill input field")
+            self.view.makeToast("veuillez remplir le champ de saisie" ,position : .center)
             return false
         }
         
         if( self.titleNumbOrEmail.text != "Entrez votre numéro de téléphone" ){
             //its email Mode
             if(!(inputField.text?.contains("@"))! || !(inputField.text?.contains("."))! ){
-                self.view.makeToast("pls enter correct email")
+                self.view.makeToast("s'il vous plaît entrer le bon email" ,position : .center)
                 return false
             }
         }else{
             //its mobile Mode
             var num = Int(inputField.text!)
             if num == nil {
-                self.view.makeToast("pls enter correct phoneNumber")
+                self.view.makeToast("entrez le numéro de téléphone correct",position : .center)
                 return false
             }
         }
@@ -134,7 +134,7 @@ class SignUpViewController: UIViewController {
         self.titleNumbOrEmail.text = "Entrez votre numéro de téléphone"
         self.inputField.placeholder = "Numéro téléphone"
         self.inputField.keyboardType = UIKeyboardType.numberPad
-        self.Sdescription.text = "Un texto de confirmation vous sera envoyé.Ce numéro vous permettra de vous connectez et de réinitialiser  votre mot de passe le cas échéant."
+        self.Sdescription.text = " Un SMS de confirmation va vous être envoyé. Le code transmis permettra de vous connecter ou de réinitialiser votre mot de passe le cas échéant. "
         self.goAnotherSignUpButton.setTitle("Utilisez votre adresse e-mail", for: .normal)
     }
     

@@ -239,6 +239,10 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
                     }else if(data?.looking_for == nil){
                         let vC : XViewController = (self.storyboard?.instantiateViewController(withIdentifier: "XViewController"))! as! XViewController
                         self.navigationController?.pushViewController(vC, animated: true)
+                    }else if(OneSignal.getPermissionSubscriptionState().permissionStatus.status != .authorized){
+                        let vC : NotificationPermissionViewController = (self.storyboard?.instantiateViewController(withIdentifier: "NotificationPermissionViewController"))! as! NotificationPermissionViewController
+                        GlobalFields.defaults.set(true, forKey: "isRegisterCompleted")
+                        self.navigationController?.pushViewController(vC, animated: true)
                     }else {
                         let vC : FirstMapViewController = (self.storyboard?.instantiateViewController(withIdentifier: "FirstMapViewController"))! as! FirstMapViewController
                         

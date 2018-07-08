@@ -2,17 +2,15 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "t.png",
+      "filename" : "Groupe 1751.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "t@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "t@3x.png",
       "scale" : "3x"
     }
   ],

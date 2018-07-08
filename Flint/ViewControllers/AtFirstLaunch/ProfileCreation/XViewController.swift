@@ -57,7 +57,7 @@ class XViewController: UIViewController {
                 GlobalFields.USERNAME = res?.data?.username
                 GlobalFields.ID = res?.data?.id
                 GlobalFields.loginResData = res?.data
-                let vC : FirstMapViewController = (self.storyboard?.instantiateViewController(withIdentifier: "FirstMapViewController"))! as! FirstMapViewController
+                let vC : NotificationPermissionViewController = (self.storyboard?.instantiateViewController(withIdentifier: "NotificationPermissionViewController"))! as! NotificationPermissionViewController
                 self.navigationController?.pushViewController(vC, animated: true)
             }
             

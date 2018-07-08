@@ -33,15 +33,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
-//        if(GlobalFields.USERNAME != "" && GlobalFields.TOKEN != "" && GlobalFields.PASSWORD != "" && GlobalFields.defaults.bool(forKey: "isRegisterCompleted")){
-//            
-//            if(GlobalFields.PASSWORD == "FACEBOOK"){
-//                loginWithFaceBook()
-//            }else{
-//                login()
-//            }
-//            
-//        }
         // Override point for customization after application launch.
         NetworkActivityLogger.shared.startLogging()
         NetworkActivityLogger.shared.level = .debug
@@ -50,7 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
         ToastManager.shared.isQueueEnabled = true
         
         
-        locationManager.requestAlwaysAuthorization()
+//        locationManager.requestAlwaysAuthorization()
         locationManager.distanceFilter = 100
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.activityType = .other
@@ -101,11 +92,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
         
         // Recommend moving the below line to prompt for push after informing the user about
         //   how your app will use them.
-        OneSignal.promptForPushNotifications(userResponse: { accepted in
-            print("User accepted notifications: \(accepted)")
-        })
-        
-        OneSignal.registerForPushNotifications()
+//        OneSignal.promptForPushNotifications(userResponse: { accepted in
+//            print("User accepted notifications: \(accepted)")
+//        })
+//        OneSignal.registerForPushNotifications()
         OneSignal.idsAvailable({(_ userId, _ pushToken) in
             GlobalFields.oneSignalId = userId
             if(GlobalFields.USERNAME != nil && GlobalFields.USERNAME != "" && GlobalFields.TOKEN != nil && GlobalFields.TOKEN != ""){
@@ -128,6 +118,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+    }
+    
+    func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
+        // Check here
+        print("registered")
+        
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
@@ -290,7 +286,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
         }else if(type == "send_message" || type == "send_chat_message"){
             let vc : UIViewController? = self.topViewController()
             if(vc != nil){
-                if(vc?.isKind(of: SparksViewController.self))!{
+                if(vc?.isKind(of: FirstMapViewController.self))!{
+                    (vc as! FirstMapViewController).showChatBadge()
+                }else if(vc?.isKind(of: SparksViewController.self))!{
                     (vc as! SparksViewController).callChatListRest(showLoading: false)
                 }else if(vc?.isKind(of: MessagePageViewController.self))!{
                     if((vc as! MessagePageViewController).chatTypeMode == .Messages){
@@ -505,19 +503,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
                     
                     let data = res?.data
                     if(data?.name == nil || data?.name == ""){
+                        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                         self.goPage(name: "IntroViewController")
                     }else if(data?.birthdate == nil){
+                        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                         self.goPage(name: "IntroViewController")
                     }else if(data?.gender == nil){
+                        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                         self.goPage(name: "IntroViewController")
                     }else if(data?.avatar == nil || (data?.avatar?.contains("avatar.jpeg"))!){
+                        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                         self.goPage(name: "IntroViewController")
                     }else if(data?.selfie == nil || (data?.selfie?.contains("avatar.jpeg"))!){
+                        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                         self.goPage(name: "IntroViewController")
                     }else if(data?.bio == nil){
+                        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                         self.goPage(name: "IntroViewController")
                     }else if(data?.looking_for == nil){
+                        GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
                         self.goPage(name: "IntroViewController")
+                    }else if(OneSignal.getPermissionSubscriptionState().permissionStatus.status != .authorized){
+                        let viewController = self.window?.rootViewController?.storyboard?.instantiateViewController(withIdentifier: "NotificationPermissionViewController") as! NotificationPermissionViewController
+                        let nav = UINavigationController(rootViewController: viewController)
+                        nav.setNavigationBarHidden(true, animated: false)
+                        nav.setToolbarHidden(true, animated: false)
+                        self.window?.rootViewController = nav
+
+                    }else if(!self.hasLocPermission()){
+                        let viewController = self.window?.rootViewController?.storyboard?.instantiateViewController(withIdentifier: "LocationPermissionViewController") as! LocationPermissionViewController
+                        let nav = UINavigationController(rootViewController: viewController)
+                        nav.setNavigationBarHidden(true, animated: false)
+                        nav.setToolbarHidden(true, animated: false)
+                        self.window?.rootViewController = nav
                     }else {
                         self.goPage(name: "FirstMapViewController")
                     }
@@ -585,6 +603,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
                         self.goPage(name: "IntroViewController")
                     }else if(data?.looking_for == nil){
                         self.goPage(name: "IntroViewController")
+                    }else if(OneSignal.getPermissionSubscriptionState().permissionStatus.status != .authorized){
+                        let viewController = self.window?.rootViewController?.storyboard?.instantiateViewController(withIdentifier: "NotificationPermissionViewController") as! NotificationPermissionViewController
+                        let nav = UINavigationController(rootViewController: viewController)
+                        nav.setNavigationBarHidden(true, animated: false)
+                        nav.setToolbarHidden(true, animated: false)
+                        self.window?.rootViewController = nav
+                    }else if(!self.hasLocPermission()){
+                        let viewController = self.window?.rootViewController?.storyboard?.instantiateViewController(withIdentifier: "LocationPermissionViewController") as! LocationPermissionViewController
+                        let nav = UINavigationController(rootViewController: viewController)
+                        nav.setNavigationBarHidden(true, animated: false)
+                        nav.setToolbarHidden(true, animated: false)
+                        self.window?.rootViewController = nav
                     }else {
                         self.goPage(name: "FirstMapViewController")
                     }
@@ -651,6 +681,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
             
         }
         
+    }
+    
+    func hasLocPermission() -> Bool{
+        if CLLocationManager.locationServicesEnabled() {
+            switch CLLocationManager.authorizationStatus() {
+            case .notDetermined, .restricted, .denied:
+                print("No access")
+                return false
+            case .authorizedAlways, .authorizedWhenInUse:
+                print("Access")
+                return true
+            }
+        } else {
+            print("Location services are not enabled")
+            return false
+        }
     }
     
 }

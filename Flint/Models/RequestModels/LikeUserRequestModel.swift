@@ -29,7 +29,7 @@ class LikeUserRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME! , "token": TOKEN!, "target_user": TARGET_USER!]
+        return ["username": USERNAME! , "token": TOKEN!, "target": TARGET_USER!]
         
     }
     

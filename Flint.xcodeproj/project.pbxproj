@@ -21,6 +21,9 @@
 		108D35E220D8C9DA00D6BFEC /* TransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108D35E120D8C9DA00D6BFEC /* TransitionManager.swift */; };
 		108D35E420D9142E00D6BFEC /* CheckUpdateRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108D35E320D9142E00D6BFEC /* CheckUpdateRes.swift */; };
 		108D36A220DA5B1800D6BFEC /* PollRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108D36A120DA5B1800D6BFEC /* PollRes.swift */; };
+		109559D320E770F700BB8DF5 /* NotificationPermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109559D220E770F700BB8DF5 /* NotificationPermissionViewController.swift */; };
+		109559D520E7712000BB8DF5 /* LocationPermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109559D420E7712000BB8DF5 /* LocationPermissionViewController.swift */; };
+		1097DCA920E8F03300824E9B /* futura-lt-heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1097DCA820E8F03200824E9B /* futura-lt-heavy.ttf */; };
 		1098ABC020CFB18900A0138D /* UpdateOneSignalRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1098ABBF20CFB18900A0138D /* UpdateOneSignalRequestModel.swift */; };
 		1098ABC220CFB76600A0138D /* GetChatChannelRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1098ABC120CFB76600A0138D /* GetChatChannelRequestModel.swift */; };
 		1098ABC420CFB98F00A0138D /* GetChatChannelRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1098ABC320CFB98F00A0138D /* GetChatChannelRes.swift */; };
@@ -220,6 +223,9 @@
 		108D35E120D8C9DA00D6BFEC /* TransitionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionManager.swift; sourceTree = "<group>"; };
 		108D35E320D9142E00D6BFEC /* CheckUpdateRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckUpdateRes.swift; sourceTree = "<group>"; };
 		108D36A120DA5B1800D6BFEC /* PollRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollRes.swift; sourceTree = "<group>"; };
+		109559D220E770F700BB8DF5 /* NotificationPermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionViewController.swift; sourceTree = "<group>"; };
+		109559D420E7712000BB8DF5 /* LocationPermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPermissionViewController.swift; sourceTree = "<group>"; };
+		1097DCA820E8F03200824E9B /* futura-lt-heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "futura-lt-heavy.ttf"; sourceTree = "<group>"; };
 		1098ABBF20CFB18900A0138D /* UpdateOneSignalRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateOneSignalRequestModel.swift; sourceTree = "<group>"; };
 		1098ABC120CFB76600A0138D /* GetChatChannelRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatChannelRequestModel.swift; sourceTree = "<group>"; };
 		1098ABC320CFB98F00A0138D /* GetChatChannelRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatChannelRes.swift; sourceTree = "<group>"; };
@@ -608,6 +614,7 @@
 			children = (
 				1028C88820E3962A00BE328C /* Header.h */,
 				11F013DB207385CF001FCBE3 /* map_style.json */,
+				1097DCA820E8F03200824E9B /* futura-lt-heavy.ttf */,
 				1067EBE120C2B5790045B103 /* Futura_heavy.ttf */,
 				1176DA8D209DB5A5006D1366 /* onesignal_default_sound.wav */,
 				1176DA8A209DB117006D1366 /* loading.json */,
@@ -679,6 +686,8 @@
 				11F013BA207384D6001FCBE3 /* XViewController.swift */,
 				11F013BB207384D6001FCBE3 /* ProfilePicViewController.swift */,
 				11F013BC207384D6001FCBE3 /* SelfiTrustViewController.swift */,
+				109559D220E770F700BB8DF5 /* NotificationPermissionViewController.swift */,
+				109559D420E7712000BB8DF5 /* LocationPermissionViewController.swift */,
 			);
 			path = ProfileCreation;
 			sourceTree = "<group>";
@@ -902,6 +911,7 @@
 				1067EBE220C2B57C0045B103 /* Futura_heavy.ttf in Resources */,
 				1199C63520814DD9002754AC /* SendingStatusCollectionViewCell.xib in Resources */,
 				111F6118207629A200E3B464 /* DescriptionPageCollectionViewCell.xib in Resources */,
+				1097DCA920E8F03300824E9B /* futura-lt-heavy.ttf in Resources */,
 				11F013DA2073854B001FCBE3 /* IntroCollectionViewCell.xib in Resources */,
 				1199C69B208F0E5F002754AC /* SparksTableViewCell.xib in Resources */,
 			);
@@ -1125,6 +1135,7 @@
 				1199C62E20814DD9002754AC /* TimeSeparatorCollectionViewCell.swift in Sources */,
 				11F6E948207C94B300DCCF6E /* MatchPartyPeopleRequestModel.swift in Sources */,
 				1199C6522085F9B4002754AC /* RegisterRes.swift in Sources */,
+				109559D320E770F700BB8DF5 /* NotificationPermissionViewController.swift in Sources */,
 				1199C68E208E0A7A002754AC /* ChatItem.swift in Sources */,
 				1199C63420814DD9002754AC /* SendingStatusCollectionViewCell.swift in Sources */,
 				1199C69D20905AAD002754AC /* ChatListRes.swift in Sources */,
@@ -1149,6 +1160,7 @@
 				11F6E942207C93CC00DCCF6E /* ReportUserRequestModel.swift in Sources */,
 				11F6E93C207C932600DCCF6E /* SuperlikeForInviteRequestModel.swift in Sources */,
 				1199C674208C78C8002754AC /* SearchInLocationRequestModel.swift in Sources */,
+				109559D520E7712000BB8DF5 /* LocationPermissionViewController.swift in Sources */,
 				11F013D3207384D7001FCBE3 /* MainProfileViewController.swift in Sources */,
 				1199C62D20814DD9002754AC /* TimeSeparatorPresenter.swift in Sources */,
 				1176DA6B20949FEE006D1366 /* CreateChannelRequestModel.swift in Sources */,

@@ -34,6 +34,8 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
     
     @IBOutlet var cancelButton: UIButton!
     
+    @IBOutlet var shadowView: UIView!
+    
     var locationManager : CLLocationManager = CLLocationManager()
     
     var myInvites : [MyInvites] = [MyInvites]()
@@ -145,6 +147,12 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
         invitationButton.layer.shadowOpacity = 1.0
         invitationButton.layer.masksToBounds = false
         
+        
+        shadowView.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        shadowView.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        shadowView.layer.shadowOpacity = 1.0
+        shadowView.layer.masksToBounds = false
+        
         self.showInviteBadge(num: 0)
         for v in self.messageButton.subviews {
             v.isUserInteractionEnabled = true
@@ -152,13 +160,18 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
         }
 
         Timer.scheduledTimer(timeInterval: 600 , target: self, selector: #selector(callGetMyInvitesRest), userInfo: nil, repeats: true)
+
         
-        Timer.scheduledTimer(timeInterval: 2 , target: self, selector: #selector(showAll), userInfo: nil, repeats: false)
+        if(locationManager.location != nil){
+            let center = CLLocationCoordinate2D(latitude: (self.locationManager.location?.coordinate.latitude)!, longitude: (self.locationManager.location?.coordinate.longitude)!)
+            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))
+            self.mapView.setRegion(region, animated: true)
+        }
     }
     
     
     override func viewDidAppear(_ animated: Bool) {
-//        configureView()
+
         GlobalFields.setAnalytics("FirstMapViewController")
         OneSignal.idsAvailable({(_ userId, _ pushToken) in
             GlobalFields.oneSignalId = userId
@@ -170,9 +183,9 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
         self.navigationController?.delegate = self
         if(self.locationManager.location != nil ){
             let center = CLLocationCoordinate2D(latitude: (self.locationManager.location?.coordinate.latitude)!, longitude: (self.locationManager.location?.coordinate.longitude)!)
-            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))
+
             self.updateLocationServer(locCor: center)
-            self.mapView.setRegion(region, animated: true)
+
             for an in self.mapView.annotations{
                 if(an is MyAnnotation){
                     if((an as! MyAnnotation).identifier == "myPosition"){
@@ -184,23 +197,17 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
             marker.coordinate = (self.locationManager.location?.coordinate)!
             marker.identifier = "myPosition"
             mapView.addAnnotation(marker)
-//            var annotations : [MKAnnotation] = self.mapView.clusterManager.annotations
-//            annotations.append(marker)
-//            self.mapView.showAnnotations(annotations, animated: true)
-            self.mapView.fitAll()
+
         }else{
-            //TODO error bayad bede k locationeto roshan kon nadaram
-//            self.mapView.showAnnotations(self.mapView.annotations, animated: true)
-            self.mapView.fitAll()
+
         }
-//        self.showChatBadge()
         if(!GlobalFields.defaults.bool(forKey: "showChatBadge")){
             self.hideChatBadge()
         }else{
             self.showChatBadge()
         }
         
-        self.showInviteBadge(num: 0)
+        self.updateInviteBadge()
         for v in self.messageButton.subviews {
             v.isUserInteractionEnabled = true
             v.addGestureRecognizer(UITapGestureRecognizer(target: self, action:  #selector (self.sendMessage(_:))))
@@ -270,14 +277,29 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
             self.ownerImageButton.alpha = 0
             self.aboutLastNightView.alpha = 0
             self.whoAcceptedLabel.alpha = 0
+            self.inviteTitle.alpha = 0
+            self.inviteNumber.alpha = 0
+            self.invitePosition.alpha = 0
+            self.inviteTime.alpha = 0
+            self.cancelButton.alpha = 0
             self.mapView.frame.origin.y = 96 * self.view.frame.height / 667
             self.mapView.frame.size.height = self.view.frame.height - self.mapView.frame.origin.y
             self.centerMapButton.alpha = 1
             self.centerMapButton.isEnabled = true
+            self.directionButton.alpha = 0
+            shadowView.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+            shadowView.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+            shadowView.layer.shadowOpacity = 1.0
+            shadowView.layer.masksToBounds = false
             
         }else if(type == .GoDate){
             
+            shadowView.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+            shadowView.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+            shadowView.layer.shadowOpacity = 0.0
+            shadowView.layer.masksToBounds = true
             self.messageButton.alpha = 1
+            self.showInviteBadge(num: 0)
             self.ownerImageButton.alpha = 1
             self.invitationAwating.alpha = 0
             self.invitationButton.alpha = 0
@@ -304,6 +326,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
             self.getInviteInfo(inv: inv!)
             self.centerMapButton.alpha = 0
             self.centerMapButton.isEnabled = false
+            self.updateInviteBadge()
             
         }else if(type == .NormalMap){
             
@@ -318,6 +341,16 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
             self.mapView.frame.size.height = self.view.frame.height - self.mapView.frame.origin.y
             self.centerMapButton.alpha = 1
             self.centerMapButton.isEnabled = true
+            self.directionButton.alpha = 0
+            self.inviteTitle.alpha = 0
+            self.inviteNumber.alpha = 0
+            self.invitePosition.alpha = 0
+            self.inviteTime.alpha = 0
+            self.cancelButton.alpha = 0
+            shadowView.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+            shadowView.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+            shadowView.layer.shadowOpacity = 1.0
+            shadowView.layer.masksToBounds = false
             
         }else if(type == .AboutLastNight){
             
@@ -332,6 +365,16 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
             self.mapView.frame.size.height = self.view.frame.height - self.mapView.frame.origin.y
             self.centerMapButton.alpha = 1
             self.centerMapButton.isEnabled = true
+            self.directionButton.alpha = 0
+            shadowView.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+            shadowView.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+            shadowView.layer.shadowOpacity = 1.0
+            shadowView.layer.masksToBounds = false
+            self.inviteTitle.alpha = 0
+            self.inviteNumber.alpha = 0
+            self.invitePosition.alpha = 0
+            self.inviteTime.alpha = 0
+            self.cancelButton.alpha = 0
             
         }
         
@@ -339,6 +382,10 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
         if(isThereOtherInvite && self.ownInvite != nil){
             self.otherInviteButton.frame.origin.y = self.mapView.frame.origin.y
             self.otherInviteButton.alpha = 1
+            shadowView.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+            shadowView.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+            shadowView.layer.shadowOpacity = 0.0
+            shadowView.layer.masksToBounds = true
         }else{
             self.otherInviteButton.frame.origin.y = self.mapView.frame.origin.y
             self.otherInviteButton.alpha = 0
@@ -378,6 +425,10 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
         self.inviteTitle.textColor = UIColor.white
         self.inviteTitle.layer.cornerRadius = self.inviteTitle.frame.height / 2
         self.inviteTitle.alpha = 1
+        self.inviteNumber.alpha = 1
+        self.invitePosition.alpha = 1
+        self.inviteTime.alpha = 1
+        self.cancelButton.alpha = 1
         GlobalFields.inviteMoodColor = col
         self.ownerImageButton.normalBorderColor = col
         
@@ -919,14 +970,16 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
     
     func updateInviteBadge(){
         var invID : Int?
-        if(ownInvite != nil && (ownInvite?.status)! >= 5){
+        if(ownInvite != nil && (ownInvite?.status)! >= 4){
             invID = self.ownInvite!.invite_id
-        }else if(otherInvite != nil && (otherInvite?.status)! >= 5){
+        }else if(otherInvite != nil && (otherInvite?.status)! >= 4){
             invID = self.otherInvite!.invite_id
         }
         if(invID == nil){
+            self.showInviteBadge(num: 0)
             return
         }
+        self.showInviteBadge(num: 0)
         var badgeNumber = 0
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
@@ -981,14 +1034,14 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
             return
         }
         
-        request(URLs.getConfirmListForInvite, method: .post , parameters: GetConfirmListForInviteRequestModel.init(invite: (inv?.id)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetUserListForInviteRes]>>) in
+        request(URLs.getConfirmListForInvite, method: .post , parameters: GetConfirmListForInviteRequestModel.init(invite: (inv?.invite_id)!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<[GetUserListForInviteRes]>>) in
             
             let res = response.result.value
             
             if(res?.status == "success"){
                 let vC : MainInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainInvitationViewController"))! as! MainInvitationViewController
                 
-                vC.inviteID = inv?.id
+                vC.inviteID = inv?.invite_id
                 vC.viewType = .AfterParty
                 
                 if(res?.data == nil){
@@ -1076,7 +1129,8 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
                 }
                 var identifier : String = ""
                 for p in self.myInvites {
-                    if(p.latitude == annotation.coordinate.latitude.description && p.longitude == annotation.coordinate.longitude.description){
+
+                    if(p.latitude?.substring(to: .init(encodedOffset: 14)) == annotation.coordinate.latitude.description.substring(to: .init(encodedOffset: 14)) && p.longitude?.substring(to: .init(encodedOffset: 14)) == annotation.coordinate.longitude.description.substring(to: .init(encodedOffset: 14))){
                         identifier = (p.invite_id?.description) ?? (p.id?.description)!
                     }
                 }
@@ -1482,6 +1536,9 @@ extension UIButton {
         label.foregroundColor = filled ? UIColor.white.cgColor : color.cgColor
         label.backgroundColor = UIColor.clear.cgColor
         label.contentsScale = UIScreen.main.scale
+        if(number == "0"){
+            label.foregroundColor = filled ? UIColor.clear.cgColor : color.cgColor
+        }
         badge.addSublayer(label)
         if(number != "0"){
             objc_setAssociatedObject(self, &handle, badge, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)

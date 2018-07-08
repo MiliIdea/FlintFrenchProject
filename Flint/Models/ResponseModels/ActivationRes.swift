@@ -12,10 +12,14 @@ struct ActivationRes : Codable {
 
     let token : String?
     
+    let username : String?
+    
     
     enum CodingKeys: String, CodingKey {
         
         case token = "token"
+
+        case username = "username"
         
     }
     

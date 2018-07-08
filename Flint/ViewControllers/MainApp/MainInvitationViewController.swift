@@ -73,22 +73,10 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
         super.viewDidLoad()
         
         cancelInviteButton.alpha = 0
+        
         likeButton.alpha = 0
-        likeButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
-        likeButton.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
-        likeButton.layer.shadowOpacity = 1.0
-        likeButton.layer.masksToBounds = false
         
         dislikeButton.alpha = 0
-        dislikeButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
-        dislikeButton.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
-        dislikeButton.layer.shadowOpacity = 1.0
-        dislikeButton.layer.masksToBounds = false
-        
-        superLikeButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
-        superLikeButton.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
-        superLikeButton.layer.shadowOpacity = 1.0
-        superLikeButton.layer.masksToBounds = false
         
         okButton.alpha = 0
         
@@ -157,6 +145,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                 
             }
         }
+
         
     }
     
@@ -164,9 +153,9 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
         super.viewDidLayoutSubviews()
         self.inviteTitle.layer.cornerRadius = self.inviteTitle.frame.height / 2
         self.likeButton.frame.size.height = self.likeButton.frame.width
-        self.likeButton.layer.cornerRadius = self.inviteTitle.frame.height / 2
+//        self.likeButton.layer.cornerRadius = self.inviteTitle.frame.height / 2
         self.dislikeButton.frame.size.height = self.dislikeButton.frame.width
-        self.dislikeButton.layer.cornerRadius = self.dislikeButton.frame.height / 2
+//        self.dislikeButton.layer.cornerRadius = self.dislikeButton.frame.height / 2
         if(self.viewType == .AddPersonToInvite){
             self.inviteTitle.layer.backgroundColor = GlobalFields.inviteMoodColor?.cgColor
         }
@@ -236,7 +225,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             
             let w = Date.init(timeIntervalSince1970: TimeInterval((inviteInfo?.main?.exact_time)!))
             
-            self.inviteTime.text = w.toStringWithRelativeTime(strings : [.nowPast : "maintenant ",.secondsPast: "Maintenant",.minutesPast: "Maintenant"])
+            self.inviteTime.text = w.toStringWithRelativeTime(strings : [.nowPast : "maintenant",.secondsPast: "Maintenant",.minutesPast: "Maintenant"])
             
         }else{
             self.cancelInviteButton.alpha = 1
@@ -726,7 +715,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             
             cells.append(cell1)
             
-            if(user.avatar2 != nil && user.avatar2 != "" && user.avatar2 != "avatar.png"){
+            if(user.avatar2 != nil && user.avatar2 != "" && user.avatar2 != "avatar.png" && user.avatar2 != "img/avatar.jpeg"){
                 cells.append(cell1)
             }
             
@@ -743,18 +732,18 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                 if((user?.owner!.description)! == GlobalFields.ID.description){//TODO : loginResData bayad check beshe
                     //yani owner khodeshe bayad akse usero neshun
                     
-                    if(inviteInfo?.users![0].second_avatar != nil && inviteInfo?.users![0].second_avatar != "" && inviteInfo?.users![0].second_avatar != "avatar.png"){
+                    if(inviteInfo?.users![0].second_avatar != nil && inviteInfo?.users![0].second_avatar != "" && inviteInfo?.users![0].second_avatar != "avatar.png" && inviteInfo?.users![0].second_avatar != "img/avatar.jpeg"){
                         cells.append(cell1)
                     }
                 }else{
                     //owner khodesh nis
-                    if(user?.owner_second_avatar != nil && user?.owner_second_avatar != "" && user?.owner_second_avatar != "avatar.png"){
+                    if(user?.owner_second_avatar != nil && user?.owner_second_avatar != "" && user?.owner_second_avatar != "avatar.png" && user?.owner_second_avatar != "img/avatar.jpeg"){
                         cells.append(cell1)
                     }
                 }
             }else{
                 //party bashe
-                if(user?.owner_second_avatar != nil && user?.owner_second_avatar != "" && user?.owner_second_avatar != "avatar.png"){
+                if(user?.owner_second_avatar != nil && user?.owner_second_avatar != "" && user?.owner_second_avatar != "avatar.png" && user?.owner_second_avatar != "img/avatar.jpeg"){
                     cells.append(cell1)
                 }
             }
@@ -854,8 +843,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                 }
                 return cell1
             }else if(self.cells[indexPath.item] == "S"){
-                cell2.age.text = age.description
-                cell2.name.text = name
+                cell2.name.text = name ?? "" + ", " + age.description
                 cell2.distance.text = disDesc
                 cell2.bioText.text = bio
                 cell2.city.text = city
@@ -932,8 +920,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                 }
                 return cell1
             }else if(self.cells[indexPath.item] == "S"){
-                cell2.age.text = age?.description
-                cell2.name.text = user.name
+                cell2.name.text = user.name ?? "" + ", " + (age?.description)!
                 cell2.distance.text = disDesc
                 cell2.bioText.text = user.bio
                 cell2.city.text = ""

@@ -89,9 +89,9 @@ class ActivationCodeViewController: UIViewController, UITextFieldDelegate {
             let res = response.result.value
             l.disView()
             if(res?.status == "success"){
-                self.view.makeToast(res?.message)
+                self.view.makeToast(res?.message,position : .center)
             }else{
-                self.view.makeToast(res?.message)
+                self.view.makeToast(res?.message,position : .center)
             }
             
         }
@@ -124,6 +124,7 @@ class ActivationCodeViewController: UIViewController, UITextFieldDelegate {
             let res = response.result.value
             if(res?.status == "success"){
                 GlobalFields.TOKEN = res?.data?.token
+                GlobalFields.USERNAME = res?.data?.username
                 let vC : PasswordViewController = (self.storyboard?.instantiateViewController(withIdentifier: "PasswordViewController"))! as! PasswordViewController
                 if(self.isForgottenMode){
                     vC.isFromForgottenMode = true
@@ -133,7 +134,7 @@ class ActivationCodeViewController: UIViewController, UITextFieldDelegate {
                 }
                 self.navigationController?.pushViewController(vC, animated: true)
             }else{
-                self.view.makeToast(res?.message)
+                self.view.makeToast(res?.message ,position : .center)
             }
             
             

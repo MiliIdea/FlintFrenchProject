@@ -57,10 +57,12 @@ class TimeInvitationViewController: UIViewController {
         flintL.addGestureRecognizer(tap)
         
         if(isParty){
-            self.partyModeView.alpha = 1
-            self.datePicker.alpha = 0
-            self.tikButton.alpha = 1
-            self.rightNowPartyAct("")
+//            self.partyModeView.alpha = 1
+//            self.datePicker.alpha = 0
+//            self.tikButton.alpha = 1
+//            self.rightNowPartyAct("")
+            
+            self.partyModeView.alpha = 0
         }else{
             self.partyModeView.alpha = 0
         }
@@ -92,6 +94,9 @@ class TimeInvitationViewController: UIViewController {
         
         GlobalFields.inviteExactTime = Date().addingTimeInterval(Double(b.tag - 1) * 60.0 * 30.0)
         GlobalFields.inviteWhen = b.tag - 1
+        if(isParty && GlobalFields.inviteWhen != 0){
+            GlobalFields.inviteWhen = 7
+        }
         
         self.navigationController?.popViewController(animated: true)
         

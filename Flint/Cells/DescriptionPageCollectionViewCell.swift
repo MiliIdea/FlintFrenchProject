@@ -12,8 +12,6 @@ class DescriptionPageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var name: UILabel!
     
-    @IBOutlet weak var age: UILabel!
-    
     @IBOutlet weak var city: UILabel!
     
     @IBOutlet weak var bioText: UITextView!

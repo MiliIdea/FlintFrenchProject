@@ -11,6 +11,7 @@ import RangeSeekSlider
 import Alamofire
 import CodableAlamofire
 import McPicker
+import Toast_Swift
 
 class SettingsViewController: UIViewController ,UIScrollViewDelegate , RangeSeekSliderDelegate{
 
@@ -35,7 +36,7 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate , RangeSeek
     
     
     
-    
+    var picker : McPicker = McPicker.init(data: [["Un homme", "Une femme" ,"Les deux"]])
     var looking_for : Int = 0
     var new_pin_notif : Bool = false
     var lighter : Bool = false
@@ -85,9 +86,9 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate , RangeSeek
         
 //        self.lighter = self.SwHaveLighter.isOn
        
-        if(butSetMan.title(for: .normal) == "Homme"){
+        if(butSetMan.title(for: .normal) == "Un homme"){
             looking_for = 0
-        }else if(butSetMan.title(for: .normal) == "Femme"){
+        }else if(butSetMan.title(for: .normal) == "Une femme"){
             looking_for = 1
         }else if(butSetMan.title(for: .normal) == "Les deux"){
             looking_for = 2
@@ -129,20 +130,22 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate , RangeSeek
         if(sender is String){
             if(sender as! String == "0"){
                 
-                butSetMan.setTitle("Homme", for: .normal)
+                butSetMan.setTitle("Un homme", for: .normal)
+                picker.pickerSelectRowsForComponents = [0 : [0 : false]]
                 
             }else if(sender as! String == "1" ){
                 
-                butSetMan.setTitle("Femme", for: .normal)
-                
+                butSetMan.setTitle("Une femme", for: .normal)
+                picker.pickerSelectRowsForComponents = [0 : [1 : false]]
                 
             }else if(sender as! String == "2" ){
                 
                 butSetMan.setTitle("Les deux", for: .normal)
-                
+                picker.pickerSelectRowsForComponents = [0 : [2 : false]]
             }
         }else{
-            McPicker.show(data: [["Homme", "Femme" ,"Les deux"]]) {  [weak self] (selections: [Int : String]) -> Void in
+            
+            picker.show() {  [weak self] (selections: [Int : String]) -> Void in
                 
                 if let male = selections[0] {
                     self?.butSetMan.setTitle(male, for: .normal)

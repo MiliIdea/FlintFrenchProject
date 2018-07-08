@@ -81,7 +81,7 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
         
         self.emojiTextView.frame.origin.y = self.pinImage.frame.origin.y + ((6 / 168) * self.pinImage.frame.height)
         
-        
+        self.emojiTextView.tintColor = UIColor.clear
     }
     
     @objc func tapFunction(sender:UITapGestureRecognizer) {

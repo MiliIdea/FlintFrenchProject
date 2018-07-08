@@ -85,6 +85,9 @@ class DemoChatViewController: BaseChatViewController {
                     print(GlobalFields.ID.description)
                     if((data["senderId"] as! Int).description != GlobalFields.ID.description){
                         self.dataSource.addIncommingTextMessage(message)
+                        if(self.chatID != nil){
+                            self.seenMessage(chat: self.chatID!)
+                        }
                     }
                     
                 }
@@ -92,6 +95,14 @@ class DemoChatViewController: BaseChatViewController {
         })
         
         pusher?.connect()
+    }
+    
+    func seenMessage(chat : Int){
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        request(URLs.seenMessage, method: .post , parameters: SeenMessageRequestModel.init(chat: chat).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+            
+        }
     }
     
     var chatInputPresenter: BasicChatInputBarPresenter!

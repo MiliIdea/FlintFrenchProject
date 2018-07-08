@@ -44,7 +44,7 @@ class ForgottenIDViewController: UIViewController {
                 vC.userNameFromForgotten = self.inputField.text!
                 self.navigationController?.pushViewController(vC, animated: true)
             }else{
-                self.view.makeToast(res?.message)
+                self.view.makeToast(res?.message,position : .center)
             }
             
         }

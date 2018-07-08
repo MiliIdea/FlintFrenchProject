@@ -15,7 +15,7 @@ import IGRPhotoTweaks
 import Kingfisher
 import McPicker
 
-class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,GalleryControllerDelegate , IGRPhotoTweakViewControllerDelegate{
+class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,GalleryControllerDelegate , IGRPhotoTweakViewControllerDelegate {
 
     
     @IBOutlet weak var img1Button: UIButton!
@@ -32,12 +32,14 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
     var isUploadedImg2 : Bool = false
     var whichImg : Int = 0
     var cropVC = IGRPhotoTweakViewController()
-    
+    var picker : McPicker?
     var l : LoadingViewController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        picker = McPicker.init(data: [["Un Homme", "Une Femme"]])
+        
         self.scroller.delegate = self
         scroller.contentSize = CGSize(width: self.view.frame.width, height: 811 * self.view.frame.height / 667)
         viewInScrollView.frame.origin.y = 0
@@ -47,10 +49,13 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
         self.myStudies.text = GlobalFields.userInfo.STUDIES
         if(GlobalFields.userInfo.GENDER == "male"){
             self.sex.setTitle("Un Homme", for: .normal)
+            picker?.pickerSelectRowsForComponents = [0 :[0 : false]]
         }else if(GlobalFields.userInfo.GENDER == "female"){
             self.sex.setTitle("Une Femme", for: .normal)
+            picker?.pickerSelectRowsForComponents = [0 :[1 : false]]
         }else{
             self.sex.setTitle("", for: .normal)
+            picker?.pickerSelectRowsForComponents = [0 :[0 : false]]
         }
         
         self.img1Button.kf.setBackgroundImage(with: URL(string: URLs.imgServer + (GlobalFields.userInfo.AVATAR)!), for: .normal)
@@ -155,7 +160,7 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
     
     @IBAction func selectGender(_ sender: Any) {
         
-        McPicker.show(data: [["Un Homme", "Une Femme"]]) {  [weak self] (selections: [Int : String]) -> Void in
+        picker?.show(){ [weak self] (selections: [Int : String]) -> Void in
             if let male = selections[0] {
                 self?.sex.setTitle(male, for: .normal)
             }

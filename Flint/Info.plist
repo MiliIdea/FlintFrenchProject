@@ -26,7 +26,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>16</string>
+	<string>18</string>
 	<key>FacebookAppID</key>
 	<string>185022978807760</string>
 	<key>FacebookDisplayName</key>
@@ -59,6 +59,7 @@
 	<string>This app requires access to photo library</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>futura-lt-heavy.ttf</string>
 		<string>Futura_heavy.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>

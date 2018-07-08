@@ -22,10 +22,18 @@ class ProfilePicViewController: UIViewController ,GalleryControllerDelegate , IG
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        uploadButton.titleLabel?.numberOfLines = 1
+        uploadButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        uploadButton.titleLabel?.minimumScaleFactor = 0.5
         uploadButton.setTitle("Choisissez une image", for: .normal)
         // Do any additional setup after loading the view.
     }
 
+    override func viewDidLayoutSubviews() {
+        uploadButton.titleLabel?.numberOfLines = 1
+        uploadButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        uploadButton.titleLabel?.minimumScaleFactor = 0.5
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -81,7 +89,7 @@ class ProfilePicViewController: UIViewController ,GalleryControllerDelegate , IG
                     let res = response.result.value
                     
                     if(res?.status == "success"){
-//                        GlobalFields.userInfo.AVATAR = res?.data?.name
+                        GlobalFields.userInfo.AVATAR = res?.data?.name
 //                        self.uploadButton.setTitle("SUIVANT", for: .normal)
                         let vC : SelfiTrustViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SelfiTrustViewController"))! as! SelfiTrustViewController
                         self.navigationController?.pushViewController(vC, animated: true)

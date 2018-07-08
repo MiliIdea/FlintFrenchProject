@@ -49,23 +49,23 @@ class WarningReconfirmViewController: UIViewController ,CLLocationManagerDelegat
         self.inviteTitle.layer.backgroundColor = GlobalFields.getTypeColor(type: (invite?.type)!).cgColor
         
         
-        inviteNumber.text = ((invite?.people_count?.description) ?? "1") + " person"
+        inviteNumber.text = ((invite?.people_count?.description) ?? "1") + " personne"
         
         // distance calculation
         let myLoc = locationManager.location?.distance(from: CLLocation.init(latitude: Double((invite!.latitude)!)!, longitude: Double((invite!.longitude)!)!))
         
         var disDesc : String = ""
         if(Double((myLoc?.description) ?? "0")! / 1000 < 1){
-            disDesc = "less than 1km"
+            disDesc = "à moins d’1km"
         }else{
-            disDesc = "about " + String(Double((myLoc?.description)!)! / 1000).split(separator: ".")[0] + "km"
+            disDesc = "à " + String(Double((myLoc?.description)!)! / 1000).split(separator: ".")[0] + "km"
         }
         
         invitePosition.text = disDesc
         
         let w = Date.init(timeIntervalSince1970: TimeInterval((invite?.exact_time)!))
         
-        self.inviteTime.text = w.toStringWithRelativeTime(strings : [.nowPast: "right now"])
+        self.inviteTime.text = w.toStringWithRelativeTime(strings : [.nowPast : "maintenant",.secondsPast: "Maintenant",.minutesPast: "Maintenant"])
     }
     
     
@@ -73,16 +73,19 @@ class WarningReconfirmViewController: UIViewController ,CLLocationManagerDelegat
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         
+        let l = GlobalFields.showLoading(vc: self)
         request(URLs.reconfirmInvitation, method: .post , parameters: ConfirmUserForInviteRequestModel.init(invite: invite?.invite_id?.description).getParams(), headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
             
             let res = response.result.value
-            
+            l.disView()
             if(res?.status == "success"){
                 
                 //inja k reconfirm mishe bayad bere tu map ba dokmeye messaging
                 self.navigationController?.popViewController(animated: true)
                 GlobalFields.defaults.set(true, forKey: "reconfirm")
                 
+            }else{
+                self.view.makeToast(res?.message)
             }
             
         }
@@ -93,15 +96,17 @@ class WarningReconfirmViewController: UIViewController ,CLLocationManagerDelegat
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
 
-        
+        let l = GlobalFields.showLoading(vc: self)
         request(URLs.cancelInvite, method: .post , parameters: CancelInviteRequestModel.init(invite: (invite?.invite_id!)!).getParams(), headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
             
             let res = response.result.value
-            
+            l.disView()
             if(res?.status == "success"){
                 
                 self.navigationController?.popViewController(animated: true)
                 
+            }else{
+                self.view.makeToast(res?.message)
             }
             
         }

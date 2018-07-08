@@ -47,7 +47,7 @@ class RegisterRequestModel {
     
     func getParams() -> [String: Any]{
         
-        return ["username": USERNAME! , "password": PASSWORD! , "id" : ID! , "tag" : TAG! , "country" : COUNTRY! , "device" : DEVICE! , "os_version" : OS_VERSION!]
+        return ["username": USERNAME! , "password": PASSWORD! , "id" : ID ?? "" , "tag" : TAG! , "country" : COUNTRY! , "device" : DEVICE! , "os_version" : OS_VERSION!]
         
     }
     

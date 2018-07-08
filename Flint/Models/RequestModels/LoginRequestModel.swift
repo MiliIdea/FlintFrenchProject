@@ -20,7 +20,6 @@ class LoginRequestModel {
         
         self.COUNTRY = "FR"
         
-        OneSignal.registerForPushNotifications()
         OneSignal.idsAvailable({(_ userId, _ pushToken) in
             self.ID = userId
         })

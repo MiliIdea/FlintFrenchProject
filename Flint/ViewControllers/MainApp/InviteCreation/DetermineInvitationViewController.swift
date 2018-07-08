@@ -114,23 +114,30 @@ class DetermineInvitationViewController: UIViewController {
             activityNameLabel.text = GlobalFields.inviteTitle
         }
         
-        if(GlobalFields.inviteExactTime != nil  && !self.isParty){
+        // && !self.isParty
+        if(GlobalFields.inviteExactTime != nil ){
            
             let w = GlobalFields.inviteExactTime
             
             self.timeButton.setTitle(w?.toStringWithRelativeTime(strings : [.nowPast: "Maintenant" ,.secondsPast: "Maintenant",.minutesPast: "Maintenant"] ), for: .normal)
             
-        }else{
-            GlobalFields.inviteExactTime = Date()
-            GlobalFields.inviteWhen = 0
         }
+//        else{
+//            GlobalFields.inviteExactTime = Date()
+//            GlobalFields.inviteWhen = 0
+//        }
         
         if(GlobalFields.inviteExactTime != nil && self.isParty){
 //            let dateFormatterGet : DateFormatter = DateFormatter()
 //            dateFormatterGet.dateFormat = "dd MMM yyyy - HH:mm"
 //            self.timeButton.setTitle(dateFormatterGet.string(from: GlobalFields.inviteExactTime!), for: .normal)
             self.timeButton.setTitle((GlobalFields.inviteExactTime)?.toStringWithRelativeTime(strings : [.nowPast: "Maintenant" ,.secondsPast: "Maintenant" ,.minutesPast: "Maintenant"]), for: .normal)
-        }else{
+        }
+//        else{
+//            GlobalFields.inviteExactTime = Date()
+//            GlobalFields.inviteWhen = 0
+//        }
+        if(GlobalFields.inviteExactTime == nil){
             GlobalFields.inviteExactTime = Date()
             GlobalFields.inviteWhen = 0
         }
@@ -336,6 +343,8 @@ class DetermineInvitationViewController: UIViewController {
     }
     
     @IBAction func backToSetTitle(_ sender: Any) {
+        GlobalFields.inviteExactTime = nil
+        GlobalFields.inviteMood = ""
         self.navigationController?.popViewController(animated: true)
     }
     

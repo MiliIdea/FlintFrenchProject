@@ -28,7 +28,7 @@ class FlintAnnotation: UIView {
         if(pinImage.split(separator: "-")[0] == "S"){
             label.frame = CGRect(x:self.frame.width / 8 ,y: self.frame.height * 1 / 6 ,width: self.frame.width * 6 / 8,height: self.frame.height * 1 / 2)
         }else{
-            label.frame = CGRect(x:self.frame.width / 8 ,y: 0 ,width: self.frame.width * 6 / 8,height: self.frame.height * 1 / 2)
+            label.frame = CGRect(x:self.frame.width / 8 ,y: self.frame.height * 1 / 12 ,width: self.frame.width * 6 / 8,height: self.frame.height * 1 / 2)
         }
         
         label.backgroundColor = UIColor.clear
@@ -36,8 +36,6 @@ class FlintAnnotation: UIView {
         label.font = label.font.withSize(50)
         label.adjustsFontSizeToFitWidth = true
         if(emoji != "💥"){
-            
-//            label.text = String(UnicodeScalar(Int(emoji.split(separator: "{")[1].split(separator: "}")[0], radix: 16)!)!)
             label.text = emoji
         }else{
             label.text = "💥"

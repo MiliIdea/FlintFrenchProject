@@ -158,7 +158,7 @@ class SparksViewController: UIViewController , UITableViewDelegate , UITableView
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 145 / 675 * self.view.frame.height
+        return 113 / 675 * self.view.frame.height
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
