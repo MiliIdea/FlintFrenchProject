@@ -230,7 +230,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
         
     }
     
-    func handleNotification(_ data:Dictionary<AnyHashable, Any>) {
+    func handleNotification(_ data:Dictionary<AnyHashable, Any>){
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         print(data)
@@ -249,6 +249,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
                             
                             let res2 = response2.result.value
                             if(res2?.status == "success"){
+                                GlobalFields.defaults.set(true, forKey: inv)
                                 let vc : UIViewController? = self.topViewController()
                                 if(vc != nil){
                                     if(vc?.isKind(of: FirstMapViewController.self))!{
@@ -323,22 +324,59 @@ class AppDelegate: UIResponder, UIApplicationDelegate , OSPermissionObserver, OS
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        // Update the app interface directly.
-        print(notification.request.content.userInfo)
-        let a : [AnyHashable : Any] = ["mili" : "haminjuri "]
-        do {
-            if(notification.request.content.userInfo as? [String : String] == ["mili" : "haminjuri "]){
-                print("its ok")
-                completionHandler(.init(rawValue: 0))
-            }else{
-                completionHandler([.alert, .badge, .sound])
+        let data = notification.request.content.userInfo
+
+        if(data["custom"] == nil){
+            completionHandler([.alert, .badge, .sound])
+        }else if((data["custom"]! as! [AnyHashable : Any])["a"] == nil){
+            completionHandler([.alert, .badge, .sound])
+        }else if(((data["custom"]! as! [AnyHashable : Any])["a"]! as! [AnyHashable : Any])["type"] == nil){
+            completionHandler([.alert, .badge, .sound])
+        }else{
+            self.handleNotification2(((data["custom"]! as! [AnyHashable : Any])["a"]! as! [AnyHashable : Any])){res in
+                
+                if(res){
+                    completionHandler([.alert, .badge, .sound])
+                }else{
+                    completionHandler([])
+                }
+                
             }
-        }catch {
-            
-            completionHandler([])
-            print(error)
         }
+        
     }
+    
+    
+    func handleNotification2(_ data:Dictionary<AnyHashable, Any> , completionHandler: @escaping (Bool) -> Void){
+        
+        let inv = "\(data["invite"] ?? "")"
+        if(inv != "" && GlobalFields.defaults.bool(forKey: inv)){
+            completionHandler(false)
+        }else{
+            completionHandler(true)
+        }
+        //baraye chato ham bayad doros konam
+
+        let type = "\(data["type"] ?? "")"
+        print(type)
+        if(type == "send_message" || type == "send_chat_message"){
+            let vc : UIViewController? = self.topViewController()
+            if(vc != nil){
+                if(vc?.isKind(of: FirstMapViewController.self))!{
+                    completionHandler(true)
+                }else if(vc?.isKind(of: SparksViewController.self))!{
+                    completionHandler(true)
+                }else if(vc?.isKind(of: MessagePageViewController.self))!{
+                    if((vc as! MessagePageViewController).chatTypeMode != .Invites){
+                        completionHandler(false)
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    
     
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,

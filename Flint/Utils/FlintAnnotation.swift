@@ -26,9 +26,11 @@ class FlintAnnotation: UIView {
     public func setCharacteristics(pinImage : String , emoji : String){
         
         if(pinImage.split(separator: "-")[0] == "S"){
-            label.frame = CGRect(x:self.frame.width / 8 ,y: self.frame.height * 1 / 6 ,width: self.frame.width * 6 / 8,height: self.frame.height * 1 / 2)
+            label.frame = CGRect(x:self.frame.width / 8 ,y: self.frame.height * 1 / 6 ,width: self.frame.width * 6 / 8,height: self.frame.height * 6 / 14)
+        }else if(pinImage != "N-P"){
+            label.frame = CGRect(x:self.frame.width / 8 ,y: 0 ,width: self.frame.width * 6 / 8,height: self.frame.height * 6 / 14)
         }else{
-            label.frame = CGRect(x:self.frame.width / 8 ,y: self.frame.height * 1 / 12 ,width: self.frame.width * 6 / 8,height: self.frame.height * 1 / 2)
+            label.frame = CGRect(x:self.frame.width / 8 ,y: self.frame.height * 1 / 12 ,width: self.frame.width * 6 / 8,height: self.frame.height * 6 / 14)
         }
         
         label.backgroundColor = UIColor.clear

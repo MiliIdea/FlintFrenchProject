@@ -130,7 +130,7 @@ class SignUpViewController: UIViewController {
     }
     
     func setMobileNumberMode(){
-        self.preNumLabel.alpha = 0
+        self.preNumLabel.alpha = 1
         self.titleNumbOrEmail.text = "Entrez votre numéro de téléphone"
         self.inputField.placeholder = "Numéro téléphone"
         self.inputField.keyboardType = UIKeyboardType.numberPad

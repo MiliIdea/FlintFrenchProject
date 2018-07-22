@@ -21,9 +21,10 @@ class BirthDateViewController: UIViewController {
         super.viewDidLoad()
 
         datePicker.maximumDate = Date()
-        setDate("")
+//        setDate("")
         datePicker.backgroundColor = UIColor.white
         datePicker.alpha = 0
+        buttonPresenter.setTitle("", for: .normal)
         // Do any additional setup after loading the view.
     }
     
@@ -45,6 +46,10 @@ class BirthDateViewController: UIViewController {
     
     @IBAction func next(_ sender: Any) {
         
+        if(buttonPresenter.title(for: .normal) == ""){
+            self.view.makeToast("s'il vous plaît définir la date de naissance")
+            return
+        }
         print(Int(self.datePicker.date.timeIntervalSince1970))
         GlobalFields.userInfo.BIRTHDATE = Int(self.datePicker.date.timeIntervalSince1970)
         

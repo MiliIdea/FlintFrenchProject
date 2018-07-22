@@ -102,7 +102,7 @@ class WarningReconfirmViewController: UIViewController ,CLLocationManagerDelegat
             let res = response.result.value
             l.disView()
             if(res?.status == "success"){
-                
+                GlobalFields.defaults.set(true, forKey: (self.invite?.invite_id?.description)!)
                 self.navigationController?.popViewController(animated: true)
                 
             }else{

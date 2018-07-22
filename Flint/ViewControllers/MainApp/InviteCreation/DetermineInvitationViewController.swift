@@ -46,15 +46,18 @@ class DetermineInvitationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        GlobalFields.inviteMood = nil
+        GlobalFields.inviteExactTime = Date()
         print(GlobalFields.defaults.bool(forKey: "isntShowCompletionPopup"))
-        if(!GlobalFields.defaults.bool(forKey: "isntShowCompletionPopup")){
-            GlobalFields.defaults.set(true, forKey: "isntShowCompletionPopup")
-            let vC : CompletionViewController = (self.storyboard?.instantiateViewController(withIdentifier: "CompletionViewController"))! as! CompletionViewController
-            addChildViewController(vC)
-            vC.view.frame = self.view.frame
-            self.view.addSubview(vC.view)
-            vC.didMove(toParentViewController: self)
-        }
+//        if(!GlobalFields.defaults.bool(forKey: "isntShowCompletionPopup")){
+//            GlobalFields.defaults.set(true, forKey: "isntShowCompletionPopup")
+//            let vC : CompletionViewController = (self.storyboard?.instantiateViewController(withIdentifier: "CompletionViewController"))! as! CompletionViewController
+//            addChildViewController(vC)
+//            vC.view.frame = self.view.frame
+//            self.view.addSubview(vC.view)
+//            vC.didMove(toParentViewController: self)
+//        }
+
         
         self.positionButton.setTitle("Votre position", for: .normal)
         
@@ -63,6 +66,7 @@ class DetermineInvitationViewController: UIViewController {
         }
         if(isParty){
             //button party mood bayad namayesh dade beshe
+            GlobalFields.inviteWhen = 7
             self.partyButton.alpha = 1
             GlobalFields.inviteMood = "Party"
             GlobalFields.inviteMoodColor = UIColor("#0035CF")
@@ -73,12 +77,21 @@ class DetermineInvitationViewController: UIViewController {
             GlobalFields.inviteNumber = 2
             self.numberOfPersonButton.setTitle((GlobalFields.inviteNumber?.description)! + " person", for: .normal)
         }else{
+            GlobalFields.inviteWhen = 0
             self.partyButton.alpha = 0
             GlobalFields.inviteNumber = 1
             numberOfPersonIcon.alpha = 0
             numberOfPersonLabel.alpha = 0
             numberOfPersonButton.alpha = 0
             numberOfPersonButton.isEnabled = false
+            let button1 : UIButton = self.view.viewWithTag(2) as! UIButton
+            let button2 : UIButton = self.view.viewWithTag(1) as! UIButton
+            let button3 : UIButton = self.view.viewWithTag(3) as! UIButton
+            button1.backgroundColor = UIColor( "#FFC000")
+            button2.backgroundColor = UIColor("#FFBEBE")
+            button3.backgroundColor = UIColor("#D0C2A3")
+            GlobalFields.inviteMood = "Friendly"
+            GlobalFields.inviteMoodColor = UIColor("#FFC000")
         }
 
         
@@ -119,31 +132,24 @@ class DetermineInvitationViewController: UIViewController {
            
             let w = GlobalFields.inviteExactTime
             
-            self.timeButton.setTitle(w?.toStringWithRelativeTime(strings : [.nowPast: "Maintenant" ,.secondsPast: "Maintenant",.minutesPast: "Maintenant"] ), for: .normal)
+            self.timeButton.setTitle(w?.toStringWithRelativeTime(strings : [.nowPast: "Maintenant" ,.secondsPast: "Maintenant",.minutesPast: "ll y a X minutes" , .oneHourPast : "ll y a 1 heure"] ), for: .normal)
             
         }
-//        else{
-//            GlobalFields.inviteExactTime = Date()
-//            GlobalFields.inviteWhen = 0
-//        }
-        
+
         if(GlobalFields.inviteExactTime != nil && self.isParty){
 //            let dateFormatterGet : DateFormatter = DateFormatter()
 //            dateFormatterGet.dateFormat = "dd MMM yyyy - HH:mm"
 //            self.timeButton.setTitle(dateFormatterGet.string(from: GlobalFields.inviteExactTime!), for: .normal)
-            self.timeButton.setTitle((GlobalFields.inviteExactTime)?.toStringWithRelativeTime(strings : [.nowPast: "Maintenant" ,.secondsPast: "Maintenant" ,.minutesPast: "Maintenant"]), for: .normal)
+            self.timeButton.setTitle((GlobalFields.inviteExactTime)?.toStringWithRelativeTime(strings : [.nowPast: "Maintenant" ,.secondsPast: "Maintenant",.minutesPast: "ll y a X minutes" , .oneHourPast : "ll y a 1 heure"]), for: .normal)
         }
-//        else{
-//            GlobalFields.inviteExactTime = Date()
-//            GlobalFields.inviteWhen = 0
-//        }
+
         if(GlobalFields.inviteExactTime == nil){
             GlobalFields.inviteExactTime = Date()
             GlobalFields.inviteWhen = 0
         }
         
         if(GlobalFields.inviteNumber != nil){
-            self.numberOfPersonButton.setTitle((GlobalFields.inviteNumber?.description)! + " person", for: .normal)
+            self.numberOfPersonButton.setTitle((GlobalFields.inviteNumber?.description)! + " personne", for: .normal)
         }
         
     }
@@ -158,9 +164,9 @@ class DetermineInvitationViewController: UIViewController {
     }
     
     @IBAction func goSetTime(_ sender: Any) {
-        let vC : TimeInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "TimeInvitationViewController"))! as! TimeInvitationViewController
-        vC.isParty = self.isParty
-        self.navigationController?.pushViewController(vC, animated: true)
+//        let vC : TimeInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "TimeInvitationViewController"))! as! TimeInvitationViewController
+//        vC.isParty = self.isParty
+//        self.navigationController?.pushViewController(vC, animated: true)
     }
     
     @IBAction func goSetNumOfPersons(_ sender: Any) {
@@ -339,7 +345,7 @@ class DetermineInvitationViewController: UIViewController {
         
         GlobalFields.inviteAddress = self.resultAdderess
         
-        
+        self.positionButton.setTitle(GlobalFields.inviteAddress, for: .normal)
     }
     
     @IBAction func backToSetTitle(_ sender: Any) {

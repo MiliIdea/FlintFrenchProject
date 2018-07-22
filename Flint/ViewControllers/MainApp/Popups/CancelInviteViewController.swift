@@ -35,6 +35,7 @@ class CancelInviteViewController: UIViewController {
             l.disView()
             let res = response.result.value
             if(res?.status == "success"){
+                GlobalFields.defaults.set(true, forKey: (self.inviteID?.description)!)
                 (self.parent as! MainInvitationViewController).ok("")
                 self.view.endEditing(true)
                 self.view.removeFromSuperview()

@@ -268,7 +268,7 @@ class SparksViewController: UIViewController , UITableViewDelegate , UITableView
         }else{
             //in chatList
             let vC : MessagePageViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MessagePageViewController"))! as! MessagePageViewController
-            let c : Chats = self.chatList[indexPath.item]
+            let c : Chats = self.chatList[indexPath.item - self.messageList.count]
             vC.type = c.type!
             vC.chatTypeMode = .Chats
             vC.isSendedOneMessage = false

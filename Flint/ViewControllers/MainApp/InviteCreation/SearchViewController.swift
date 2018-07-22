@@ -221,14 +221,13 @@ class SearchViewController: UIViewController ,MKMapViewDelegate{
                     let pm = placemarks![0]
 
                     var addressString : String = ""
-//                    if pm.postalCode != nil {
-//                        addressString = addressString + pm.postalCode! + ", "
-//                    }
-//
-//                    if pm.country != nil {
-//                        addressString = addressString + pm.country! + ", "
-//                    }
                     
+                    if pm.postalCode != nil {
+                        addressString = addressString + pm.postalCode! + ", "
+                    }
+                    if pm.country != nil {
+                        addressString = addressString + pm.country! + ", "
+                    }
                     if pm.locality != nil {
                         addressString = addressString + pm.locality! + ", "
                     }
@@ -239,8 +238,6 @@ class SearchViewController: UIViewController ,MKMapViewDelegate{
                         addressString = addressString + pm.subLocality! 
                     }
 
-                    
-                    
                     self.resultAdderess = addressString
                     
                     self.setAddressAndLocation()

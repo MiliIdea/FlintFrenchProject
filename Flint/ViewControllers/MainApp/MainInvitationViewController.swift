@@ -245,14 +245,14 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                 type = 1
             }
             
-            if(!GlobalFields.defaults.bool(forKey: "EqualityViewController") && type == 1){
-                GlobalFields.defaults.set(true, forKey: "EqualityViewController")
-                let vC : EqualityViewController = (self.storyboard?.instantiateViewController(withIdentifier: "EqualityViewController"))! as! EqualityViewController
-                addChildViewController(vC)
-                vC.view.frame = self.view.frame
-                self.view.addSubview(vC.view)
-                vC.didMove(toParentViewController: self)
-            }
+//            if(!GlobalFields.defaults.bool(forKey: "EqualityViewController") && type == 1){
+//                GlobalFields.defaults.set(true, forKey: "EqualityViewController")
+//                let vC : EqualityViewController = (self.storyboard?.instantiateViewController(withIdentifier: "EqualityViewController"))! as! EqualityViewController
+//                addChildViewController(vC)
+//                vC.view.frame = self.view.frame
+//                self.view.addSubview(vC.view)
+//                vC.didMove(toParentViewController: self)
+//            }
             self.inviteTitle.text = GlobalFields.inviteTitle
             self.inviteTitle.layer.borderWidth = 1
             self.inviteTitle.layer.borderColor = GlobalFields.inviteMoodColor?.cgColor
@@ -518,6 +518,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                 let res = response.result.value
                 
                 if(res?.status == "success"){
+                    GlobalFields.defaults.set(true, forKey: (GlobalFields.myInvite?.invite_id?.description)!)
                     self.navigationController?.popViewController(animated: true)
                 }
                 
@@ -671,7 +672,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
             let res = response.result.value
             
             if(res?.status == "success"){
-                
+                GlobalFields.defaults.set(true, forKey: (self.inviteID?.description)!)
                 self.navigationController?.popViewController(animated: true)
                 
             }
@@ -853,6 +854,9 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                 cell3.distanceLabel.text = disDesc
                 var i = 1
                 for u in (inviteInfo?.users)!{
+                    if(u.user?.description == GlobalFields.ID.description){
+                        continue
+                    }
                     (cell3.viewWithTag(i) as! UIImageView).kf.setImage(with: URL.init(string: URLs.imgServer + u.avatar!))
                     (cell3.viewWithTag(i) as! UIImageView).alpha = 1
                     (cell3.viewWithTag(i) as! UIImageView).layer.cornerRadius = (cell3.viewWithTag(i) as! UIImageView).frame.height / 2
@@ -868,6 +872,9 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                 var i = 1
                 for u in (inviteInfo?.users)!{
                     if(i > 6){
+                        if(u.user?.description == GlobalFields.ID.description){
+                            continue
+                        }
                         (cell3.viewWithTag(i - 6) as! UIImageView).kf.setImage(with: URL.init(string: URLs.imgServer + u.avatar!))
                         (cell3.viewWithTag(i - 6) as! UIImageView).alpha = 1
                         (cell3.viewWithTag(i - 6) as! UIImageView).layer.cornerRadius = (cell3.viewWithTag(i - 6) as! UIImageView).frame.height / 2

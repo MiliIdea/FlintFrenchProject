@@ -24,6 +24,8 @@ class DemoChatViewController: BaseChatViewController {
     
     var isSendedOneMessage : Bool = false
     
+    var isSendedThreeMessage : Int = 0
+    
     // MARK : -Pusher Channel
     var channelName : String?         ///////////CHAT MODE
     var options : PusherClientOptions?
@@ -50,7 +52,17 @@ class DemoChatViewController: BaseChatViewController {
         self.messagesSelector.delegate = self
         self.chatItemsDecorator = DemoChatItemsDecorator(messagesSelector: self.messagesSelector)
         
-        if(isSendedOneMessage && isOneTextMode == .Invites){
+        if(isSendedThreeMessage >= 3 && isOneTextMode == .Invites){
+            self.chatInputPresenter.chatInputBar.alpha = 0
+            self.view.endEditing(true)
+        }
+        
+        if(isSendedOneMessage && isOneTextMode == .Pendings){
+            self.chatInputPresenter.chatInputBar.alpha = 0
+            self.view.endEditing(true)
+        }
+        
+        if(isSendedOneMessage && isOneTextMode == .Messages){
             self.chatInputPresenter.chatInputBar.alpha = 0
             self.view.endEditing(true)
         }
@@ -109,8 +121,8 @@ class DemoChatViewController: BaseChatViewController {
     override func createChatInputView() -> UIView {
         let chatInputView = ChatInputBar.loadNib()
         var appearance = ChatInputBarAppearance()
-        appearance.sendButtonAppearance.title = NSLocalizedString("Send", comment: "")
-        appearance.textInputAppearance.placeholderText = NSLocalizedString("Type a message", comment: "")
+        appearance.sendButtonAppearance.title = NSLocalizedString("Envoyer", comment: "")
+        appearance.textInputAppearance.placeholderText = NSLocalizedString("Écrire un message", comment: "")
         self.chatInputPresenter = BasicChatInputBarPresenter(chatInputBar: chatInputView, chatInputItems: self.createChatInputItems(), chatInputBarAppearance: appearance)
         chatInputView.maxCharactersCount = 1000
         return chatInputView
@@ -157,8 +169,6 @@ class DemoChatViewController: BaseChatViewController {
                 (self?.parent as! MessagePageViewController).backLabel.alpha = 0
             }
             if(self?.isOneTextMode == .Invites){
-                self?.chatInputPresenter.chatInputBar.alpha = 0
-                self?.view.endEditing(true)
                 //inja bayad service rest call she
                 self?.sendInviteMessageModeToServer(txt: text)
             }else if(self?.isOneTextMode == .Messages || self?.isOneTextMode == .Pendings){
@@ -178,9 +188,12 @@ class DemoChatViewController: BaseChatViewController {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         request(URLs.sendInviteMessage, method: .post , parameters: SendInviteMessageRequestModel.init(TEXT: txt, INVITE: self.inviteID!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
-            
-            let res = response.result.value
-            (self.parent as! MessagePageViewController).botBackButton.alpha = 1
+            self.isSendedThreeMessage += 1
+            if(self.isSendedThreeMessage >= 3){
+                self.chatInputPresenter.chatInputBar.alpha = 0
+                self.view.endEditing(true)
+                (self.parent as! MessagePageViewController).botBackButton.alpha = 1
+            }
             
         }
     }

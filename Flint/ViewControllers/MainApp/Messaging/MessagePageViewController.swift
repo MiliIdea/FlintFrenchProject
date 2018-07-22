@@ -40,6 +40,8 @@ class MessagePageViewController: UIViewController {
     
     var isSendedOneMessage : Bool = false
     
+    var isSendedThreeMessage : Bool = false
+    
     var type : Int = 1 //type Business , lets see ,friendly          ///////////ALL MODES
     
     var inviteID : Int?          ///////////INVITE MODE , MESSAGE MODE , PENDING MODE
@@ -153,13 +155,16 @@ class MessagePageViewController: UIViewController {
     
     func callGetInviteInfo(){
         
-        
         let dataSource = DemoChatDataSource(count: 0, pageSize: 50)
         let controller = DemoChatViewController()
         controller.dataSource = dataSource
         controller.isOneTextMode = .Invites
         self.image.kf.setImage(with: URL.init(string: URLs.imgServer + (imageAddress ?? "")))
         controller.type = type
+        if(isSendedThreeMessage){//ag ye message ferestade shode bud
+            //TODO servicesh bayad call beshe tu inja
+            controller.isSendedThreeMessage = 3
+        }
         if(isSendedOneMessage){//ag ye message ferestade shode bud
             //TODO servicesh bayad call beshe tu inja
             controller.isSendedOneMessage = true
@@ -190,7 +195,7 @@ class MessagePageViewController: UIViewController {
                         if(res2?.data != nil || res2?.data?.count == 0){
                             self.backLabel.alpha = 1
                             if(res?.data?.main?.type == 1){
-                                self.backLabel.text = "Donnez plus d’information quand au lieu, horaire et conditions dans lesquelles se tiendront la soirée. Ce message unique sera envoyé à tous les invités ayant accepté l’invitation. Il est très fortement conseillé de leur donner votre numéro de téléphone"
+                                self.backLabel.text = "Renseignez vos invités quant au lieu, horaire et conditions dans lesquelles se tiendront la soirée."
                             }else{
                                 self.backLabel.text = "Décrivez vous, vos habits ainsi que l’endroit où vous l’attendez dans un seul message."
                             }
@@ -200,13 +205,23 @@ class MessagePageViewController: UIViewController {
                             if(res2?.data?.count != 0){
                                 self.backLabel.alpha = 0
                             }
+                            var myMessage : Int = 0
                             for m in (res2?.data)! {
                                 if((m.user?.description)! == GlobalFields.ID.description){
+                                    myMessage += 1
+                                    if(myMessage >= 3){
+                                        controller.isSendedThreeMessage = 3
+                                        self.botBackButton.alpha = 1
+                                    }
+                                    controller.isSendedThreeMessage = myMessage
                                     controller.isSendedOneMessage = true
-                                    self.botBackButton.alpha = 1
                                     controller.dataSource.addTextMessage(m.text!)
                                 }else{
-                                    controller.dataSource.addIncommingTextMessage(m.text!)
+                                    if(self.type == 1){
+                                        controller.dataSource.addIncommingTextMessage(m.name! + " : " + m.text!)
+                                    }else{
+                                        controller.dataSource.addIncommingTextMessage(m.text!)
+                                    }
                                     if(m.seen_at == 0){
                                         self.seenMessageInvite(m : m)
                                     }

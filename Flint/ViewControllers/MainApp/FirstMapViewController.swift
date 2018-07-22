@@ -22,7 +22,7 @@ import TransitionTreasury
 import OneSignal
 
 
-class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigationControllerDelegate{
+class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigationControllerDelegate , CLLocationManagerDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
     
@@ -107,6 +107,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
         
         // Fallback on earlier versions
         locationManager.requestAlwaysAuthorization()
+        locationManager.delegate = self
         
         configureTileOverlay()
         
@@ -185,7 +186,8 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
             let center = CLLocationCoordinate2D(latitude: (self.locationManager.location?.coordinate.latitude)!, longitude: (self.locationManager.location?.coordinate.longitude)!)
 
             self.updateLocationServer(locCor: center)
-
+            GlobalFields.myLocation = center
+            
             for an in self.mapView.annotations{
                 if(an is MyAnnotation){
                     if((an as! MyAnnotation).identifier == "myPosition"){
@@ -439,9 +441,9 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
         
         var disDesc : String = ""
         if(Double((myLoc?.description) ?? "0")! / 1000 < 1){
-            disDesc = "less than 1km"
+            disDesc = "à moins d’1km"
         }else{
-            disDesc = "about " + String(Double((myLoc?.description)!)! / 1000).split(separator: ".")[0] + "km"
+            disDesc = "à " + String(Double((myLoc?.description)!)! / 1000).split(separator: ".")[0] + "km"
         }
         
         invitePosition.text = disDesc
@@ -449,7 +451,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
         self.directionButton.alpha = 1
         
         let w = inv?.main?.exact_time
-        self.inviteTime.text = Date.init(timeIntervalSince1970: Double(w!)).toStringWithRelativeTime(strings : [.nowPast: "right now"])
+        self.inviteTime.text = Date.init(timeIntervalSince1970: Double(w!)).toStringWithRelativeTime(strings : [.nowPast: "Maintenant" ,.secondsPast: "Maintenant",.minutesPast: "ll y a X minutes" , .oneHourPast : "ll y a 1 heure"])
 
         
     }
@@ -510,6 +512,10 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
                     self.callGetMyInvitesRest()
                 }
             }else if(res?.errCode == -1){
+                if(self.l != nil){
+                    self.l?.disView()
+                    self.l = nil
+                }
                 GlobalFields.USERNAME = ""
                 GlobalFields.TOKEN = ""
                 GlobalFields.PASSWORD = nil
@@ -658,20 +664,21 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
         }else if(invite.status == 5){
             self.cancelButton.alpha = 1
             self.cancelButton.isEnabled = true
-            if(!GlobalFields.defaults.bool(forKey: "isntShowJustYouPopup") && invite.type == 1){
-                GlobalFields.defaults.set(true, forKey: "isntShowJustYouPopup")
-                let vC : JustYouViewController = (self.storyboard?.instantiateViewController(withIdentifier: "JustYouViewController"))! as! JustYouViewController
-                addChildViewController(vC)
-                vC.view.frame = self.view.frame
-                self.view.addSubview(vC.view)
-                vC.didMove(toParentViewController: self)
-            }else if(!GlobalFields.defaults.bool(forKey: "dontShowEquality") && invite.type != 1){
-                let vC : EqualityPaymentViewController = (self.storyboard?.instantiateViewController(withIdentifier: "EqualityPaymentViewController"))! as! EqualityPaymentViewController
-                addChildViewController(vC)
-                vC.view.frame = self.view.frame
-                self.view.addSubview(vC.view)
-                vC.didMove(toParentViewController: self)
-            }
+//            if(!GlobalFields.defaults.bool(forKey: "isntShowJustYouPopup") && invite.type == 1){
+//                GlobalFields.defaults.set(true, forKey: "isntShowJustYouPopup")
+//                let vC : JustYouViewController = (self.storyboard?.instantiateViewController(withIdentifier: "JustYouViewController"))! as! JustYouViewController
+//                addChildViewController(vC)
+//                vC.view.frame = self.view.frame
+//                self.view.addSubview(vC.view)
+//                vC.didMove(toParentViewController: self)
+//            }
+//            else if(!GlobalFields.defaults.bool(forKey: "dontShowEquality") && invite.type != 1){
+//                let vC : EqualityPaymentViewController = (self.storyboard?.instantiateViewController(withIdentifier: "EqualityPaymentViewController"))! as! EqualityPaymentViewController
+//                addChildViewController(vC)
+//                vC.view.frame = self.view.frame
+//                self.view.addSubview(vC.view)
+//                vC.didMove(toParentViewController: self)
+//            }
             
             
             GlobalFields.defaults.set(false, forKey: "reconfirm")
@@ -750,6 +757,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
             
             let res = response.result.value
             if(res?.status == "success"){
+                GlobalFields.defaults.set(true, forKey: invite.description)
                 self.viewDidAppear(false)
             }
             
@@ -831,7 +839,9 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
                 
                 self.navigationController?.pushViewController(vC, animated: true)
             }else{
-                self.view.makeToast("users not found!")
+                //users not found!
+                self.view.makeToast("Aucun utilisateur disponible actuellement.")
+                self.callCancelDate(invite: inv.invite_id!)
             }
         }
         
@@ -947,6 +957,16 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
                 "comgooglemaps://?saddr=&daddr=\(lat),\(long)&directionsmode=driving")! )
             
         } else {
+            
+            let coordinate = CLLocationCoordinate2DMake(CLLocationDegrees.init(Double(lat)!), CLLocationDegrees.init(Double(long)!))
+            let region = MKCoordinateRegionMake(coordinate, MKCoordinateSpanMake(0.01, 0.02))
+            let placemark = MKPlacemark(coordinate: coordinate, addressDictionary: nil)
+            let mapItem = MKMapItem(placemark: placemark)
+            let options = [
+                MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: region.center),
+                MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: region.span)]
+//            mapItem.name = theLocationName
+            mapItem.openInMaps(launchOptions: options)
             NSLog("Can't use comgooglemaps://");
         }
     
@@ -1066,6 +1086,32 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
     // MARK: -mapView Delegate
     
     
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        if(self.locationManager.location != nil ){
+            let center = CLLocationCoordinate2D(latitude: (self.locationManager.location?.coordinate.latitude)!, longitude: (self.locationManager.location?.coordinate.longitude)!)
+            
+            self.updateLocationServer(locCor: center)
+            GlobalFields.myLocation = center
+            
+            for an in self.mapView.annotations{
+                if(an is MyAnnotation){
+                    if((an as! MyAnnotation).identifier == "myPosition"){
+                        self.mapView.removeAnnotation(an)
+                    }
+                }
+            }
+            let marker = MyAnnotation()
+            marker.coordinate = (self.locationManager.location?.coordinate)!
+            marker.identifier = "myPosition"
+            mapView.addAnnotation(marker)
+            
+        }
+        
+    }
+    
+    
+    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
         print(annotation)
@@ -1130,7 +1176,8 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
                 var identifier : String = ""
                 for p in self.myInvites {
 
-                    if(p.latitude?.substring(to: .init(encodedOffset: 14)) == annotation.coordinate.latitude.description.substring(to: .init(encodedOffset: 14)) && p.longitude?.substring(to: .init(encodedOffset: 14)) == annotation.coordinate.longitude.description.substring(to: .init(encodedOffset: 14))){
+                    print(annotation)
+                    if(annotation != nil && p.latitude?.substring(to: .init(encodedOffset: 9)) == annotation.coordinate.latitude.description.substring(to: .init(encodedOffset: 9)) && p.longitude?.substring(to: .init(encodedOffset: 9)) == annotation.coordinate.longitude.description.substring(to: .init(encodedOffset: 9))){
                         identifier = (p.invite_id?.description) ?? (p.id?.description)!
                     }
                 }

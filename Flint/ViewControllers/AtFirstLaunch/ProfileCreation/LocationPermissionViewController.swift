@@ -135,4 +135,13 @@ class LocationPermissionViewController: UIViewController , CLLocationManagerDele
     }
 
     
+    @IBAction func back(_ sender: Any) {
+        
+        self.navigationController?.popViewController(animated: true)
+        
+    }
+    
+    
+    
+    
 }

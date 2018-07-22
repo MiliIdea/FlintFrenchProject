@@ -26,7 +26,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>18</string>
+	<string>19</string>
 	<key>FacebookAppID</key>
 	<string>185022978807760</string>
 	<key>FacebookDisplayName</key>
@@ -50,11 +50,11 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires access to camera</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>detect beacons around you!</string>
+	<string> Votre position permet de créer des invitations et d’en recevoir mais n’est pas visible par les autres utilisateurs. </string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string></string>
+	<string> Votre position permet de créer des invitations et d’en recevoir mais n’est pas visible par les autres utilisateurs. </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>detect beacons around you!</string>
+	<string> Votre position permet de créer des invitations et d’en recevoir mais n’est pas visible par les autres utilisateurs. </string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app requires access to photo library</string>
 	<key>UIAppFonts</key>

@@ -79,7 +79,7 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
         
         self.emojiTextView.frame.origin.x = self.pinImage.frame.origin.x + (self.pinImage.frame.width / 2) - (self.emojiTextView.frame.width / 2)
         
-        self.emojiTextView.frame.origin.y = self.pinImage.frame.origin.y + ((6 / 168) * self.pinImage.frame.height)
+        self.emojiTextView.frame.origin.y = self.pinImage.frame.origin.y + ((8 / 168) * self.pinImage.frame.height)
         
         self.emojiTextView.tintColor = UIColor.clear
     }
@@ -108,7 +108,7 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
     @IBAction func next(_ sender: Any) {
         
         if(emojiTextView.text == ""){
-            self.view.makeToast("pls choose emoji")
+            self.view.makeToast("Veuillez sélectionner un emoji.")
             return
         }
         
@@ -139,7 +139,9 @@ class SetEmojiViewController: UIViewController ,ISEmojiViewDelegate{
 //           diff = Int(Date().timeIntervalSince(date) / (60 * 30))
 //        }
         if(GlobalFields.inviteLocation == nil){
-            self.view.makeToast("pls check your location settings")
+//            self.view.makeToast("pls check your location settings")
+            self.view.makeToast("s'il vous plaît vérifier vos paramètres de localisation")
+            
         }else{
             request(URLs.createInvitation, method: .post , parameters: CreateInvitationRequestModel.init(type: type, lat: (GlobalFields.inviteLocation?.latitude.description)!, long: (GlobalFields.inviteLocation?.longitude.description)!, peopleCount: GlobalFields.inviteNumber!, exactTime: Int(date.timeIntervalSince1970), when: GlobalFields.inviteWhen!, emoji: GlobalFields.inviteEmoji!, title: GlobalFields.inviteTitle!).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<CreateInviteRes>>) in
                 

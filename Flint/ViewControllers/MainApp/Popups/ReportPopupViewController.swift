@@ -64,8 +64,8 @@ class ReportPopupViewController: UIViewController {
     
     
     @IBAction func deleteMatch(_ sender: Any) {
-        rUSureView.alpha = 0
-        reportView.alpha = 1
+        rUSureView.alpha = 1
+        reportView.alpha = 0
         tagReport = 5
         tagMessage = (sender as! UIButton).title(for: .normal)!
     }
@@ -94,5 +94,9 @@ class ReportPopupViewController: UIViewController {
         self.removeFromParentViewController()
     }
     
-
+    @IBAction func dismissView(_ sender: Any) {
+        self.view.removeFromSuperview()
+        self.removeFromParentViewController()
+    }
+    
 }

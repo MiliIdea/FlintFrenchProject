@@ -63,8 +63,9 @@ class ActivityTypeViewController: UIViewController  , UITextFieldDelegate{
     
     
     @IBAction func next(_ sender: Any) {
-        if(emoji == "" || self.activityNameTextView.text == ""){
-            self.view.makeToast("pls fill all fields")
+        if(self.activityNameTextView.text == ""){
+//            self.view.makeToast("pls fill all fields")
+            self.view.makeToast("Merci de compléter tous les champs")
             return
         }else if((self.activityNameTextView.text?.count)! > 30){
             return

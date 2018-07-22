@@ -152,7 +152,8 @@ public class MessageViewModelDefaultBuilder {
 
     static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.locale = Locale.current
+//        formatter.locale = Locale.current
+        formatter.locale = Locale(identifier: "fr")
         formatter.dateStyle = .none
         formatter.timeStyle = .short
         return formatter

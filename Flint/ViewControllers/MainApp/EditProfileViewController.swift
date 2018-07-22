@@ -192,8 +192,8 @@ class EditProfileViewController: UIViewController ,UIScrollViewDelegate ,Gallery
         }else{
             gen = "female"
         }
-        
-        request(URLs.editUserInfo, method: .post , parameters: EditUserInformationRequestModel.init(name: nil, birthdate: nil, gender: gen, bio: self.bioText.text, avatar: GlobalFields.userInfo.AVATAR, secAvatar: GlobalFields.userInfo.SECOND_AVATAR, lookingFor: nil, selfie: nil, job: self.myJob.text, studies: self.myStudies.text).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+        print(GlobalFields.userInfo.LOOKING_FOR)
+        request(URLs.editUserInfo, method: .post , parameters: EditUserInformationRequestModel.init(name: nil, birthdate: nil, gender: gen, bio: self.bioText.text, avatar: GlobalFields.userInfo.AVATAR, secAvatar: GlobalFields.userInfo.SECOND_AVATAR, lookingFor: GlobalFields.userInfo.LOOKING_FOR, selfie: nil, job: self.myJob.text, studies: self.myStudies.text).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
             self.l?.disView()
             let res = response.result.value
             if(res?.status == "success"){

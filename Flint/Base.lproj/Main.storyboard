@@ -2120,7 +2120,7 @@
                             </label>
                             <view alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YQf-mj-Ifw">
                                 <rect key="frame" x="1" y="583" width="375" height="84"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b2k-Dc-szo">
                                         <rect key="frame" x="15" y="18" width="118" height="49"/>
@@ -2255,13 +2255,13 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iha-MG-IX9">
-                                <rect key="frame" x="153" y="25" width="74" height="74"/>
+                                <rect key="frame" x="151" y="25" width="74" height="74"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sWF-Fa-F6n">
-                                <rect key="frame" x="15" y="47" width="30" height="18"/>
+                                <rect key="frame" x="16" y="36" width="27" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="Groupe 1429">
+                                <state key="normal" image="back">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
@@ -2285,14 +2285,14 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Décrivez vous, vos habits ainsi que l’endroit où vous l’attendez dans un seul message." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="6" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Twm-k6-T8J">
-                                <rect key="frame" x="56" y="207" width="269" height="215"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="56" y="167" width="269" height="215"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="14"/>
                                 <color key="textColor" red="0.082352941176470587" green="0.082352941176470587" blue="0.082352941176470587" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IoC-Z3-2tq">
-                                <rect key="frame" x="69" y="120" width="242" height="21"/>
+                                <rect key="frame" x="0.0" y="107" width="375" height="34"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -2482,7 +2482,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cRA-20-Ily" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-32320.799999999999" y="1771.6641679160421"/>
+            <point key="canvasLocation" x="-32255" y="1315"/>
         </scene>
         <!--Set Emoji View Controller-->
         <scene sceneID="Pp8-zb-q9X">
@@ -3577,17 +3577,18 @@ jour !</string>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uUR-hX-eCB">
                                 <rect key="frame" x="38" y="42" width="82" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="return">
+                                <state key="normal" title="Retour">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                                 <connections>
                                     <action selector="back:" destination="Mkt-eA-1ZB" eventType="touchUpInside" id="Hyq-Fh-4LP"/>
-                                    <action selector="back:" destination="WsG-Ur-kMk" eventType="touchUpInside" id="lfF-iB-xOG"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Vérifiez que votre geste est bien conforme à celui montré sur le précédent exemple" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="j9C-oO-JdS">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="j9C-oO-JdS">
                                 <rect key="frame" x="7" y="82" width="360" height="103"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <string key="text">La vérification de votre profil est obligatoire.
+Pour ce faire veuillez prendre un Selfie en faisant le geste montré ci-dessous</string>
                                 <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="15"/>
                                 <color key="textColor" red="0.20784313730000001" green="0.20784313730000001" blue="0.20784313730000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -3636,7 +3637,7 @@ jour !</string>
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="profile" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xFK-Ba-Cvk">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Profil" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xFK-Ba-Cvk">
                                 <rect key="frame" x="91" y="42" width="192" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="20"/>
@@ -3654,7 +3655,7 @@ jour !</string>
                                 <rect key="frame" x="38" y="42" width="82" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="13"/>
-                                <state key="normal" title="return">
+                                <state key="normal" title="Retour">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                                 <connections>
@@ -3664,7 +3665,7 @@ jour !</string>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="vRv-uQ-Umc">
                                 <rect key="frame" x="8" y="103" width="360" height="68"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                                <string key="text">Décrivez vous, c’est tout aussi 
+                                <string key="text">Décrivez-vous, c’est tout aussi 
 important qu’une photo !</string>
                                 <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="19"/>
                                 <color key="textColor" red="0.20784313730000001" green="0.20784313730000001" blue="0.20784313730000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -3674,8 +3675,8 @@ important qu’une photo !</string>
                                 <rect key="frame" x="0.0" y="200" width="375" height="268"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Bio" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e10-04-S5B">
-                                        <rect key="frame" x="22" y="8" width="42" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="À propos" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e10-04-S5B">
+                                        <rect key="frame" x="22" y="8" width="171" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="20"/>
                                         <color key="textColor" red="0.50588235294117645" green="0.50588235294117645" blue="0.50588235294117645" alpha="1" colorSpace="calibratedRGB"/>
@@ -3729,7 +3730,7 @@ important qu’une photo !</string>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-40734" y="2050"/>
+            <point key="canvasLocation" x="-40735.199999999997" y="2049.6251874062968"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="86Q-hV-Xg0">
@@ -3744,7 +3745,7 @@ important qu’une photo !</string>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.99607843137254903" green="0.66274509803921566" blue="0.6588235294117647" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="30"/>
-                                <state key="normal" title="Hommes">
+                                <state key="normal" title="Des Hommes">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
@@ -3756,7 +3757,7 @@ important qu’une photo !</string>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.99607843139999996" green="0.66274509800000003" blue="0.6588235294" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="30"/>
-                                <state key="normal" title=" Femmes">
+                                <state key="normal" title=" Des Femmes">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
@@ -3852,6 +3853,13 @@ important qu’une photo !</string>
                                 <rect key="frame" x="0.0" y="171" width="375" height="64"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
+                                    <textField opaque="NO" contentMode="scaleAspectFit" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Numéro téléphone " adjustsFontForContentSizeCategory="YES" minimumFontSize="11" translatesAutoresizingMaskIntoConstraints="NO" id="AI6-E9-GZf">
+                                        <rect key="frame" x="89" y="17" width="245" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                        <color key="textColor" red="0.72549019609999998" green="0.72549019609999998" blue="0.72549019609999998" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="20"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="+33" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="5CB-wa-E2V">
                                         <rect key="frame" x="46" y="19" width="40" height="27"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -3859,13 +3867,6 @@ important qu’une photo !</string>
                                         <color key="textColor" red="0.72549019609999998" green="0.72549019609999998" blue="0.72549019609999998" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textField opaque="NO" contentMode="scaleAspectFit" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Numéro téléphone " adjustsFontForContentSizeCategory="YES" minimumFontSize="11" translatesAutoresizingMaskIntoConstraints="NO" id="AI6-E9-GZf">
-                                        <rect key="frame" x="89" y="17" width="245" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                        <color key="textColor" red="0.72549019609999998" green="0.72549019609999998" blue="0.72549019609999998" alpha="1" colorSpace="calibratedRGB"/>
-                                        <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="20"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
@@ -4496,7 +4497,7 @@ important qu’une photo !</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Zzb-ws-E9C" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-31680.799999999999" y="1771.6641679160421"/>
+            <point key="canvasLocation" x="-31615" y="1315"/>
         </scene>
         <!--Equality Payment View Controller-->
         <scene sceneID="Q2P-Td-Ikq">
@@ -4577,7 +4578,7 @@ Chacun paye sa part.</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d3X-BP-maC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-31056.799999999999" y="1771.6641679160421"/>
+            <point key="canvasLocation" x="-30991" y="1315"/>
         </scene>
         <!--One AtA Time View Controller-->
         <scene sceneID="1os-S9-2wC">
@@ -4659,7 +4660,7 @@ Chacun paye sa part.</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cf4-Y2-k7M" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-31056.799999999999" y="2425.6371814092954"/>
+            <point key="canvasLocation" x="-30991" y="1969"/>
         </scene>
         <!--Report Popup View Controller-->
         <scene sceneID="fCm-6w-PoW">
@@ -4695,7 +4696,7 @@ Chacun paye sa part.</string>
                                                 <rect key="frame" x="20" y="238" width="291" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="20"/>
-                                                <state key="normal" title="Retourner à la discution">
+                                                <state key="normal" title="Retourner à la discussion">
                                                     <color key="titleColor" red="0.41176470590000003" green="0.41176470590000003" blue="0.41176470590000003" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
                                                 <connections>
@@ -4814,7 +4815,6 @@ Chacun paye sa part.</string>
                                                 </state>
                                                 <connections>
                                                     <action selector="deleteMatch:" destination="f1g-Ou-Mfs" eventType="touchUpInside" id="eda-lF-SqK"/>
-                                                    <action selector="report:" destination="f1g-Ou-Mfs" eventType="touchUpInside" id="9kL-6T-I2j"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -4833,6 +4833,10 @@ Chacun paye sa part.</string>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" red="0.3411764706" green="0.3411764706" blue="0.3411764706" alpha="1" colorSpace="calibratedRGB"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="htE-MF-Lgu" appends="YES" id="V7M-Ob-anj"/>
+                                </connections>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="54P-mZ-Egz"/>
@@ -4844,8 +4848,13 @@ Chacun paye sa part.</string>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0c9-wp-W8z" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="htE-MF-Lgu">
+                    <connections>
+                        <action selector="dismissView:" destination="f1g-Ou-Mfs" id="m0m-9E-IIc"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-30428" y="2425.6371814092954"/>
+            <point key="canvasLocation" x="-30362" y="1969"/>
         </scene>
         <!--Report Invitation View Controller-->
         <scene sceneID="veR-to-02c">
@@ -4962,7 +4971,7 @@ Chacun paye sa part.</string>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-29792.799999999999" y="2427.4362818590707"/>
+            <point key="canvasLocation" x="-29727" y="1970"/>
         </scene>
         <!--Too Late View Controller-->
         <scene sceneID="0R9-iu-fYr">
@@ -5035,7 +5044,7 @@ n’est plus valable..</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8S0-0Y-5eL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-32320.799999999999" y="2425.6371814092954"/>
+            <point key="canvasLocation" x="-32255" y="1969"/>
         </scene>
         <!--Poll View Controller-->
         <scene sceneID="GJq-qm-TCF">
@@ -5140,7 +5149,7 @@ n’est plus valable..</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zpn-01-v2p" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-32322.400000000001" y="3099.400299850075"/>
+            <point key="canvasLocation" x="-32257" y="2642"/>
         </scene>
         <!--Cancel Invite In Map View Controller-->
         <scene sceneID="wYK-ed-jLK">
@@ -5280,7 +5289,7 @@ n’est plus valable..</string>
                                     <action selector="report:" destination="4Vk-Xz-1Ir" eventType="touchUpInside" id="dn8-Co-5SU"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TBb-f7-od1">
+                            <button opaque="NO" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TBb-f7-od1">
                                 <rect key="frame" x="8" y="597" width="116" height="51"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="17"/>
@@ -5298,7 +5307,7 @@ n’est plus valable..</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ufg-hz-8Bu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-32321" y="3776"/>
+            <point key="canvasLocation" x="-32257" y="3319"/>
         </scene>
         <!--Notification Permission View Controller-->
         <scene sceneID="rew-lA-u5N">
@@ -5319,7 +5328,7 @@ n’est plus valable..</string>
                                 <rect key="frame" x="33" y="78" width="311" height="116"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <string key="text">Les notifications facilitent l’utilisation de l’application.
-Autorisez-vous Flint à vous envoyer des notifications?</string>
+Autorisez-vous Flint à vous envoyer des notifications ?</string>
                                 <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
                                 <color key="textColor" red="0.43921568630000002" green="0.43921568630000002" blue="0.43921568630000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -5356,6 +5365,16 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                                 <color key="textColor" red="0.43921568630000002" green="0.43921568630000002" blue="0.43921568630000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wcf-XN-ewR">
+                                <rect key="frame" x="33" y="525" width="178" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <state key="normal">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="back:" destination="K9q-K3-itr" eventType="touchUpInside" id="nhq-iL-cy3"/>
+                                </connections>
+                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WVh-Ho-cKA" customClass="DCBaseLabel" customModule="DCKit">
                                 <rect key="frame" x="16" y="558" width="343" height="62"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -5402,7 +5421,7 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tgd-Uc-1p3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-31663.200000000001" y="3775.8620689655177"/>
+            <point key="canvasLocation" x="-31598" y="3319"/>
         </scene>
         <!--Completion View Controller-->
         <scene sceneID="JVy-6y-qDX">
@@ -5469,7 +5488,7 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-29793" y="3094"/>
+            <point key="canvasLocation" x="-29729" y="2636"/>
         </scene>
         <!--Stop Show Invite Gaide View Controller-->
         <scene sceneID="pDL-YQ-biJ">
@@ -5495,7 +5514,7 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                                         <color key="textColor" red="0.41176470590000003" green="0.41176470590000003" blue="0.41176470590000003" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Appuyez à tout moment sur ce bouton. L’invitation sera envoyée aux personnes que vous avez likés. " textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="qna-4W-GUj">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text=" Appuyer sur OK! quand votre sélection est terminée. " textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="qna-4W-GUj">
                                         <rect key="frame" x="12" y="80" width="301" height="75"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="17"/>
@@ -5537,7 +5556,7 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="faG-2Y-Ppm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-31678" y="3100"/>
+            <point key="canvasLocation" x="-31614" y="2642"/>
         </scene>
         <!--Warning Reconfirm View Controller-->
         <scene sceneID="vNf-mZ-n2D">
@@ -5556,7 +5575,7 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                             </label>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fc1-n2-Em6">
                                 <rect key="frame" x="0.0" y="583" width="375" height="84"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="de7-27-ye0">
                                         <rect key="frame" x="15" y="18" width="118" height="49"/>
@@ -5630,8 +5649,8 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rabbit" translatesAutoresizingMaskIntoConstraints="NO" id="7jO-gz-H7K">
-                                <rect key="frame" x="34" y="232" width="307" height="332"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rabbit2" translatesAutoresizingMaskIntoConstraints="NO" id="7jO-gz-H7K">
+                                <rect key="frame" x="42" y="232" width="317" height="217"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Avertissement" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qUN-NU-lzA">
@@ -5641,9 +5660,27 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Halte aux lapins !" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="vw7-5y-p7a">
+                                <rect key="frame" x="99" y="468" width="178" height="28"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="15"/>
+                                <color key="textColor" red="0.41176470588235292" green="0.41176470588235292" blue="0.41176470588235292" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Veuillez-vous assurer de pouvoir vous rendre au rendez-vous avant de reconfirmer ce dernier." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="4" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="xHO-Vq-0fy">
+                                <rect key="frame" x="32" y="494" width="311" height="71"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="15"/>
+                                <color key="textColor" red="0.41176470588235292" green="0.41176470588235292" blue="0.41176470588235292" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <gestureRecognizers/>
                         <viewLayoutGuide key="safeArea" id="RMK-zR-Crc"/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="yo3-iO-LJo" appends="YES" id="NDP-Ga-TnN"/>
+                        </connections>
                     </view>
                     <connections>
                         <outlet property="inviteNumber" destination="bJ5-SL-G8f" id="58n-2X-TqY"/>
@@ -5653,8 +5690,9 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="y7L-Dz-rZ0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="yo3-iO-LJo"/>
             </objects>
-            <point key="canvasLocation" x="-31034" y="3099"/>
+            <point key="canvasLocation" x="-30969" y="2642"/>
         </scene>
         <!--Loading View Controller-->
         <scene sceneID="uLF-sW-fhH">
@@ -5707,7 +5745,7 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PWm-yU-vvu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-30415" y="3094"/>
+            <point key="canvasLocation" x="-30350" y="2636"/>
         </scene>
         <!--Equality View Controller-->
         <scene sceneID="p8h-Z3-EV6">
@@ -5778,7 +5816,7 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KxB-qE-15u" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-31680.799999999999" y="2425.6371814092954"/>
+            <point key="canvasLocation" x="-31615" y="1969"/>
         </scene>
         <!--The One Special Person View Controller-->
         <scene sceneID="N1e-8r-UJd">
@@ -5860,7 +5898,7 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4XV-tL-3Ti" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-30428" y="1771.6641679160421"/>
+            <point key="canvasLocation" x="-30362" y="1315"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="hTe-X6-IXA">
@@ -5905,7 +5943,7 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                                         <color key="textColor" red="0.41176470590000003" green="0.41176470590000003" blue="0.41176470590000003" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Êtes-vous sûr de vouloir annuler l’invitation que vous venez de créer? Vous êtes libre d’en recréer une à tout moment." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="tAy-k1-ofq">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text=" Voulez-vous vraiment annuler l’invitation ? Vous serez libre d’en recréer une à tout moment. " textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="tAy-k1-ofq">
                                         <rect key="frame" x="21" y="80" width="290" height="93"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="17"/>
@@ -5954,7 +5992,7 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cjZ-PN-XhU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-29794.400000000001" y="1771.6641679160421"/>
+            <point key="canvasLocation" x="-29729" y="1315"/>
         </scene>
         <!--Location Permission View Controller-->
         <scene sceneID="iTX-Ur-O1Q">
@@ -5975,7 +6013,7 @@ Autorisez-vous Flint à vous envoyer des notifications?</string>
                                 <rect key="frame" x="33" y="78" width="311" height="116"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <string key="text">Pour fonctionner, Flint a besoin de connaître votre position.
-Autorisez-vous Flint à avoir accès à votre géolocalisation?</string>
+Autorisez-vous Flint à avoir accès à votre géolocalisation ?</string>
                                 <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
                                 <color key="textColor" red="0.43921568630000002" green="0.43921568630000002" blue="0.43921568630000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -6012,6 +6050,16 @@ Autorisez-vous Flint à avoir accès à votre géolocalisation?</string>
                                 <color key="textColor" red="0.43921568630000002" green="0.43921568630000002" blue="0.43921568630000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QcH-eh-TvC">
+                                <rect key="frame" x="33" y="526" width="178" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <state key="normal">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="back:" destination="kyj-ua-evQ" eventType="touchUpInside" id="0W2-vm-2Nn"/>
+                                </connections>
+                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RJP-lB-sBq" customClass="DCBaseLabel" customModule="DCKit">
                                 <rect key="frame" x="16" y="558" width="343" height="62"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -6058,7 +6106,7 @@ Autorisez-vous Flint à avoir accès à votre géolocalisation?</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sMI-Tt-Z1l" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-31034.400000000001" y="3775.8620689655177"/>
+            <point key="canvasLocation" x="-30969" y="3319"/>
         </scene>
     </scenes>
     <resources>
@@ -6067,7 +6115,6 @@ Autorisez-vous Flint à avoir accès à votre géolocalisation?</string>
         <image name="Groupe 1128" width="250" height="250"/>
         <image name="Groupe 1391" width="240" height="240"/>
         <image name="Groupe 1398" width="590" height="932"/>
-        <image name="Groupe 1429" width="110" height="62"/>
         <image name="Groupe 1484" width="380" height="380"/>
         <image name="Groupe 1703q" width="70" height="94"/>
         <image name="Groupe 1703sz" width="108" height="108"/>
@@ -6092,7 +6139,7 @@ Autorisez-vous Flint à avoir accès à votre géolocalisation?</string>
         <image name="next" width="512" height="512"/>
         <image name="pin_gray" width="229" height="326"/>
         <image name="popup_7" width="77" height="77"/>
-        <image name="rabbit" width="307" height="332"/>
+        <image name="rabbit2" width="209" height="323"/>
         <image name="tikIcon" width="28" height="28"/>
     </resources>
     <inferredMetricsTieBreakers>

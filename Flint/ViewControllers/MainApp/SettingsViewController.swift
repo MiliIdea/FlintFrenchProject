@@ -36,7 +36,7 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate , RangeSeek
     
     
     
-    var picker : McPicker = McPicker.init(data: [["Un homme", "Une femme" ,"Les deux"]])
+    var picker : McPicker = McPicker.init(data: [["Un Homme", "Une Femme" ,"Les deux"]])
     var looking_for : Int = 0
     var new_pin_notif : Bool = false
     var lighter : Bool = false
@@ -86,9 +86,9 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate , RangeSeek
         
 //        self.lighter = self.SwHaveLighter.isOn
        
-        if(butSetMan.title(for: .normal) == "Un homme"){
+        if(butSetMan.title(for: .normal) == "Un Homme"){
             looking_for = 0
-        }else if(butSetMan.title(for: .normal) == "Une femme"){
+        }else if(butSetMan.title(for: .normal) == "Une Femme"){
             looking_for = 1
         }else if(butSetMan.title(for: .normal) == "Les deux"){
             looking_for = 2
@@ -113,6 +113,7 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate , RangeSeek
             l.disView()
             let res = response.result.value
             if(res?.status == "success"){
+                GlobalFields.userInfo.LOOKING_FOR = self.looking_for
                 self.navigationController?.popViewController(animated: true)
             }else{
                 self.view.makeToast(res?.message)
@@ -130,12 +131,12 @@ class SettingsViewController: UIViewController ,UIScrollViewDelegate , RangeSeek
         if(sender is String){
             if(sender as! String == "0"){
                 
-                butSetMan.setTitle("Un homme", for: .normal)
+                butSetMan.setTitle("Un Homme", for: .normal)
                 picker.pickerSelectRowsForComponents = [0 : [0 : false]]
                 
             }else if(sender as! String == "1" ){
                 
-                butSetMan.setTitle("Une femme", for: .normal)
+                butSetMan.setTitle("Une Femme", for: .normal)
                 picker.pickerSelectRowsForComponents = [0 : [1 : false]]
                 
             }else if(sender as! String == "2" ){

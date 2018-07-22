@@ -85,15 +85,6 @@ class DemoChatDataSource: ChatDataSourceProtocol {
         self.slidingWindow.insertItem(message, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self, updateType : .reload)
     }
-    
-//    func addTextMessageFast(_ text: String) {
-//        let uid = "\(self.nextMessageId)"
-//        self.nextMessageId += 1
-//        let message = DemoChatMessageFactory.makeTextMessage(uid, text: text, isIncoming: false)
-//        self.messageSender.sendMessage(message)
-//        self.slidingWindow.insertItem(message, position: .bottom)
-//        self.delegate?.chatDataSourceDidUpdate(self , updateType : .reload)
-//    }
 
     func addIncommingTextMessage(_ text: String) {
         let uid = "\(self.nextMessageId)"
@@ -102,14 +93,6 @@ class DemoChatDataSource: ChatDataSourceProtocol {
         self.slidingWindow.insertItem(message, position: .bottom)
         self.delegate?.chatDataSourceDidUpdate(self, updateType : .reload)
     }
-    
-//    func addIncommingTextMessageFast(_ text: String) {
-//        let uid = "\(self.nextMessageId)"
-//        self.nextMessageId += 1
-//        let message = DemoChatMessageFactory.makeTextMessage(uid, text: text, isIncoming: true)
-//        self.slidingWindow.insertItem(message, position: .bottom)
-//        self.delegate?.chatDataSourceDidUpdate(self  , updateType : .reload)
-//    }
     
     
     func addPhotoMessage(_ image: UIImage) {
