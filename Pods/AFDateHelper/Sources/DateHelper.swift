@@ -151,14 +151,14 @@ public extension Date {
         if min < 60 {
             if min == 1 {
                 if isPast {
-                    return strings?[.oneMinutePast] ?? NSLocalizedString("1 minute ago", comment: "Date format")
+                    return strings?[.oneMinutePast] ?? NSLocalizedString("ll y a 1 minutes", comment: "Date format")
                 } else {
                     return strings?[.oneMinuteFuture] ?? NSLocalizedString("in 1 minute", comment: "Date format")
                 }
             } else {
                 let string:String
                 if isPast {
-                    string = strings?[.minutesPast] ?? NSLocalizedString("%.f minutes ago", comment: "Date format")
+                    string = strings?[.minutesPast] ?? NSLocalizedString("ll y a %.f minutes", comment: "Date format")
                 } else {
                     string = strings?[.minutesFuture] ?? NSLocalizedString("in %.f minutes", comment: "Date format")
                 }

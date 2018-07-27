@@ -286,7 +286,7 @@ public class ISEmojiView: UIView, UICollectionViewDataSource, UICollectionViewDe
         if let filePath = ISEmojiView.pathOfResourceInBundle(filename: "ISEmojiList", filetype: "plist") {
             if let sections = NSDictionary(contentsOfFile: filePath) as? [String:[String]] {
                 var emojiList: [[String]] = []
-                for sectionName in ["People","Nature","Objects","Places","Symbols"] {
+                for sectionName in ["Common","People","Nature","Objects","Places","Symbols"] {
                     emojiList.append(sections[sectionName]!)
                 }
                 return emojiList

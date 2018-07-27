@@ -17,6 +17,8 @@ public class GlobalFields {
     
     static let defaults: UserDefaults = UserDefaults.standard
     
+    static let pusherID : String = "6a39f8875e90a2c2cec5"
+    
     static var loginResData : LoginRes? {
         get{
             if(self.defaults.object(forKey: "loginResData") == nil){

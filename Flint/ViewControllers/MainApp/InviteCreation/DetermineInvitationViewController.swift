@@ -132,7 +132,7 @@ class DetermineInvitationViewController: UIViewController {
            
             let w = GlobalFields.inviteExactTime
             
-            self.timeButton.setTitle(w?.toStringWithRelativeTime(strings : [.nowPast: "Maintenant" ,.secondsPast: "Maintenant",.minutesPast: "ll y a X minutes" , .oneHourPast : "ll y a 1 heure"] ), for: .normal)
+            self.timeButton.setTitle(w?.toStringWithRelativeTime(strings : [.nowPast: "Tout de suite" ,.secondsPast: "Tout de suite" , .oneHourPast : "ll y a 1 heure"] ), for: .normal)
             
         }
 
@@ -140,7 +140,7 @@ class DetermineInvitationViewController: UIViewController {
 //            let dateFormatterGet : DateFormatter = DateFormatter()
 //            dateFormatterGet.dateFormat = "dd MMM yyyy - HH:mm"
 //            self.timeButton.setTitle(dateFormatterGet.string(from: GlobalFields.inviteExactTime!), for: .normal)
-            self.timeButton.setTitle((GlobalFields.inviteExactTime)?.toStringWithRelativeTime(strings : [.nowPast: "Maintenant" ,.secondsPast: "Maintenant",.minutesPast: "ll y a X minutes" , .oneHourPast : "ll y a 1 heure"]), for: .normal)
+            self.timeButton.setTitle((GlobalFields.inviteExactTime)?.toStringWithRelativeTime(strings : [.nowPast: "Tout de suite" ,.secondsPast: "Tout de suite", .oneHourPast : "ll y a 1 heure"]), for: .normal)
         }
 
         if(GlobalFields.inviteExactTime == nil){
@@ -164,9 +164,9 @@ class DetermineInvitationViewController: UIViewController {
     }
     
     @IBAction func goSetTime(_ sender: Any) {
-//        let vC : TimeInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "TimeInvitationViewController"))! as! TimeInvitationViewController
+        let vC : TimeInvitationViewController = (self.storyboard?.instantiateViewController(withIdentifier: "TimeInvitationViewController"))! as! TimeInvitationViewController
 //        vC.isParty = self.isParty
-//        self.navigationController?.pushViewController(vC, animated: true)
+        self.navigationController?.pushViewController(vC, animated: true)
     }
     
     @IBAction func goSetNumOfPersons(_ sender: Any) {

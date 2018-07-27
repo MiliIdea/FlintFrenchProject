@@ -160,12 +160,12 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
             v.addGestureRecognizer(UITapGestureRecognizer(target: self, action:  #selector (self.sendMessage(_:))))
         }
 
-        Timer.scheduledTimer(timeInterval: 600 , target: self, selector: #selector(callGetMyInvitesRest), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 120 , target: self, selector: #selector(callGetMyInvitesRest), userInfo: nil, repeats: true)
 
         
         if(locationManager.location != nil){
             let center = CLLocationCoordinate2D(latitude: (self.locationManager.location?.coordinate.latitude)!, longitude: (self.locationManager.location?.coordinate.longitude)!)
-            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))
+            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
             self.mapView.setRegion(region, animated: true)
         }
     }
@@ -214,6 +214,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
             v.isUserInteractionEnabled = true
             v.addGestureRecognizer(UITapGestureRecognizer(target: self, action:  #selector (self.sendMessage(_:))))
         }
+        self.moveCenter("")
         
     }
 
@@ -451,7 +452,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
         self.directionButton.alpha = 1
         
         let w = inv?.main?.exact_time
-        self.inviteTime.text = Date.init(timeIntervalSince1970: Double(w!)).toStringWithRelativeTime(strings : [.nowPast: "Maintenant" ,.secondsPast: "Maintenant",.minutesPast: "ll y a X minutes" , .oneHourPast : "ll y a 1 heure"])
+        self.inviteTime.text = Date.init(timeIntervalSince1970: Double(w!)).toStringWithRelativeTime(strings : [.nowPast: "Maintenant" ,.secondsPast: "Maintenant" , .oneHourPast : "ll y a 1 heure"])
 
         
     }
@@ -548,6 +549,7 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
                 self.callGetMyInvitesRest()
             }
             self.mapView.fitAll()
+            
         }
         
     }
@@ -642,6 +644,9 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
                 self.setMarkers()
                 
             }else{
+                print(Date().timeIntervalSince1970)
+                print(invite.available_at)
+                print(Double((invite.available_at)!) - Date().timeIntervalSince1970)
                 let interval = Double((invite.available_at)!) - Date().timeIntervalSince1970 - (40 * 60)
                 if(interval <= 0){
                     //alan bayad neshun bedim reConfirmo
@@ -737,6 +742,10 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
             // faqat baraye party karbord dareq
             if(invite.type == 1){
                 self.type = .AboutLastNight
+                self.configureView()
+                self.callGetMyInvitesRest()
+            }else{
+                self.type = .NormalMap
                 self.configureView()
                 self.callGetMyInvitesRest()
             }
@@ -1070,6 +1079,13 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
                     self.configureView()
                 }else{
                     vC.usersList = (res?.data)!
+                    var count = 0
+                    for u in (res?.data)! {
+                        if(u.id?.description == GlobalFields.ID.description){
+                            vC.usersList.remove(at: count)
+                        }
+                        count += 1
+                    }
                     self.navigationController?.pushViewController(vC, animated: true)
                 }
                 
@@ -1176,8 +1192,26 @@ class FirstMapViewController: UIViewController ,MKMapViewDelegate , UINavigation
                 var identifier : String = ""
                 for p in self.myInvites {
 
-                    print(annotation)
-                    if(annotation != nil && p.latitude?.substring(to: .init(encodedOffset: 9)) == annotation.coordinate.latitude.description.substring(to: .init(encodedOffset: 9)) && p.longitude?.substring(to: .init(encodedOffset: 9)) == annotation.coordinate.longitude.description.substring(to: .init(encodedOffset: 9))){
+                    print(annotation.coordinate)
+                    print(p)
+                    
+                    var minLat = 9
+                    
+                    if((p.latitude?.count)! < annotation.coordinate.latitude.description.count){
+                        minLat = (p.latitude?.count)!
+                    }else{
+                        minLat = annotation.coordinate.latitude.description.count
+                    }
+                    
+                    var minLong = 9
+                    
+                    if((p.longitude?.count)! < annotation.coordinate.longitude.description.count){
+                        minLong = (p.longitude?.count)!
+                    }else{
+                        minLong = annotation.coordinate.longitude.description.count
+                    }
+                    
+                    if(annotation != nil && p.latitude?.substring(to: .init(encodedOffset: minLat)) == annotation.coordinate.latitude.description.substring(to: .init(encodedOffset: minLat)) && p.longitude?.substring(to: .init(encodedOffset: minLong)) == annotation.coordinate.longitude.description.substring(to: .init(encodedOffset: minLong))){
                         identifier = (p.invite_id?.description) ?? (p.id?.description)!
                     }
                 }
@@ -1642,7 +1676,10 @@ extension MKMapView {
             let pointRect       = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0.01, 0.01);
             zoomRect            = MKMapRectUnion(zoomRect, pointRect);
         }
-        setVisibleMapRect(zoomRect, edgePadding: UIEdgeInsetsMake(100, 100, 100, 100), animated: true)
+        if(annotations != nil && annotations.count > 1){
+            setVisibleMapRect(zoomRect, edgePadding: UIEdgeInsetsMake(100, 100, 100, 100), animated: true)
+        }
+        
     }
     
     /// we call this function and give it the annotations we want added to the map. we display the annotations if necessary
@@ -1651,7 +1688,7 @@ extension MKMapView {
         
         for annotation in annotations {
             let aPoint          = MKMapPointForCoordinate(annotation.coordinate)
-            let rect            = MKMapRectMake(aPoint.x, aPoint.y, 0.1, 0.1)
+            let rect            = MKMapRectMake(aPoint.x, aPoint.y, 0.01, 0.01)
             
             if MKMapRectIsNull(zoomRect) {
                 zoomRect = rect

@@ -188,88 +188,92 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
     }
     
     func callLoginWithFacebook(email : String , token : String){
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .secondsSince1970
         
-        request(URLs.loginWithFacebook, method: .post , parameters: LoginWithFacebookRequestModel.init(email: email, token: token).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
-            
-            let res = response.result.value
-            if(res?.status == "success" || res?.status == "5"){
-                self.l.disView()
-                //inja bayad check kard k ta koja takmil karde
-                
-                if(res?.data != nil){
-                    
-                    GlobalFields.loginResData = res?.data!
-                    
-                    GlobalFields.TOKEN = res?.data?.token
-                    
-                    GlobalFields.PASSWORD = "FACEBOOK"
-                    
-                    GlobalFields.USERNAME = res?.data?.username
-                    
-                    GlobalFields.ID = res?.data?.id
-                    
-                    //inja bayad birthday va nameo khodemun por konim
-                    GlobalFields.userInfo.NAME = self.fbName
-                    
-                    let isoDate = self.fbBirthday
-                    
-                    let dateFormatter = DateFormatter()
-                    
-                    dateFormatter.dateFormat = "MM/DD/YYYY"
-                    
-                    let date = dateFormatter.date(from:isoDate)!
-                    
-                    GlobalFields.userInfo.BIRTHDATE = Int(date.timeIntervalSince1970)
-                    
-                    let data = res?.data
-                    if(data?.gender == nil){
-                        let vC : ManOrWomanViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ManOrWomanViewController"))! as! ManOrWomanViewController
-                        self.navigationController?.pushViewController(vC, animated: true)
-                    }else if(data?.avatar == nil || (data?.avatar?.contains("avatar.jpeg"))!){
-                        let vC : ProfilePicViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ProfilePicViewController"))! as! ProfilePicViewController
-                        self.navigationController?.pushViewController(vC, animated: true)
-                    }else if(data?.selfie == nil || (data?.selfie?.contains("avatar.jpeg"))!){
-                        let vC : SelfiTrustViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SelfiTrustViewController"))! as! SelfiTrustViewController
-                        self.navigationController?.pushViewController(vC, animated: true)
-                    }else if(data?.bio == nil){
-                        let vC : ProfileBioViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ProfileBioViewController"))! as! ProfileBioViewController
-                        self.navigationController?.pushViewController(vC, animated: true)
-                    }else if(data?.looking_for == nil){
-                        let vC : XViewController = (self.storyboard?.instantiateViewController(withIdentifier: "XViewController"))! as! XViewController
-                        self.navigationController?.pushViewController(vC, animated: true)
-                    }else if(OneSignal.getPermissionSubscriptionState().permissionStatus.status != .authorized){
-                        let vC : NotificationPermissionViewController = (self.storyboard?.instantiateViewController(withIdentifier: "NotificationPermissionViewController"))! as! NotificationPermissionViewController
-                        GlobalFields.defaults.set(true, forKey: "isRegisterCompleted")
-                        self.navigationController?.pushViewController(vC, animated: true)
-                    }else {
-                        let vC : FirstMapViewController = (self.storyboard?.instantiateViewController(withIdentifier: "FirstMapViewController"))! as! FirstMapViewController
-                        
-                        self.navigationController?.pushViewController(vC, animated: true)
-                    }
-                }else{
-                    GlobalFields.USERNAME = ""
-                    GlobalFields.TOKEN = ""
-                    GlobalFields.PASSWORD = nil
-                    GlobalFields.USERNAME = nil
-                    GlobalFields.TOKEN = nil
-                    GlobalFields.ID = nil
-                    GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
-                }
-                
-                
-                
-            }else if (res?.errCode == -2){
-                GlobalFields.USERNAME = email
-                let vC : ActivationCodeViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ActivationCodeViewController"))! as! ActivationCodeViewController
-                self.navigationController?.pushViewController(vC, animated: true)
-            }else{
-                //inja yani bayad register kone
-                self.callRegisterWithFacebook(email: email, token: token)
-            }
-            
-        }
+        let vC : SignUpViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SignUpViewController"))! as! SignUpViewController
+        self.navigationController?.pushViewController(vC, animated: true)
+        
+//        let decoder = JSONDecoder()
+//        decoder.dateDecodingStrategy = .secondsSince1970
+//
+//        request(URLs.loginWithFacebook, method: .post , parameters: LoginWithFacebookRequestModel.init(email: email, token: token).getParams() , headers : ["Content-Type": "application/x-www-form-urlencoded"] ).responseDecodableObject(decoder: decoder) { (response : DataResponse<ResponseModel<LoginRes>>) in
+//
+//            let res = response.result.value
+//            if(res?.status == "success" || res?.status == "5"){
+//                self.l.disView()
+//                //inja bayad check kard k ta koja takmil karde
+//
+//                if(res?.data != nil){
+//
+//                    GlobalFields.loginResData = res?.data!
+//
+//                    GlobalFields.TOKEN = res?.data?.token
+//
+//                    GlobalFields.PASSWORD = "FACEBOOK"
+//
+//                    GlobalFields.USERNAME = res?.data?.username
+//
+//                    GlobalFields.ID = res?.data?.id
+//
+//                    //inja bayad birthday va nameo khodemun por konim
+//                    GlobalFields.userInfo.NAME = self.fbName
+//
+//                    let isoDate = self.fbBirthday
+//
+//                    let dateFormatter = DateFormatter()
+//
+//                    dateFormatter.dateFormat = "MM/DD/YYYY"
+//
+//                    let date = dateFormatter.date(from:isoDate)!
+//
+//                    GlobalFields.userInfo.BIRTHDATE = Int(date.timeIntervalSince1970)
+//
+//                    let data = res?.data
+//                    if(data?.gender == nil){
+//                        let vC : ManOrWomanViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ManOrWomanViewController"))! as! ManOrWomanViewController
+//                        self.navigationController?.pushViewController(vC, animated: true)
+//                    }else if(data?.avatar == nil || (data?.avatar?.contains("avatar.jpeg"))!){
+//                        let vC : ProfilePicViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ProfilePicViewController"))! as! ProfilePicViewController
+//                        self.navigationController?.pushViewController(vC, animated: true)
+//                    }else if(data?.selfie == nil || (data?.selfie?.contains("avatar.jpeg"))!){
+//                        let vC : SelfiTrustViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SelfiTrustViewController"))! as! SelfiTrustViewController
+//                        self.navigationController?.pushViewController(vC, animated: true)
+//                    }else if(data?.bio == nil){
+//                        let vC : ProfileBioViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ProfileBioViewController"))! as! ProfileBioViewController
+//                        self.navigationController?.pushViewController(vC, animated: true)
+//                    }else if(data?.looking_for == nil){
+//                        let vC : XViewController = (self.storyboard?.instantiateViewController(withIdentifier: "XViewController"))! as! XViewController
+//                        self.navigationController?.pushViewController(vC, animated: true)
+//                    }else if(OneSignal.getPermissionSubscriptionState().permissionStatus.status != .authorized){
+//                        let vC : NotificationPermissionViewController = (self.storyboard?.instantiateViewController(withIdentifier: "NotificationPermissionViewController"))! as! NotificationPermissionViewController
+//                        GlobalFields.defaults.set(true, forKey: "isRegisterCompleted")
+//                        self.navigationController?.pushViewController(vC, animated: true)
+//                    }else {
+//                        let vC : FirstMapViewController = (self.storyboard?.instantiateViewController(withIdentifier: "FirstMapViewController"))! as! FirstMapViewController
+//
+//                        self.navigationController?.pushViewController(vC, animated: true)
+//                    }
+//                }else{
+//                    GlobalFields.USERNAME = ""
+//                    GlobalFields.TOKEN = ""
+//                    GlobalFields.PASSWORD = nil
+//                    GlobalFields.USERNAME = nil
+//                    GlobalFields.TOKEN = nil
+//                    GlobalFields.ID = nil
+//                    GlobalFields.defaults.set(false, forKey: "isRegisterCompleted")
+//                }
+//
+//
+//
+//            }else if (res?.errCode == -2){
+//                GlobalFields.USERNAME = email
+//                let vC : ActivationCodeViewController = (self.storyboard?.instantiateViewController(withIdentifier: "ActivationCodeViewController"))! as! ActivationCodeViewController
+//                self.navigationController?.pushViewController(vC, animated: true)
+//            }else{
+//                //inja yani bayad register kone
+//                self.callRegisterWithFacebook(email: email, token: token)
+//            }
+//
+//        }
     }
     
     
@@ -309,10 +313,7 @@ class IntroViewController: UIViewController , UICollectionViewDataSource, UIColl
     }
     
     @IBAction func connection(_ sender: Any) {
-        let vC : SignUpViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SignUpViewController"))! as! SignUpViewController
-//        let dataSource = DemoChatDataSource(count: 0, pageSize: 50)
-//        let viewController = DemoChatViewController()
-//        viewController.dataSource = dataSource
+        let vC : SignInViewController = (self.storyboard?.instantiateViewController(withIdentifier: "SignInViewController"))! as! SignInViewController
         self.navigationController?.pushViewController(vC, animated: true)
     }
     

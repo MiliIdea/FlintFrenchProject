@@ -346,14 +346,14 @@ class SparksViewController: UIViewController , UITableViewDelegate , UITableView
             var avatar : String = ""
             var recAt : Int = 0
             cell.ringView.innerRingWidth = 10
-            if((c.owner?.description)! == GlobalFields.ID.description){
-                name = c.user_name!
-                avatar = c.user_avatar!
-                recAt = c.reconfirm_at!
-            }else{
+            if((c.user?.description)! == GlobalFields.ID.description){
                 name = c.owner_name!
                 avatar = c.owner_avatar!
                 recAt = c.owner_reconfirm_at!
+            }else{
+                name = c.user_name!
+                avatar = c.user_avatar!
+                recAt = c.reconfirm_at!
             }
             cell.nameLabel.text = name
             cell.imageProfileButton.kf.setImage(with: URL.init(string: URLs.imgServer + avatar), for: .normal)
@@ -378,15 +378,15 @@ class SparksViewController: UIViewController , UITableViewDelegate , UITableView
             var avatar : String = ""
             var target : Int = 0
             var recAt : Int = 0
-            if((c.owner?.description)! == GlobalFields.ID.description){
-                name = c.user_name!
-                avatar = c.user_avatar!
-                target = c.user!
-                recAt = c.reconfirm_at!
-            }else{
+            if((c.user?.description)! == GlobalFields.ID.description){
                 name = c.owner_name!
                 avatar = c.owner_avatar!
                 target = c.owner!
+                recAt = c.owner_reconfirm_at!
+            }else{
+                name = c.user_name!
+                avatar = c.user_avatar!
+                target = c.user!
                 recAt = c.reconfirm_at!
             }
             vC.type = c.invite_type!

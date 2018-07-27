@@ -470,6 +470,9 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                 
                 if(res?.status == "success"){
                     self.goNext()
+                }else if(res?.errCode == -2){
+                    self.view.makeToast(res?.message)
+                    self.goNext()
                 }
                 
             }
@@ -607,7 +610,11 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
                 self.view.addSubview(vC.view)
                 vC.didMove(toParentViewController: self)
             }
-            self.collectionView.reloadData()
+            if(self.usersList[presentIndex].id?.description == GlobalFields.ID.description){
+                goNext()
+            }else{
+                self.collectionView.reloadData()
+            }
         }else{
             
             for controller in self.navigationController!.viewControllers as Array {
@@ -710,7 +717,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
         let cell3 = "T"
         let cell31 = "F"
         
-        if(self.viewType == .AddPersonToInvite){
+        if(self.viewType == .AddPersonToInvite || self.viewType == .AfterParty){
             
             let user = self.usersList[presentIndex]
             
@@ -778,7 +785,7 @@ class MainInvitationViewController: UIViewController , UICollectionViewDataSourc
         cell3.frame.size.width = self.view.frame.width
         cell3.frame.size.height = self.collectionView.frame.height
         
-        if(self.viewType != .AddPersonToInvite){
+        if(self.viewType != .AddPersonToInvite && self.viewType != .AfterParty){
             
             var user = inviteInfo?.main
             

@@ -46,7 +46,7 @@ class TimeInvitationViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.setDefualtButtons()
+//        self.setDefualtButtons()
         self.titleWithMoodColorLabel.text = GlobalFields.inviteTitle
         self.titleWithMoodColorLabel.layer.borderWidth = 1
         self.titleWithMoodColorLabel.layer.borderColor = UIColor("#707070").cgColor
@@ -56,16 +56,16 @@ class TimeInvitationViewController: UIViewController {
         flintL.isUserInteractionEnabled = true
         flintL.addGestureRecognizer(tap)
         
-        if(isParty){
-//            self.partyModeView.alpha = 1
-//            self.datePicker.alpha = 0
-//            self.tikButton.alpha = 1
-//            self.rightNowPartyAct("")
-            
-            self.partyModeView.alpha = 0
-        }else{
-            self.partyModeView.alpha = 0
-        }
+//        if(isParty){
+////            self.partyModeView.alpha = 1
+////            self.datePicker.alpha = 0
+////            self.tikButton.alpha = 1
+////            self.rightNowPartyAct("")
+//
+//            self.partyModeView.alpha = 0
+//        }else{
+//            self.partyModeView.alpha = 0
+//        }
     }
 
     @objc func tapFunction(sender:UITapGestureRecognizer) {
@@ -101,6 +101,11 @@ class TimeInvitationViewController: UIViewController {
         self.navigationController?.popViewController(animated: true)
         
     }
+    
+    @IBAction func ok(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
     
     @IBAction func goProfile(_ sender: Any) {
         let vC : MainProfileViewController = (self.storyboard?.instantiateViewController(withIdentifier: "MainProfileViewController"))! as! MainProfileViewController

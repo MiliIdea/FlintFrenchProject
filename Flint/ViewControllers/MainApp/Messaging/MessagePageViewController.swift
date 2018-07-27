@@ -102,7 +102,7 @@ class MessagePageViewController: UIViewController {
                 host: .cluster("mt1")
             )
             
-            let pusher = Pusher(key: "6a39f8875e90a2c2cec5", options: options)
+            let pusher = Pusher(key: GlobalFields.pusherID , options: options)
             pusher.connect()
             
             
@@ -160,6 +160,7 @@ class MessagePageViewController: UIViewController {
         controller.dataSource = dataSource
         controller.isOneTextMode = .Invites
         self.image.kf.setImage(with: URL.init(string: URLs.imgServer + (imageAddress ?? "")))
+        
         controller.type = type
         if(isSendedThreeMessage){//ag ye message ferestade shode bud
             //TODO servicesh bayad call beshe tu inja
@@ -192,18 +193,22 @@ class MessagePageViewController: UIViewController {
                     let res2 = response2.result.value
                     
                     if(res2?.status == "success"){
-                        if(res2?.data != nil || res2?.data?.count == 0){
-                            self.backLabel.alpha = 1
-                            if(res?.data?.main?.type == 1){
-                                self.backLabel.text = "Renseignez vos invités quant au lieu, horaire et conditions dans lesquelles se tiendront la soirée."
-                            }else{
-                                self.backLabel.text = "Décrivez vous, vos habits ainsi que l’endroit où vous l’attendez dans un seul message."
-                            }
-                        }
+//                        if(res2?.data != nil || res2?.data?.count == 0){
+//                            self.backLabel.alpha = 1
+//                            if(res?.data?.main?.type == 1){
+//                                self.backLabel.text = "Renseignez vos invités quant au lieu, horaire et conditions dans lesquelles se tiendront la soirée."
+//                            }else{
+//                                self.backLabel.text = "Décrivez vous, vos habits ainsi que l’endroit où vous l’attendez dans un seul message."
+//                                self.backLabel.text = "Vous avez 3 messages pour vous retrouver, renseignez l’autre sur : \n- comment vous êtes habillé(e) \n- l’endroit où vous vous trouvez \n- votre heure d’arrivée"
+//                            }
+//                        }
                         
                         if(res2?.data != nil){
                             if(res2?.data?.count != 0){
                                 self.backLabel.alpha = 0
+                            }else{
+                                self.backLabel.textAlignment = .left
+                                self.backLabel.alpha = 1
                             }
                             var myMessage : Int = 0
                             for m in (res2?.data)! {
@@ -234,7 +239,11 @@ class MessagePageViewController: UIViewController {
                         
                         if(res?.data?.main?.type == 1){
                             //ag party bud bayad akse bala doros she
-                            self.image.kf.setImage(with: URL.init(string: URLs.imgServer + (self.imageAddress ?? "")))
+                            
+                            self.image.backgroundColor = GlobalFields.getTypeColor(type: 1)
+                            self.image.image = UIImage.init(named: "party-popper")
+                            self.image.contentMode = .center
+                            
                             self.nameLabel.alpha = 0
                         }else{
                             self.nameLabel.alpha = 1
@@ -292,6 +301,7 @@ class MessagePageViewController: UIViewController {
         addChildViewController(controller)
         controller.view.frame = .init(origin: .init(x: 0, y: 0), size: messageLocView.frame.size)  // or better, turn off `translatesAutoresizingMaskIntoConstraints` and then define constraints for this subview
         messageLocView.addSubview(controller.view)
+        self.backLabel.textAlignment = .center
         self.backLabel.text = "Vous devez envoyer le premier message sous 24h ou y répondre pour activer la relation"
         controller.didMove(toParentViewController: self)
     }
@@ -332,7 +342,7 @@ class MessagePageViewController: UIViewController {
             if(res?.data != nil || res?.data?.count == 0){
                 
                 self.backLabel.alpha = 1
-                
+                self.backLabel.textAlignment = .center
                 self.backLabel.text = "Vous devez envoyer le premier message sous 24h ou y répondre pour activer la relation"
                 
             }
